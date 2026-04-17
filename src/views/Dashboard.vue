@@ -3,18 +3,11 @@
     <div class="sidebar" :class="{ collapsed: collapsed }">
         <div class="brand-row">
             <button class="collapse-btn" @click="collapsed = !collapsed">
-            <svg width="16" height="16" viewBox="0 0 16 16">
+            <svg width="18" height="18" viewBox="0 0 16 16">
                 <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5"/>
             </svg>
             </button>
-        <div class="brand-icon">
-            <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="2" width="7" height="7" rx="2" fill="#141414"/>
-            <rect x="11" y="2" width="7" height="7" rx="2" fill="#141414"/>
-            <rect x="2" y="11" width="7" height="7" rx="2" fill="#141414"/>
-            <rect x="11" y="11" width="7" height="7" rx="2" fill="#333"/>
-            </svg>
-        </div>
+       
         <div>
             <div class="brand-name">Cikgu Kereta</div>
             <div class="brand-sub">Workshop</div>
@@ -462,6 +455,4 @@ export default {
   .chart-bar.today{background:#141414}
   .chart-day{font-size:9px;color:#bbb}
   .divider{height:1px;background:#f2f2f0;margin:12px 0}
-
-
 </style>
