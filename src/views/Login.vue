@@ -69,8 +69,8 @@ export default {
           password: this.password
         });
         localStorage.setItem("token", res.data.token);
-        alert("Login success!");
         console.log(res.data);
+        this.$router.push("/dashboard");
       } catch (err) {
         this.error = err.response.data.message;
       }
