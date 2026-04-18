@@ -19,7 +19,7 @@
 
         <div class="metrics-grid">
         <div class="metric-card">
-            <div class="metric-label">Today's revenue
+            <div class="metric-label">TODAY'S REVENUE
             <div class="metric-icon mi-green">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 10l3-3 3 3 3-5" stroke="#4CAF50" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
@@ -28,7 +28,7 @@
             <div class="metric-sub"><span class="metric-up">↑ 12%</span>&nbsp;vs yesterday</div>
         </div>
         <div class="metric-card">
-            <div class="metric-label">Active jobs
+            <div class="metric-label">ACTIVE JOBS
             <div class="metric-icon mi-blue">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="9" rx="1.5" stroke="#1565c0" stroke-width="1.2"/><path d="M1 6.5h12" stroke="#1565c0" stroke-width="1.2"/></svg>
             </div>
@@ -37,7 +37,7 @@
             <div class="metric-sub">3 completing today</div>
         </div>
         <div class="metric-card">
-            <div class="metric-label">Pending invoices
+            <div class="metric-label">PENDING INVOICES
             <div class="metric-icon mi-amber">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v4l2 2" stroke="#e57320" stroke-width="1.4" stroke-linecap="round"/><circle cx="7" cy="7" r="5.5" stroke="#e57320" stroke-width="1.2"/></svg>
             </div>
@@ -46,7 +46,7 @@
             <div class="metric-sub">From 6 invoices</div>
         </div>
         <div class="metric-card">
-            <div class="metric-label">Low stock alerts
+            <div class="metric-label">LOW STOCK ALERTS
             <div class="metric-icon mi-red">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2L1.5 11h11L7 2z" stroke="#e53935" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6v3M7 10.5h.01" stroke="#e53935" stroke-width="1.2" stroke-linecap="round"/></svg>
             </div>

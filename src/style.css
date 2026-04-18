@@ -83,7 +83,7 @@ body {
 .brand-icon {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,7 +114,7 @@ body {
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   color: #fff;
   font-size: 12.5px;
   font-weight: 500;
@@ -130,7 +130,7 @@ body {
 /* active route */
 .router-link-active {
   background: var(--sidebar-active);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 /* icon consistency fix (IMPORTANT) */
@@ -234,10 +234,26 @@ body {
 /* =========================
    BUTTONS
 ========================= */
+.search-field {
+  background: #fff;
+  border: 1px solid #e4e4e2;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  width: ;
+}
+
 .pill-btn {
   background: #fff;
   border: 1px solid #e4e4e2;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 7px 14px;
   font-size: 12px;
   font-weight: 500;
