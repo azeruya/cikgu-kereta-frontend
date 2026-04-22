@@ -1,100 +1,189 @@
 <template>
   <div class="dash">
-
-    <Sidebar :collapsed="collapsed" :menu="menu" @toggle="collapsed = !collapsed" />
+    <Sidebar
+      :collapsed="collapsed"
+      :menu="menu"
+      :user="currentUser"
+      @toggle="collapsed = !collapsed"
+    />
 
     <div class="main">
+    <div class="top-bar">
+        <div class="page-intro">
+        <div class="page-title-row">
+            <div class="page-title">Customers</div>
+            <span class="page-chip">
+            {{
+                activeTab === "all"
+                ? `${filteredCustomers.length} customer${filteredCustomers.length === 1 ? "" : "s"}`
+                : `${filteredCustomers.length} ${activeTab}`
+            }}
+            </span>
+        </div>
 
-      <!-- HEADER -->
-      <div class="top-bar">
-        <div>
-          <div class="page-title">Customers</div>
-          <div class="page-date">Manage your workshop customers</div>
+        <div class="page-date">
+            View customer records, vehicles, and recent workshop activity
+        </div>
         </div>
 
         <div class="top-right">
-          <input class="search" v-model="searchQuery" placeholder="Search customer..." />
-          <button class="pill-btn">Export</button>
-          <button class="pill-btn primary">+ Add Customer</button>
-        </div>
-      </div>
-
-      <!-- FILTER -->
-      <div class="tabs">
-        <button 
-          v-for="tab in tabs"
-          :key="tab"
-          :class="['tab', { active: activeTab === tab }]"
-          @click="activeTab = tab"
-        >
-          {{ tab }}
+        <input
+            class="search"
+            v-model.trim="searchQuery"
+            placeholder="Search customer..."
+        />
+        <button class="pill-btn" type="button">Export</button>
+        <button class="pill-btn primary" type="button">
+            + Add Customer
         </button>
-      </div>
-
-      <!-- TABLE CARD -->
-      <div class="card">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Customer</th>
-              <th>Phone</th>
-              <th>Vehicle</th>
-              <th>Visits</th>
-              <th>Total</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="cust in paginatedCustomers" :key="cust.id" @click="openDetail(cust)">
-              <td class="cust-cell">
-                <div class="avatar">{{ cust.name[0] }}</div>
-                <div>
-                  <div class="cust-name">{{ cust.name }}</div>
-                </div>
-              </td>
-              <td>{{ cust.phone }}</td>
-              <td>{{ cust.vehicle }}</td>
-              <td>{{ cust.visits }}</td>
-              <td>RM {{ cust.total }}</td>
-              <td>
-                <span :class="['status', cust.status.toLowerCase()]">
-                  {{ cust.status }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- PAGINATION -->
-        <div class="pagination">
-          <button @click="prevPage" :disabled="page === 1">←</button>
-          <span>{{ page }} / {{ totalPages }}</span>
-          <button @click="nextPage" :disabled="page === totalPages">→</button>
         </div>
+    </div>
+
+    <div class="tabs">
+        <button
+        v-for="tab in tabs"
+        :key="tab.value"
+        :class="['tab', { active: activeTab === tab.value }]"
+        @click="changeTab(tab.value)"
+        >
+        {{ tab.label }}
+        </button>
+    </div>
+
+      <div class="card">
+        <div v-if="loading" class="empty-state">Loading customers...</div>
+
+        <template v-else>
+          <table class="table" v-if="filteredCustomers.length > 0">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Vehicles</th>
+                <th>Latest Activity</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                v-for="cust in filteredCustomers"
+                :key="cust.id"
+                class="clickable-row"
+                @click="openDetail(cust)"
+              >
+                <td class="cust-cell">
+                  <div class="circle-avatar">
+                    {{ customerInitials(cust.name) }}
+                  </div>
+
+                    <div class="cust-text">
+                    <div class="cust-name">{{ cust.name }}</div>
+                    <div class="cust-meta">{{ customerStatusLabel(cust) }}</div>
+                    </div>
+                </td>
+
+                <td>{{ cust.phone || "-" }}</td>
+                <td>{{ cust.email || "-" }}</td>
+                <td>
+                  {{ cust.vehicles?.length || 0 }}
+                  <span v-if="cust.vehicles?.[0]">
+                    · {{ cust.vehicles[0].license_plate }}
+                  </span>
+                </td>
+                <td>
+                  <span :class="['status-pill', customerStatusClass(cust)]">
+                    {{ customerStatusLabel(cust) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div v-else class="empty-state">
+            No customers found.
+          </div>
+
+          <div class="pagination" v-if="totalPages > 1">
+            <button @click="prevPage" :disabled="page === 1">←</button>
+            <span>{{ page }} / {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="page === totalPages">→</button>
+          </div>
+        </template>
       </div>
 
-      <!-- MODAL -->
-      <div class="modal" v-if="activeCustomer" @click.self="activeCustomer=null">
-        <div class="modal-card">
+      <div class="modal" v-if="activeCustomer" @click.self="closeDetail">
+        <div v-if="detailLoading" class="modal-card">
+          <div class="empty-state">Loading customer details...</div>
+        </div>
 
+        <div v-else class="modal-card large">
           <div class="modal-header">
             <span>{{ activeCustomer.name }}</span>
-            <button @click="activeCustomer=null">✕</button>
+            <button class="mini-btn" @click="closeDetail">✕</button>
           </div>
 
           <div class="modal-body">
-            <p><b>Phone:</b> {{ activeCustomer.phone }}</p>
-            <p><b>Vehicle:</b> {{ activeCustomer.vehicle }}</p>
-            <p><b>Total Visits:</b> {{ activeCustomer.visits }}</p>
-            <p><b>Total Spent:</b> RM {{ activeCustomer.total }}</p>
+            <div class="customer-detail-grid">
+              <div><b>Phone:</b> {{ activeCustomer.phone || "-" }}</div>
+              <div><b>Email:</b> {{ activeCustomer.email || "-" }}</div>
+              <div><b>Address:</b> {{ activeCustomer.address || "-" }}</div>
+              <div><b>Total Visits:</b> {{ activeCustomer.transactions_count || 0 }}</div>
+              <div>
+                <b>Total Spent:</b>
+                RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
+              </div>
+            </div>
 
             <div class="jobs-section">
-              <div class="section-title">Recent Jobs</div>
+              <div class="section-title">Vehicles</div>
 
-              <div v-for="job in activeCustomer.jobs" :key="job.id" class="job-item">
-                <div>{{ job.service }}</div>
-                <div class="job-price">RM {{ job.price }}</div>
+              <div
+                v-for="vehicle in activeCustomer.vehicles || []"
+                :key="vehicle.id"
+                class="job-item"
+              >
+                <div>
+                  <div class="item-name">{{ vehicle.license_plate }}</div>
+                  <small>
+                    {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
+                    <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
+                  </small>
+                </div>
+              </div>
+
+              <div
+                v-if="!activeCustomer.vehicles || activeCustomer.vehicles.length === 0"
+                class="empty-small"
+              >
+                No vehicles found
+              </div>
+            </div>
+
+            <div class="jobs-section">
+              <div class="section-title">Recent Transactions</div>
+
+              <div
+                v-for="trx in activeCustomer.transactions || []"
+                :key="trx.id"
+                class="job-item"
+              >
+                <div>
+                  <div class="item-name">{{ trx.document_number || "-" }}</div>
+                  <small>
+                    {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
+                  </small>
+                </div>
+                <div class="job-price">
+                  RM {{ formatMoney(trx.total_amount) }}
+                </div>
+              </div>
+
+              <div
+                v-if="!activeCustomer.transactions || activeCustomer.transactions.length === 0"
+                class="empty-small"
+              >
+                No recent transactions
               </div>
             </div>
           </div>
@@ -102,18 +191,21 @@
           <div class="modal-actions">
             <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
             <button>Edit</button>
-            <button class="primary">View Jobs</button>
+            <button class="primary">View Transactions</button>
           </div>
-
         </div>
       </div>
 
+      <div v-if="error" class="page-error">
+        {{ error }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Sidebar from "../components/Sidebar.vue";
+import api from "../services/api";
 
 export default {
   components: { Sidebar },
@@ -121,207 +213,248 @@ export default {
   data() {
     return {
       collapsed: false,
+      loading: false,
+      detailLoading: false,
+      error: "",
 
       menu: [
         { name: "Dashboard", path: "/dashboard", icon: "grid" },
         { name: "Transactions", path: "/transactions", icon: "list" },
         { name: "Customers", path: "/customers", icon: "user" },
         { name: "Inventory", path: "/inventory", icon: "box" },
-        { name: "Report", path: "/report", icon: "chart" },
-        { name: "Expense", path: "/expense", icon: "alert" }
+        { name: "Expenses", path: "/expenses", icon: "alert" },
+        { name: "Reports", path: "/reports", icon: "chart" }
       ],
 
-      customers: [
-        {
-          id: 1,
-          name: "Hafiz Rahman",
-          phone: "60123456789",
-          vehicle: "WPL1234",
-          visits: 5,
-          total: 1200,
-          status: "Active",
-          jobs: [
-            { id: 1, service: "Engine service", price: 320 },
-            { id: 2, service: "Oil change", price: 120 }
-          ]
-        }
+      tabs: [
+        { label: "All", value: "all" },
+        { label: "Active", value: "active" },
+        { label: "Inactive", value: "inactive" }
       ],
 
-      searchQuery: "",
-      tabs: ["All", "Active", "Inactive"],
-      activeTab: "All",
-
+      activeTab: "all",
+      customers: [],
       page: 1,
-      perPage: 5,
-
-      activeCustomer: null
+      totalPages: 1,
+      activeCustomer: null,
+      searchQuery: ""
     };
   },
 
   computed: {
-    filteredCustomers() {
-      let list = this.customers;
+    currentUser() {
+      try {
+        return JSON.parse(localStorage.getItem("user")) || null;
+      } catch {
+        return null;
+      }
+    },
 
-      if (this.activeTab !== "All") {
-        list = list.filter(c => c.status === this.activeTab);
+    filteredCustomers() {
+      let list = this.customers || [];
+
+      if (this.activeTab === "active") {
+        list = list.filter((c) => c.latest_transaction?.status === "invoice");
+      } else if (this.activeTab === "inactive") {
+        list = list.filter((c) => c.latest_transaction?.status !== "invoice");
       }
 
       if (this.searchQuery) {
         const q = this.searchQuery.toLowerCase();
-        list = list.filter(c =>
-          c.name.toLowerCase().includes(q)
+        list = list.filter((c) =>
+          (c.name || "").toLowerCase().includes(q) ||
+          (c.phone || "").toLowerCase().includes(q) ||
+          (c.email || "").toLowerCase().includes(q)
         );
       }
 
       return list;
-    },
-
-    totalPages() {
-      return Math.ceil(this.filteredCustomers.length / this.perPage);
-    },
-
-    paginatedCustomers() {
-      const start = (this.page - 1) * this.perPage;
-      return this.filteredCustomers.slice(start, start + this.perPage);
     }
   },
 
+  mounted() {
+    this.fetchCustomers();
+  },
+
   methods: {
-    openDetail(c) {
-      this.activeCustomer = c;
+    getCacheKey(page = 1) {
+      return `customers-${this.activeTab}-page-${page}`;
+    },
+
+    async fetchCustomers(page = 1) {
+      const cacheKey = this.getCacheKey(page);
+      const cached = sessionStorage.getItem(cacheKey);
+
+      this.error = "";
+
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        this.customers = parsed.data || [];
+        this.page = parsed.current_page || 1;
+        this.totalPages = parsed.last_page || 1;
+      } else {
+        this.loading = true;
+      }
+
+      try {
+        const res = await api.get(`/customers?page=${page}`);
+
+        this.customers = res.data.data || [];
+        this.page = res.data.current_page || 1;
+        this.totalPages = res.data.last_page || 1;
+
+        sessionStorage.setItem(cacheKey, JSON.stringify(res.data));
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+        this.error =
+          error.response?.data?.message || "Failed to load customers.";
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    changeTab(tab) {
+      this.activeTab = tab;
+      this.page = 1;
+      this.fetchCustomers(1);
+    },
+
+    async openDetail(customer) {
+      this.activeCustomer = {
+        id: customer.id,
+        name: customer.name,
+        phone: customer.phone,
+        email: customer.email,
+        address: customer.address,
+        vehicles: customer.vehicles || []
+      };
+
+      this.detailLoading = true;
+      this.error = "";
+
+      try {
+        const res = await api.get(`/customers/${customer.id}`);
+        this.activeCustomer = res.data;
+      } catch (error) {
+        console.error("Error loading customer detail:", error);
+        this.error =
+          error.response?.data?.message || "Failed to load customer detail.";
+      } finally {
+        this.detailLoading = false;
+      }
+    },
+
+    closeDetail() {
+      this.activeCustomer = null;
+      this.detailLoading = false;
     },
 
     nextPage() {
-      if (this.page < this.totalPages) this.page++;
+      if (this.page < this.totalPages) {
+        this.fetchCustomers(this.page + 1);
+      }
     },
 
     prevPage() {
-      if (this.page > 1) this.page--;
+      if (this.page > 1) {
+        this.fetchCustomers(this.page - 1);
+      }
     },
 
-    openWhatsApp(c) {
-      const msg = `Hi ${c.name}, your vehicle (${c.vehicle}) is ready.`;
-      window.open(`https://wa.me/${c.phone}?text=${encodeURIComponent(msg)}`);
+    openWhatsApp(customer) {
+      const plate = customer.vehicles?.[0]?.license_plate || "-";
+      const msg = `Hi ${customer.name}, regarding your vehicle (${plate}), feel free to contact us for updates.`;
+
+      const phone = (customer.phone || "").replace(/[^\d]/g, "");
+      if (!phone) {
+        alert("Customer phone number not available.");
+        return;
+      }
+
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+    },
+
+    formatMoney(value) {
+      return Number(value || 0).toFixed(2);
+    },
+
+    customerInitials(name) {
+      return (name || "C")
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+    },
+
+    customerStatusLabel(customer) {
+      const status = customer.latest_transaction?.status;
+
+      if (status === "invoice") return "Active Job";
+      if (status === "quotation") return "Pending Quote";
+      if (status === "receipt") return "Completed";
+      return "No Recent Job";
+    },
+
+    customerStatusClass(customer) {
+      const status = customer.latest_transaction?.status;
+
+      if (status === "invoice") return "sp-green";
+      if (status === "quotation") return "sp-amber";
+      if (status === "receipt") return "sp-blue";
+      return "sp-gray";
     }
   }
 };
 </script>
 
-<style>
-.dash { display:flex; height:100vh; font-family:Inter; }
-.main { flex:1; padding:28px; background:#f9f9f8; }
-
-/* HEADER */
-.top-bar { display:flex; justify-content:space-between; margin-bottom:16px; }
-.page-title { font-size:20px; font-weight:600; }
-.page-date { font-size:12px; color:#999; }
-
-.top-right { display:flex; gap:10px; }
-
-.search {
-  padding:8px 12px;
-  border:1px solid #ddd;
-  border-radius:8px;
+<style scoped>
+.cust-cell {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
-.pill-btn {
-  border:1px solid #ddd;
-  padding:8px 12px;
-  border-radius:8px;
-  background:#fff;
+.cust-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.pill-btn.primary {
-  background:#111;
-  color:#fff;
+.cust-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #171717;
+  line-height: 1.2;
 }
 
-/* TABS */
-.tabs { display:flex; gap:6px; margin-bottom:12px; }
-.tab { padding:6px 12px; border-radius:8px; border:1px solid #ddd; }
-.tab.active { background:#111; color:#fff; }
-
-/* CARD */
-.card {
-  background:#fff;
-  border-radius:12px;
-  border:1px solid #eee;
+.cust-meta {
+  font-size: 11px;
+  color: #9a9a9a;
+  line-height: 1.2;
 }
 
-/* TABLE */
-.table { width:100%; border-collapse:collapse; }
-.table th { text-align:left; padding:12px; font-size:12px; color:#999; }
-.table td { padding:12px; border-top:1px solid #f0f0f0; }
-.table tr:hover { background:#fafafa; }
-
-.cust-cell { display:flex; gap:10px; align-items:center; }
-.avatar {
-  width:32px; height:32px;
-  border-radius:50%;
-  background:#111; color:#fff;
-  display:flex; align-items:center; justify-content:center;
+.customer-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+  font-size: 12px;
+  color: #555;
 }
 
-.status.active { color:#2e7d32; }
-.status.inactive { color:#999; }
-
-/* PAGINATION */
-.pagination {
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  padding:12px;
+.jobs-section {
+  margin-top: 14px;
 }
 
-/* MODAL */
-.modal {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.2);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.section-title {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 8px;
 }
 
-.modal-card {
-  width:320px;
-  background:#fff;
-  border-radius:12px;
-  padding:16px;
-}
-
-.modal-header {
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:10px;
-  font-weight:600;
-}
-
-.jobs-section { margin-top:12px; }
-.section-title { font-size:12px; color:#999; margin-bottom:6px; }
-
-.job-item {
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  padding:6px 0;
-}
-
-.modal-actions {
-  display:flex;
-  gap:6px;
-  margin-top:12px;
-}
-
-.modal-actions button {
-  flex:1;
-  padding:8px;
-  border-radius:8px;
-  border:1px solid #ddd;
-}
-
-.modal-actions .primary {
-  background:#111;
-  color:#fff;
+@media (max-width: 900px) {
+  .customer-detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

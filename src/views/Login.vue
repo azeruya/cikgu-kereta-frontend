@@ -10,41 +10,74 @@
             <rect x="11" y="11" width="7" height="7" rx="2" fill="#333"/>
           </svg>
         </div>
-        <h1>CikguKereta</h1>
+        <h1>Cikgu Kereta</h1>
         <p class="brand-sub">Workshop Management</p>
       </div>
-      <div class="feature-list">
-        <div class="feat"><span class="feat-dot"></span>Customer management</div>
-        <div class="feat"><span class="feat-dot"></span>Inventory control</div>
-        <div class="feat"><span class="feat-dot"></span>Quotation &amp; invoicing</div>
-        <div class="feat"><span class="feat-dot"></span>Expense tracking</div>
-        <div class="feat"><span class="feat-dot"></span>Reports &amp; receipts</div>
-      </div>
+
+        <div class="feature-block">
+        <div class="feature-label">What you can manage</div>
+
+        <div class="feature-list">
+            <div class="feat"><span class="feat-dot"></span>Customer management</div>
+            <div class="feat"><span class="feat-dot"></span>Inventory control</div>
+            <div class="feat"><span class="feat-dot"></span>Quotation &amp; invoicing</div>
+            <div class="feat"><span class="feat-dot"></span>Expense tracking</div>
+            <div class="feat"><span class="feat-dot"></span>Reports &amp; receipts</div>
+        </div>
+
+        <div class="left-foot">
+        <div class="left-foot-title">Secure internal access</div>
+        <div class="left-foot-text">
+            Use your assigned staff account to access workshop operations, customer records, and transaction tools.
+        </div>
+        </div>
+        </div>
     </div>
 
     <div class="right">
       <div class="dot-bg"></div>
+
       <div class="card">
         <span class="card-pill">Internal access only</span>
         <h2>Sign in to your workspace</h2>
         <p class="card-sub">Workshop management system</p>
+
         <div class="status-bar">
           <span class="status-dot"></span>
           <span class="status-txt">All systems operational</span>
         </div>
-        <div class="field">
-          <label>Email address</label>
-          <input v-model="email" type="email" placeholder="name@workshop.com" />
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <input v-model="password" type="password" placeholder="Enter your password" />
-        </div>
-        <button @click="login">Sign in</button>
+
+        <form @submit.prevent="login">
+          <div class="field">
+            <label>Email address</label>
+            <input
+              v-model.trim="email"
+              type="email"
+              placeholder="name@workshop.com"
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="field">
+            <label>Password</label>
+            <input
+              v-model="password"
+              type="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+          </div>
+
+          <button type="submit" :disabled="loading">
+            {{ loading ? "Signing in..." : "Sign in" }}
+          </button>
+        </form>
+
         <p class="card-foot">
           No account?
           <router-link to="/register">Request access</router-link>
         </p>
+
         <p v-if="error" class="error">{{ error }}</p>
       </div>
     </div>
@@ -53,29 +86,40 @@
 
 <script>
 import api from "../services/api";
+
 export default {
   data() {
     return {
       email: "",
       password: "",
-      error: ""
+      error: "",
+      loading: false,
     };
   },
   methods: {
     async login() {
+      this.error = "";
+      this.loading = true;
+
       try {
         const res = await api.post("/login", {
           email: this.email,
-          password: this.password
+          password: this.password,
         });
+
         localStorage.setItem("token", res.data.token);
-        console.log(res.data);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+
         this.$router.push("/dashboard");
       } catch (err) {
-        this.error = err.response.data.message;
+        this.error =
+          err.response?.data?.message ||
+          "Unable to sign in. Please check your credentials.";
+      } finally {
+        this.loading = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -95,14 +139,47 @@ export default {
 }
 
 /* ── Left panel ── */
+.feature-block {
+  margin-top: 40px;
+}
+
+.feature-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8a8a8a;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
 .left {
-  width: 260px;
+  width: 300px;
   background: #141414;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 40px 28px;
+  padding: 40px 32px;
   flex-shrink: 0;
+  gap: 20px;
+}
+
+.left-foot {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid #232323;
+}
+
+.left-foot-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c5bebe;
+  margin-bottom: 6px;
+}
+
+.left-foot-text {
+  font-size: 11px;
+  color: #8a8a8a;
+  line-height: 1.5;
 }
 
 .brand-icon {
@@ -131,15 +208,9 @@ export default {
 
 .brand-sub {
   font-size: 12px;
-  color: #444;
+  color: #7a7a7a;
   font-weight: 400;
-  margin-top: 5px;
-}
-
-.feature-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  margin-top: 6px;
 }
 
 .feat {
@@ -147,14 +218,22 @@ export default {
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: #555;
+  color: #d1d1d1;
+  line-height: 1.4;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .feat-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #333;
+  background: #6a6a6a;
   flex-shrink: 0;
 }
 
@@ -294,6 +373,11 @@ button:hover {
   background: #222;
 }
 
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 /* ── Footer ── */
 .card-foot {
   text-align: center;
@@ -318,5 +402,9 @@ button:hover {
   text-align: center;
   font-size: 12px;
   color: #e53935;
+  background: #fff1f1;
+  border: 1px solid #ffd6d6;
+  border-radius: 8px;
+  padding: 10px 12px;
 }
 </style>
