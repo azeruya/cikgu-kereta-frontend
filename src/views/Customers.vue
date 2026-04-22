@@ -33,7 +33,7 @@
             placeholder="Search customer..."
         />
         <button class="pill-btn" type="button">Export</button>
-        <button class="pill-btn primary" type="button">
+        <button class="pill-btn primary" type="button" @click="openFormModal()">
             + Add Customer
         </button>
         </div>
@@ -112,6 +112,7 @@
         </template>
       </div>
 
+      <Teleport to="body">
       <div class="modal" v-if="activeCustomer" @click.self="closeDetail">
         <div v-if="detailLoading" class="modal-card">
           <div class="empty-state">Loading customer details...</div>
@@ -188,19 +189,128 @@
             </div>
           </div>
 
-          <div class="modal-actions">
+            <div class="modal-actions">
+            <button type="button" class="mini-btn" @click="closeDetail">✕</button>
             <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
-            <button>Edit</button>
-            <button class="primary">View Transactions</button>
-          </div>
+            <button @click="openFormModal(activeCustomer)">Edit</button>
+            <button @click="deleteCustomer(activeCustomer)">Delete</button>
+            <button class="primary" @click="viewCustomerTransactions(activeCustomer)">
+                View Transactions
+            </button>
+            </div>
         </div>
       </div>
+        </Teleport>
 
       <div v-if="error" class="page-error">
         {{ error }}
       </div>
     </div>
   </div>
+
+<Teleport to="body">
+  <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
+    <div class="modal-card large">
+      <div class="modal-header">
+        <span>{{ editingCustomerId ? "Edit Customer" : "Add Customer" }}</span>
+        <button type="button" class="mini-btn" @click="closeFormModal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field">
+            <label>Name</label>
+            <input v-model="form.name" type="text" placeholder="Customer name" />
+          </div>
+
+          <div class="field">
+            <label>Phone</label>
+            <input v-model="form.phone" type="text" placeholder="Phone number" />
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+            <input v-model="form.email" type="email" placeholder="Email address" />
+          </div>
+
+          <div class="field full">
+            <label>Address</label>
+            <textarea
+              v-model="form.address"
+              rows="3"
+              placeholder="Customer address"
+            ></textarea>
+          </div>
+        </div>
+
+        <div v-if="!editingCustomerId" class="vehicle-form-box">
+          <div class="section-title">Vehicle Information</div>
+
+          <label class="checkbox-row">
+            <input v-model="form.add_vehicle" type="checkbox" />
+            <span>Add vehicle now</span>
+          </label>
+
+          <div v-if="form.add_vehicle" class="form-grid" style="margin-top:12px;">
+            <div class="field">
+              <label>License Plate</label>
+              <input
+                v-model="form.vehicle_license_plate"
+                type="text"
+                placeholder="e.g. ABC1234"
+              />
+            </div>
+
+            <div class="field">
+              <label>Make</label>
+              <input
+                v-model="form.vehicle_make"
+                type="text"
+                placeholder="e.g. Toyota"
+              />
+            </div>
+
+            <div class="field">
+              <label>Model</label>
+              <input
+                v-model="form.vehicle_model"
+                type="text"
+                placeholder="e.g. Vios"
+              />
+            </div>
+
+            <div class="field">
+              <label>Year</label>
+              <input
+                v-model="form.vehicle_year"
+                type="number"
+                min="1950"
+                max="2100"
+                placeholder="e.g. 2020"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div v-if="formError" class="page-error" style="margin-top:12px;">
+          {{ formError }}
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" @click="closeFormModal">Cancel</button>
+        <button
+          type="button"
+          class="primary"
+          :disabled="savingForm"
+          @click="submitCustomer"
+        >
+          {{ savingForm ? "Saving..." : (editingCustomerId ? "Update" : "Create") }}
+        </button>
+      </div>
+    </div>
+  </div>
+</Teleport>
 </template>
 
 <script>
@@ -237,7 +347,22 @@ export default {
       page: 1,
       totalPages: 1,
       activeCustomer: null,
-      searchQuery: ""
+      searchQuery: "",
+      showFormModal: false,
+      editingCustomerId: null,
+      savingForm: false,
+      formError: "",
+      form: {
+        name: "",
+        phone: "",
+        email: "",
+        address: "",
+        add_vehicle: true,
+        vehicle_license_plate: "",
+        vehicle_make: "",
+        vehicle_model: "",
+        vehicle_year: ""
+        },
     };
   },
 
@@ -320,28 +445,28 @@ export default {
     },
 
     async openDetail(customer) {
-      this.activeCustomer = {
+    this.activeCustomer = {
         id: customer.id,
-        name: customer.name,
-        phone: customer.phone,
-        email: customer.email,
-        address: customer.address,
+        name: customer.name || "",
+        phone: customer.phone || "",
+        email: customer.email || "",
+        address: customer.address || "",
         vehicles: customer.vehicles || []
-      };
+    };
 
-      this.detailLoading = true;
-      this.error = "";
+    this.detailLoading = true;
+    this.error = "";
 
-      try {
+    try {
         const res = await api.get(`/customers/${customer.id}`);
         this.activeCustomer = res.data;
-      } catch (error) {
+    } catch (error) {
         console.error("Error loading customer detail:", error);
         this.error =
-          error.response?.data?.message || "Failed to load customer detail.";
-      } finally {
+        error.response?.data?.message || "Failed to load customer detail.";
+    } finally {
         this.detailLoading = false;
-      }
+    }
     },
 
     closeDetail() {
@@ -403,7 +528,136 @@ export default {
       if (status === "quotation") return "sp-amber";
       if (status === "receipt") return "sp-blue";
       return "sp-gray";
+    },
+
+    openFormModal(customer = null) {
+    this.formError = "";
+
+    if (customer) {
+        this.editingCustomerId = customer.id;
+        this.form = {
+        name: customer.name || "",
+        phone: customer.phone || "",
+        email: customer.email || "",
+        address: customer.address || "",
+        add_vehicle: false,
+        vehicle_license_plate: "",
+        vehicle_make: "",
+        vehicle_model: "",
+        vehicle_year: ""
+        };
+    } else {
+        this.editingCustomerId = null;
+        this.form = {
+        name: "",
+        phone: "",
+        email: "",
+        address: "",
+        add_vehicle: true,
+        vehicle_license_plate: "",
+        vehicle_make: "",
+        vehicle_model: "",
+        vehicle_year: ""
+        };
     }
+
+    this.showFormModal = true;
+    },
+
+    closeFormModal() {
+    this.showFormModal = false;
+    this.editingCustomerId = null;
+    this.formError = "";
+    },
+
+    async submitCustomer() {
+    this.savingForm = true;
+    this.formError = "";
+
+    try {
+        const customerPayload = {
+        name: this.form.name,
+        phone: this.form.phone || null,
+        email: this.form.email || null,
+        address: this.form.address || null
+        };
+
+        let customerId = this.editingCustomerId;
+
+        if (this.editingCustomerId) {
+        await api.put(`/customers/${this.editingCustomerId}`, customerPayload);
+        } else {
+        const customerRes = await api.post("/customers", customerPayload);
+        customerId = customerRes.data.id;
+
+        if (this.form.add_vehicle) {
+            if (
+            !this.form.vehicle_license_plate ||
+            !this.form.vehicle_make ||
+            !this.form.vehicle_model ||
+            !this.form.vehicle_year
+            ) {
+            throw new Error("Please complete all vehicle fields or untick Add vehicle now.");
+            }
+
+            await api.post("/vehicles", {
+            customer_id: customerId,
+            license_plate: this.form.vehicle_license_plate,
+            make: this.form.vehicle_make,
+            model: this.form.vehicle_model,
+            year: Number(this.form.vehicle_year)
+            });
+        }
+        }
+
+        this.closeFormModal();
+
+        await this.fetchCustomers(this.page);
+
+        if (customerId) {
+        await this.openDetail({ id: customerId });
+        }
+    } catch (error) {
+        console.error("Error saving customer:", error);
+
+        if (error.response?.data?.errors) {
+        const firstError = Object.values(error.response.data.errors)[0];
+        this.formError = Array.isArray(firstError)
+            ? firstError[0]
+            : "Validation failed.";
+        } else {
+        this.formError =
+            error.message ||
+            error.response?.data?.message ||
+            "Failed to save customer.";
+        }
+    } finally {
+        this.savingForm = false;
+    }
+    },
+
+    async deleteCustomer(customer) {
+    const ok = confirm(`Delete customer "${customer.name}"?`);
+    if (!ok) return;
+
+    try {
+        await api.delete(`/customers/${customer.id}`);
+
+        if (this.activeCustomer?.id === customer.id) {
+        this.closeDetail();
+        }
+
+        await this.fetchCustomers(this.page);
+    } catch (error) {
+        console.error("Error deleting customer:", error);
+        this.error = error.response?.data?.message || "Failed to delete customer.";
+    }
+    },
+
+    viewCustomerTransactions(customer) {
+    this.closeDetail();
+    this.$router.push(`/transactions?customer_id=${customer.id}`);
+    },
   }
 };
 </script>
@@ -450,6 +704,20 @@ export default {
   font-size: 12px;
   color: #999;
   margin-bottom: 8px;
+}
+
+.vehicle-form-box {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #ecece8;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #555;
 }
 
 @media (max-width: 900px) {

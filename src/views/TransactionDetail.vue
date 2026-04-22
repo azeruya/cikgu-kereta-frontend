@@ -36,9 +36,9 @@
             v-if="transaction?.status === 'invoice'"
             class="pill-btn primary"
             :disabled="actionLoading"
-            @click="markPaid"
+            @click="openPaymentModal"
           >
-            {{ actionLoading ? "Processing..." : "Mark Paid" }}
+            Mark Paid
           </button>
         </div>
       </div>
@@ -113,9 +113,47 @@
             </template>
 
             <div class="actions-panel">
+                <button
+                class="pill-btn"
+                @click="previewDocument('quotation')"
+                v-if="transaction.status === 'quotation'"
+                >
+                Preview Quotation
+                </button>
+
+                <button
+                class="pill-btn"
+                @click="previewDocument('invoice')"
+                v-if="transaction.status === 'invoice'"
+                >
+                Preview Invoice
+                </button>
+
+                <button
+                class="pill-btn"
+                @click="previewDocument('receipt')"
+                v-if="transaction.status === 'receipt'"
+                >
+                Preview Receipt
+                </button>
+                <button
+                class="pill-btn"
+                @click="downloadDocument('receipt')"
+                v-if="transaction.status === 'receipt'"
+                >
+                Download Receipt
+                </button>
               <button class="pill-btn" @click="openWhatsApp(transaction)">
                 WhatsApp Customer
               </button>
+
+              <router-link
+                v-if="transaction.status === 'quotation' || transaction.status === 'invoice'"
+                :to="`/transactions/${transaction.id}/edit`"
+                class="pill-btn"
+                >
+                Edit Transaction
+                </router-link>
 
               <button
                 v-if="transaction.status === 'quotation'"
@@ -130,9 +168,9 @@
                 v-if="transaction.status === 'invoice'"
                 class="pill-btn primary"
                 :disabled="actionLoading"
-                @click="markPaid"
+                @click="openPaymentModal"
               >
-                {{ actionLoading ? "Processing..." : "Mark Paid" }}
+                Mark Paid
               </button>
             </div>
 
@@ -151,6 +189,24 @@
                 <span>Total</span>
                 <span>RM {{ formatMoney(totalAfterDiscount) }}</span>
               </div>
+              <div v-if="transaction.payments && transaction.payments.length" class="summary-box" style="margin-top:16px;">
+                <div class="summary-row">
+                    <span>Payment Method</span>
+                    <span>{{ transaction.payments[0].payment_method || "-" }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Amount Paid</span>
+                    <span>RM {{ formatMoney(transaction.payments[0].amount_paid) }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Reference</span>
+                    <span>{{ transaction.payments[0].payment_reference || "-" }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Payment Date</span>
+                    <span>{{ formatDateTime(transaction.payments[0].payment_date) }}</span>
+                </div>
+                </div>
             </div>
           </Card>
         </div>
@@ -207,6 +263,93 @@
       <div v-else class="card">
         <div class="empty-state">Transaction not found.</div>
       </div>
+
+      <div v-if="pdfPreviewUrl" class="pdf-modal" @click.self="closePdfPreview">
+        <div class="pdf-container">
+          <div class="pdf-topbar">
+            <div class="pdf-title">
+              {{ currentDocType ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1) : "Document Preview" }}
+            </div>
+
+            <div class="pdf-actions">
+              <button class="mini-btn" @click="closePdfPreview">Close</button>
+              <button class="pill-btn primary" @click="downloadDocument(currentDocType)">
+                Download
+              </button>
+            </div>
+          </div>
+
+          <iframe :src="pdfPreviewUrl" width="100%" height="640px"></iframe>
+        </div>
+      </div>
+
+      <Teleport to="body">
+        <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
+          <div class="modal-card large">
+            <div class="modal-header">
+              <span>Record Payment</span>
+              <button type="button" class="mini-btn" @click="closePaymentModal">✕</button>
+            </div>
+
+            <div class="modal-body">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Amount Paid</label>
+                  <input
+                    v-model.number="paymentForm.amount_paid"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                  />
+                </div>
+
+                <div class="field">
+                  <label>Payment Method</label>
+                  <select v-model="paymentForm.payment_method">
+                    <option value="cash">Cash</option>
+                    <option value="bank_transfer">Bank Transfer</option>
+                    <option value="qr">QR</option>
+                    <option value="card">Card</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Payment Reference</label>
+                  <input
+                    v-model="paymentForm.payment_reference"
+                    type="text"
+                    placeholder="Optional reference"
+                  />
+                </div>
+
+                <div class="field">
+                  <label>Payment Date</label>
+                  <input
+                    v-model="paymentForm.payment_date"
+                    type="date"
+                  />
+                </div>
+              </div>
+
+              <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
+                {{ paymentFormError }}
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" @click="closePaymentModal">Cancel</button>
+              <button
+                type="button"
+                class="primary"
+                :disabled="actionLoading"
+                @click="submitPayment"
+              >
+                {{ actionLoading ? "Processing..." : "Confirm Payment" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Teleport>
     </div>
   </div>
 </template>
@@ -229,6 +372,16 @@ export default {
       actionLoading: false,
       error: "",
       transaction: null,
+      pdfPreviewUrl: null,
+      currentDocType: null,
+      showPaymentModal: false,
+      paymentFormError: "",
+      paymentForm: {
+        amount_paid: "",
+        payment_method: "cash",
+        payment_reference: "",
+        payment_date: new Date().toISOString().slice(0, 10),
+      },
 
       menu: [
         { name: "Dashboard", path: "/dashboard", icon: "grid" },
@@ -267,6 +420,12 @@ export default {
   mounted() {
     this.fetchTransaction();
   },
+
+  beforeUnmount() {
+    if (this.pdfPreviewUrl) {
+        URL.revokeObjectURL(this.pdfPreviewUrl);
+    }
+    },
 
   methods: {
     async fetchTransaction() {
@@ -321,6 +480,60 @@ export default {
       }
     },
 
+    async previewDocument(type) {
+    try {
+        this.error = "";
+        this.currentDocType = type;
+
+        const res = await api.get(
+        `/transactions/${this.transaction.id}/documents/${type}`,
+        {
+            responseType: "blob",
+        }
+        );
+
+        if (this.pdfPreviewUrl) {
+        URL.revokeObjectURL(this.pdfPreviewUrl);
+        }
+
+        const blob = new Blob([res.data], { type: "application/pdf" });
+        this.pdfPreviewUrl = URL.createObjectURL(blob);
+    } catch (error) {
+        console.error("Error previewing document:", error);
+        this.error =
+        error.response?.data?.message || "Failed to preview PDF document.";
+    }
+    },
+
+    async downloadDocument(type) {
+    try {
+        this.error = "";
+
+        const res = await api.get(
+        `/transactions/${this.transaction.id}/documents/${type}`,
+        {
+            responseType: "blob",
+        }
+        );
+
+        const blob = new Blob([res.data], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${type}-${this.transaction.id}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error("Error downloading document:", error);
+        this.error =
+        error.response?.data?.message || "Failed to download PDF document.";
+    }
+    },
+
     openWhatsApp(trx) {
       const customerName = trx.customer?.name || "Customer";
       const plate = trx.vehicle?.license_plate || "-";
@@ -347,6 +560,14 @@ export default {
       window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
     },
 
+    closePdfPreview() {
+    if (this.pdfPreviewUrl) {
+        URL.revokeObjectURL(this.pdfPreviewUrl);
+    }
+    this.pdfPreviewUrl = null;
+    this.currentDocType = null;
+    },
+
     partDisplayName(item) {
       const name = item.part?.name || "Part";
       const variant = item.part?.variant ? ` — ${item.part.variant}` : "";
@@ -367,7 +588,57 @@ export default {
         hour: "2-digit",
         minute: "2-digit"
       });
+    },
+
+    openPaymentModal() {
+    this.paymentFormError = "";
+    this.paymentForm = {
+        amount_paid: Number(this.totalAfterDiscount || 0),
+        payment_method: "cash",
+        payment_reference: "",
+        payment_date: new Date().toISOString().slice(0, 10),
+    };
+    this.showPaymentModal = true;
+    },
+
+    closePaymentModal() {
+    this.showPaymentModal = false;
+    this.paymentFormError = "";
+    },
+
+    async submitPayment() {
+    if (!this.transaction) return;
+
+    this.actionLoading = true;
+    this.paymentFormError = "";
+    this.error = "";
+
+    try {
+        await api.post(`/transactions/${this.transaction.id}/pay`, {
+        amount_paid: Number(this.paymentForm.amount_paid || 0),
+        payment_method: this.paymentForm.payment_method,
+        payment_reference: this.paymentForm.payment_reference || null,
+        payment_date: this.paymentForm.payment_date || null,
+        });
+
+        this.closePaymentModal();
+        await this.fetchTransaction();
+    } catch (error) {
+        console.error("Error marking paid:", error);
+
+        if (error.response?.data?.errors) {
+        const firstError = Object.values(error.response.data.errors)[0];
+        this.paymentFormError = Array.isArray(firstError)
+            ? firstError[0]
+            : "Validation failed.";
+        } else {
+        this.paymentFormError =
+            error.response?.data?.message || "Failed to record payment.";
+        }
+    } finally {
+        this.actionLoading = false;
     }
+    },
   },
 
   watch: {
@@ -532,6 +803,50 @@ export default {
   border: 1px solid #ffd6d6;
   border-radius: 8px;
   padding: 10px 12px;
+}
+
+.pdf-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 15, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 9999;
+}
+
+.pdf-container {
+  width: min(1100px, 92vw);
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.pdf-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #171717;
+}
+
+.pdf-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.pdf-container iframe {
+  border: 1px solid #ecece8;
+  border-radius: 12px;
+  background: #fafafa;
 }
 
 @media (max-width: 1100px) {

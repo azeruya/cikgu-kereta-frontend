@@ -60,6 +60,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/transactions/:id/edit",
+    name: "transaction-edit",
+    component: TransactionCreate,
+    meta: { requiresAuth: true },
+    },
+  {
     path: "/inventory",
     name: "inventory",
     component: Inventory,

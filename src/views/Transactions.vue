@@ -117,7 +117,7 @@
                       v-if="trx.status === 'invoice'"
                       class="mini-btn success"
                       :disabled="actionLoadingId === trx.id"
-                      @click="markPaid(trx.id)"
+                      @click="openPaymentModal(trx.id)"
                     >
                       {{ actionLoadingId === trx.id ? "..." : "Mark Paid" }}
                     </button>
@@ -138,7 +138,73 @@
           </div>
         </template>
       </div>
+      <Teleport to="body">
+  <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
+    <div class="modal-card large">
+      <div class="modal-header">
+        <span>Record Payment</span>
+        <button type="button" class="mini-btn" @click="closePaymentModal">✕</button>
+      </div>
 
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field">
+            <label>Amount Paid</label>
+            <input
+              v-model.number="paymentForm.amount_paid"
+              type="number"
+              min="0.01"
+              step="0.01"
+            />
+          </div>
+
+          <div class="field">
+            <label>Payment Method</label>
+            <select v-model="paymentForm.payment_method">
+              <option value="cash">Cash</option>
+              <option value="bank_transfer">Bank Transfer</option>
+              <option value="qr">QR</option>
+              <option value="card">Card</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Payment Reference</label>
+            <input
+              v-model="paymentForm.payment_reference"
+              type="text"
+              placeholder="Optional reference"
+            />
+          </div>
+
+          <div class="field">
+            <label>Payment Date</label>
+            <input
+              v-model="paymentForm.payment_date"
+              type="date"
+            />
+          </div>
+        </div>
+
+        <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
+          {{ paymentFormError }}
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" @click="closePaymentModal">Cancel</button>
+        <button
+          type="button"
+          class="primary"
+          :disabled="actionLoading"
+          @click="submitPayment"
+        >
+          {{ actionLoading ? "Processing..." : "Confirm Payment" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</Teleport>
     </div>
   </div>
 </template>
@@ -178,6 +244,14 @@ export default {
       transactions: [],
       page: 1,
       totalPages: 1,
+      showPaymentModal: false,
+        paymentFormError: "",
+        paymentForm: {
+        amount_paid: "",
+        payment_method: "cash",
+        payment_reference: "",
+        payment_date: new Date().toISOString().slice(0, 10),
+        },
     };
   },
 
@@ -346,7 +420,57 @@ export default {
     formatDate(value) {
       if (!value) return "-";
       return new Date(value).toLocaleDateString("en-GB");
+    },
+
+    openPaymentModal() {
+  this.paymentFormError = "";
+  this.paymentForm = {
+    amount_paid: Number(this.totalAfterDiscount || 0),
+    payment_method: "cash",
+    payment_reference: "",
+    payment_date: new Date().toISOString().slice(0, 10),
+  };
+  this.showPaymentModal = true;
+},
+
+closePaymentModal() {
+  this.showPaymentModal = false;
+  this.paymentFormError = "";
+},
+
+async submitPayment() {
+  if (!this.transaction) return;
+
+  this.actionLoading = true;
+  this.paymentFormError = "";
+  this.error = "";
+
+  try {
+    await api.post(`/transactions/${this.transaction.id}/pay`, {
+      amount_paid: Number(this.paymentForm.amount_paid || 0),
+      payment_method: this.paymentForm.payment_method,
+      payment_reference: this.paymentForm.payment_reference || null,
+      payment_date: this.paymentForm.payment_date || null,
+    });
+
+    this.closePaymentModal();
+    await this.fetchTransaction();
+  } catch (error) {
+    console.error("Error marking paid:", error);
+
+    if (error.response?.data?.errors) {
+      const firstError = Object.values(error.response.data.errors)[0];
+      this.paymentFormError = Array.isArray(firstError)
+        ? firstError[0]
+        : "Validation failed.";
+    } else {
+      this.paymentFormError =
+        error.response?.data?.message || "Failed to record payment.";
     }
+  } finally {
+    this.actionLoading = false;
+  }
+},
   }
 };
 </script>

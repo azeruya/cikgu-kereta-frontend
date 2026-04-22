@@ -10,8 +10,12 @@
     <div class="main">
       <div class="top-bar">
         <div>
-          <div class="page-title">New Transaction</div>
-          <div class="page-date">Create quotation for customer vehicle service</div>
+        <div class="page-title">
+        {{ isEditMode ? "Edit Transaction" : "New Transaction" }}
+        </div>
+        <div class="page-date">
+        {{ isEditMode ? "Update quotation or invoice items" : "Create quotation for customer vehicle service" }}
+        </div>
         </div>
 
         <div class="top-right">
@@ -238,7 +242,7 @@
               :disabled="saving || !canSubmit"
               @click="submitTransaction"
             >
-              {{ saving ? "Saving..." : "Save Quotation" }}
+              {{ saving ? "Saving..." : (isEditMode ? "Update Transaction" : "Save Quotation") }}
             </button>
           </div>
 
@@ -323,10 +327,22 @@ export default {
         })
       );
     },
+
+    isEditMode() {
+        return !!this.$route.params.id;
+    },
+
+    transactionId() {
+        return this.$route.params.id || null;
+    },
   },
 
-  mounted() {
-    this.fetchCustomers();
+  async mounted() {
+    await this.fetchCustomers();
+
+    if (this.isEditMode) {
+        await this.loadTransactionForEdit();
+    }
   },
 
   methods: {
@@ -395,6 +411,49 @@ export default {
       }
     },
 
+    async loadTransactionForEdit() {
+    this.saving = true;
+    this.error = "";
+
+    try {
+        const res = await api.get(`/transactions/${this.transactionId}`);
+        const trx = res.data;
+
+        this.form.customer_id = trx.customer_id;
+        await this.fetchVehicles(trx.customer_id);
+
+        this.form.vehicle_id = trx.vehicle_id;
+        this.selectedVehicle =
+        this.vehicles.find((v) => Number(v.id) === Number(trx.vehicle_id)) || null;
+
+        if (trx.vehicle_id) {
+        await this.fetchCompatibleParts(trx.vehicle_id);
+        }
+
+        this.form.discount_amount = Number(trx.discount_amount || 0);
+        this.form.notes = trx.notes || "";
+
+        this.form.items = (trx.items || []).map((item) => ({
+        item_type: item.item_type,
+        part_id: item.item_type === "part" ? item.part_id : null,
+        part_label:
+            item.item_type === "part"
+            ? `${item.part?.name || "Part"}${item.part?.variant ? " — " + item.part.variant : ""}`
+            : null,
+        service_name: item.item_type === "service" ? item.service_name : "",
+        quantity: Number(item.quantity || 1),
+        selling_price: Number(item.selling_price || 0),
+        note: item.note || "",
+        }));
+    } catch (err) {
+        console.error("Failed to load transaction for edit", err);
+        this.error =
+        err.response?.data?.message || "Failed to load transaction for editing.";
+    } finally {
+        this.saving = false;
+    }
+    },
+
     addPartItem(part) {
       this.form.items.push({
         item_type: "part",
@@ -446,34 +505,49 @@ export default {
     },
 
     async submitTransaction() {
-      this.error = "";
-      this.saving = true;
+    this.error = "";
+    this.saving = true;
 
-      try {
+    try {
         const payload = {
-          customer_id: this.form.customer_id,
-          vehicle_id: this.form.vehicle_id,
-          discount_amount: Number(this.form.discount_amount || 0),
-          notes: this.form.notes,
-          items: this.form.items.map((item) => ({
+        customer_id: Number(this.form.customer_id),
+        vehicle_id: Number(this.form.vehicle_id),
+        discount_amount: Number(this.form.discount_amount || 0),
+        notes: this.form.notes,
+        items: this.form.items.map((item) => ({
+            item_type: item.item_type,
             part_id: item.item_type === "part" ? item.part_id : null,
             service_name: item.item_type === "service" ? item.service_name : null,
             quantity: Number(item.quantity || 1),
             selling_price: Number(item.selling_price || 0),
-          })),
+            note: item.note || null,
+        })),
         };
 
-        const res = await api.post("/transactions", payload);
-        const createdId = res.data.id;
+        let res;
 
+        if (this.isEditMode) {
+        res = await api.put(`/transactions/${this.transactionId}`, payload);
+        this.$router.push(`/transactions/${this.transactionId}`);
+        } else {
+        res = await api.post("/transactions", payload);
+        const createdId = res.data.id || res.data.transaction?.id;
         this.$router.push(`/transactions/${createdId}`);
-      } catch (err) {
+        }
+    } catch (err) {
+        if (err.response?.data?.errors) {
+        const firstError = Object.values(err.response.data.errors)[0];
+        this.error = Array.isArray(firstError)
+            ? firstError[0]
+            : "Validation failed.";
+        } else {
         this.error =
-          err.response?.data?.message ||
-          "Failed to save transaction. Please check the form.";
-      } finally {
+            err.response?.data?.message ||
+            "Failed to save transaction. Please check the form.";
+        }
+    } finally {
         this.saving = false;
-      }
+    }
     },
   },
 };

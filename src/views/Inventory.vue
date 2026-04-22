@@ -193,6 +193,7 @@
         </div>
       </div>
 
+      <Teleport to ="body">
       <div class="modal" v-if="activePart" @click.self="closeDetail">
         <div v-if="detailLoading" class="modal-card large">
           <div class="empty-state">Loading part details...</div>
@@ -263,6 +264,7 @@
           </div>
         </div>
       </div>
+        </Teleport>
 
       <div v-if="error" class="page-error">
         {{ error }}
