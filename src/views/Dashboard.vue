@@ -1,10 +1,11 @@
 <template>
   <div class="dash">
     <Sidebar
-      :collapsed="collapsed"
-      :menu="menu"
-      :user="currentUser"
-      @toggle="collapsed = !collapsed"
+    :collapsed="collapsed"
+    :menu="menu"
+    :user="currentUser"
+    @toggle="collapsed = !collapsed"
+    @logout="handleLogout"
     />
 
     <div class="main">
@@ -372,6 +373,21 @@ export default {
       });
     },
   },
+
+  methods: {
+    async handleLogout() {
+        try {
+            await api.post("/logout");
+        } catch (error) {
+            console.warn("Logout request failed, clearing local session anyway.", error);
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            sessionStorage.clear();
+            this.$router.push("/login");
+        }
+    },
+}
 };
 </script>
 

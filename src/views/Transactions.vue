@@ -1,10 +1,11 @@
 <template>
   <div class="dash">
     <Sidebar
-      :collapsed="collapsed"
-      :menu="menu"
-      :user="currentUser"
-      @toggle="collapsed = !collapsed"
+    :collapsed="collapsed"
+    :menu="menu"
+    :user="currentUser"
+    @toggle="collapsed = !collapsed"
+    @logout="handleLogout"
     />
 
     <div class="main">
@@ -117,7 +118,7 @@
                       v-if="trx.status === 'invoice'"
                       class="mini-btn success"
                       :disabled="actionLoadingId === trx.id"
-                      @click="openPaymentModal(trx.id)"
+                      @click="openPaymentModal(trx)"
                     >
                       {{ actionLoadingId === trx.id ? "..." : "Mark Paid" }}
                     </button>
@@ -142,7 +143,7 @@
   <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
     <div class="modal-card large">
       <div class="modal-header">
-        <span>Record Payment</span>
+        <span>Record Payment for {{ paymentTransactionDocNo }}</span>
         <button type="button" class="mini-btn" @click="closePaymentModal">✕</button>
       </div>
 
@@ -244,9 +245,13 @@ export default {
       transactions: [],
       page: 1,
       totalPages: 1,
+      paymentTransactionDocNo: "",
+      paymentTransactionId: null,
+      paymentTransactionTotal: 0,
+      actionLoading: false,
       showPaymentModal: false,
-        paymentFormError: "",
-        paymentForm: {
+      paymentFormError: "",
+      paymentForm: {
         amount_paid: "",
         payment_method: "cash",
         payment_reference: "",
@@ -287,6 +292,19 @@ export default {
   methods: {
     getCacheKey(page = 1) {
       return `transactions-${this.activeTab}-page-${page}`;
+    },
+
+    async handleLogout() {
+        try {
+            await api.post("/logout");
+        } catch (error) {
+            console.warn("Logout request failed, clearing local session anyway.", error);
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            sessionStorage.clear();
+            this.$router.push("/login");
+        }
     },
 
     clearTransactionCache() {
@@ -339,40 +357,28 @@ export default {
       this.fetchTransactions(1);
     },
 
-    async confirmQuotation(id) {
-      this.actionLoadingId = id;
-      this.error = "";
-
-      try {
-        await api.post(`/transactions/${id}/confirm`);
-        this.clearTransactionCache();
-
-        await this.fetchTransactions(this.page);
-      } catch (error) {
-        console.error("Error confirming quotation:", error);
-        this.error =
-          error.response?.data?.message || "Failed to confirm quotation.";
-      } finally {
-        this.actionLoadingId = null;
-      }
+    clearInventoryCache() {
+    Object.keys(sessionStorage)
+        .filter((key) => key.startsWith("inventory-"))
+        .forEach((key) => sessionStorage.removeItem(key));
     },
 
-    async markPaid(id) {
-      this.actionLoadingId = id;
-      this.error = "";
+    async confirmQuotation(id) {
+    this.actionLoadingId = id;
+    this.error = "";
 
-      try {
-        await api.post(`/transactions/${id}/pay`);
+    try {
+        await api.post(`/transactions/${id}/confirm`);
         this.clearTransactionCache();
-
+        this.clearInventoryCache();
         await this.fetchTransactions(this.page);
-      } catch (error) {
-        console.error("Error marking paid:", error);
+    } catch (error) {
+        console.error("Error confirming quotation:", error);
         this.error =
-          error.response?.data?.message || "Failed to mark transaction as paid.";
-      } finally {
+        error.response?.data?.message || "Failed to confirm quotation.";
+    } finally {
         this.actionLoadingId = null;
-      }
+    }
     },
 
     nextPage() {
@@ -422,55 +428,71 @@ export default {
       return new Date(value).toLocaleDateString("en-GB");
     },
 
-    openPaymentModal() {
-  this.paymentFormError = "";
-  this.paymentForm = {
-    amount_paid: Number(this.totalAfterDiscount || 0),
-    payment_method: "cash",
-    payment_reference: "",
-    payment_date: new Date().toISOString().slice(0, 10),
-  };
-  this.showPaymentModal = true;
-},
+    openPaymentModal(trx) {
+    this.paymentFormError = "";
+    this.paymentTransactionId = trx.id;
+    this.paymentTransactionDocNo = trx.document_number || `#${trx.id}`;
+    this.paymentTransactionTotal =
+        Number(trx.total_amount || 0) - Number(trx.discount_amount || 0);
 
-closePaymentModal() {
-  this.showPaymentModal = false;
-  this.paymentFormError = "";
-},
+    this.paymentForm = {
+        amount_paid: this.paymentTransactionTotal,
+        payment_method: "cash",
+        payment_reference: "",
+        payment_date: new Date().toISOString().slice(0, 10),
+    };
 
-async submitPayment() {
-  if (!this.transaction) return;
+    this.showPaymentModal = true;
+    },
 
-  this.actionLoading = true;
-  this.paymentFormError = "";
-  this.error = "";
+    closePaymentModal() {
+    this.showPaymentModal = false;
+    this.paymentTransactionId = null;
+    this.paymentTransactionDocNo = "";
+    this.paymentTransactionTotal = 0;
+    this.paymentFormError = "";
+    this.paymentForm = {
+        amount_paid: "",
+        payment_method: "cash",
+        payment_reference: "",
+        payment_date: new Date().toISOString().slice(0, 10),
+    };
+    },
 
-  try {
-    await api.post(`/transactions/${this.transaction.id}/pay`, {
-      amount_paid: Number(this.paymentForm.amount_paid || 0),
-      payment_method: this.paymentForm.payment_method,
-      payment_reference: this.paymentForm.payment_reference || null,
-      payment_date: this.paymentForm.payment_date || null,
-    });
+    async submitPayment() {
+    if (!this.paymentTransactionId) return;
 
-    this.closePaymentModal();
-    await this.fetchTransaction();
-  } catch (error) {
-    console.error("Error marking paid:", error);
+    this.actionLoading = true;
+    this.paymentFormError = "";
+    this.error = "";
 
-    if (error.response?.data?.errors) {
-      const firstError = Object.values(error.response.data.errors)[0];
-      this.paymentFormError = Array.isArray(firstError)
-        ? firstError[0]
-        : "Validation failed.";
-    } else {
-      this.paymentFormError =
-        error.response?.data?.message || "Failed to record payment.";
+    try {
+        await api.post(`/transactions/${this.paymentTransactionId}/pay`, {
+        amount_paid: Number(this.paymentForm.amount_paid || 0),
+        payment_method: this.paymentForm.payment_method,
+        payment_reference: this.paymentForm.payment_reference || null,
+        payment_date: this.paymentForm.payment_date || null,
+        });
+
+        this.closePaymentModal();
+        this.clearTransactionCache();
+        await this.fetchTransactions(this.page);
+    } catch (error) {
+        console.error("Error recording payment:", error);
+
+        if (error.response?.data?.errors) {
+        const firstError = Object.values(error.response.data.errors)[0];
+        this.paymentFormError = Array.isArray(firstError)
+            ? firstError[0]
+            : "Validation failed.";
+        } else {
+        this.paymentFormError =
+            error.response?.data?.message || "Failed to record payment.";
+        }
+    } finally {
+        this.actionLoading = false;
     }
-  } finally {
-    this.actionLoading = false;
-  }
-},
+    },
   }
 };
 </script>

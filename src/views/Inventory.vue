@@ -1,10 +1,11 @@
 <template>
   <div class="dash">
     <Sidebar
-      :collapsed="collapsed"
-      :menu="menu"
-      :user="currentUser"
-      @toggle="collapsed = !collapsed"
+    :collapsed="collapsed"
+    :menu="menu"
+    :user="currentUser"
+    @toggle="collapsed = !collapsed"
+    @logout="handleLogout"
     />
 
     <div class="main">
@@ -194,7 +195,7 @@
       </div>
 
       <Teleport to ="body">
-      <div class="modal" v-if="activePart" @click.self="closeDetail">
+      <div class="modal" v-if="activePart && !showRestockModal" @click.self="closeDetail">
         <div v-if="detailLoading" class="modal-card large">
           <div class="empty-state">Loading part details...</div>
         </div>
@@ -260,11 +261,54 @@
             >
             Edit
             </router-link>
-            <button class="primary">Restock</button>
+            <button class="primary" @click="openRestockModal">Restock</button>
           </div>
         </div>
       </div>
         </Teleport>
+
+        <Teleport to="body">
+        <div v-if="showRestockModal" class="modal" style="z-index: 2000;" @click.self="closeRestockModal">
+            <div class="modal-card">
+            <div class="modal-header">
+                <span>Restock {{ activePart?.name || "Part" }}</span>
+                <button type="button" class="mini-btn" @click="closeRestockModal">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="field">
+                <label>Quantity to add</label>
+                <input
+                    v-model.number="restockForm.quantity"
+                    type="number"
+                    min="1"
+                    step="1"
+                />
+                </div>
+
+                <div v-if="activePart" style="margin-top: 10px; font-size: 12px; color: #666;">
+                Current stock: <b>{{ activePart.stock }}</b>
+                </div>
+
+                <div v-if="restockError" class="page-error" style="margin-top: 12px;">
+                {{ restockError }}
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" @click="closeRestockModal">Cancel</button>
+                    <button
+                    type="button"
+                    class="primary"
+                    :disabled="restockLoading"
+                    @click="submitRestock"
+                    >
+                    {{ restockLoading ? "Saving..." : "Confirm Restock" }}
+                    </button>
+                </div>
+                </div>
+            </div>
+            </Teleport>
 
       <div v-if="error" class="page-error">
         {{ error }}
@@ -312,7 +356,13 @@ export default {
       parts: [],
       page: 1,
       totalPages: 1,
-      activePart: null
+      activePart: null,
+      showRestockModal: false,
+      restockLoading: false,
+      restockError: "",
+      restockForm: {
+        quantity: 1,
+      }
     };
   },
 
@@ -421,6 +471,19 @@ export default {
       this.fetchParts(1);
     },
 
+    async handleLogout() {
+        try {
+            await api.post("/logout");
+        } catch (error) {
+            console.warn("Logout request failed, clearing local session anyway.", error);
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            sessionStorage.clear();
+            this.$router.push("/login");
+        }
+    },
+
     async openDetail(part) {
       this.activePart = {
         id: part.id,
@@ -483,7 +546,78 @@ export default {
       return Number(part.stock) <= Number(part.min_stock_threshold)
         ? "stock-danger"
         : "stock-normal";
+    },
+
+    clearInventoryCache() {
+    Object.keys(sessionStorage)
+        .filter((key) => key.startsWith("inventory-"))
+        .forEach((key) => sessionStorage.removeItem(key));
+    },
+
+    openRestockModal() {
+    if (!this.activePart) return;
+
+    this.restockError = "";
+    this.restockForm = { quantity: 1 };
+    this.showRestockModal = true;
+    },
+
+    closeRestockModal() {
+    this.showRestockModal = false;
+    this.restockLoading = false;
+    this.restockError = "";
+    this.restockForm = {
+        quantity: 1,
+    };
+    },
+
+    async submitRestock() {
+    if (!this.activePart) return;
+
+    this.restockLoading = true;
+    this.restockError = "";
+    this.error = "";
+
+    try {
+        const qty = Number(this.restockForm.quantity);
+
+        if (!qty || qty < 1) {
+        this.restockError = "Quantity must be at least 1.";
+        this.restockLoading = false;
+        return;
+        }
+        const res = await api.post(`/parts/${this.activePart.id}/restock`, {
+        quantity: qty,
+        });
+
+        this.activePart = res.data.part || this.activePart;
+
+        this.clearInventoryCache();
+
+        await this.fetchParts(this.page);
+
+        this.closeRestockModal();
+
+        if (this.activePart?.id) {
+        const refreshed = await api.get(`/parts/${this.activePart.id}`);
+        this.activePart = refreshed.data;
+        }
+    } catch (error) {
+        console.error("Error restocking part:", error);
+
+        if (error.response?.data?.errors) {
+        const firstError = Object.values(error.response.data.errors)[0];
+        this.restockError = Array.isArray(firstError)
+            ? firstError[0]
+            : "Validation failed.";
+        } else {
+        this.restockError =
+            error.response?.data?.message || "Failed to restock part.";
+        }
+    } finally {
+        this.restockLoading = false;
     }
+    },
   }
 };
 </script>

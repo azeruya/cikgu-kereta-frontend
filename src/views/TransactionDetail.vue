@@ -1,10 +1,11 @@
 <template>
   <div class="dash">
     <Sidebar
-      :collapsed="collapsed"
-      :menu="menu"
-      :user="currentUser"
-      @toggle="collapsed = !collapsed"
+    :collapsed="collapsed"
+    :menu="menu"
+    :user="currentUser"
+    @toggle="collapsed = !collapsed"
+    @logout="handleLogout"
     />
 
     <div class="main">
@@ -148,7 +149,7 @@
               </button>
 
               <router-link
-                v-if="transaction.status === 'quotation' || transaction.status === 'invoice'"
+                v-if="transaction.status === 'quotation'"
                 :to="`/transactions/${transaction.id}/edit`"
                 class="pill-btn"
                 >
@@ -264,24 +265,26 @@
         <div class="empty-state">Transaction not found.</div>
       </div>
 
-      <div v-if="pdfPreviewUrl" class="pdf-modal" @click.self="closePdfPreview">
-        <div class="pdf-container">
-          <div class="pdf-topbar">
-            <div class="pdf-title">
-              {{ currentDocType ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1) : "Document Preview" }}
-            </div>
+      <Teleport to="body">
+  <div v-if="pdfPreviewUrl" class="pdf-modal" @click.self="closePdfPreview">
+    <div class="pdf-container">
+      <div class="pdf-topbar">
+        <div class="pdf-title">
+          {{ currentDocType ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1) : "Document Preview" }}
+        </div>
 
-            <div class="pdf-actions">
-              <button class="mini-btn" @click="closePdfPreview">Close</button>
-              <button class="pill-btn primary" @click="downloadDocument(currentDocType)">
-                Download
-              </button>
-            </div>
-          </div>
-
-          <iframe :src="pdfPreviewUrl" width="100%" height="640px"></iframe>
+        <div class="pdf-actions">
+          <button class="mini-btn" @click="closePdfPreview">Close</button>
+          <button class="pill-btn primary" @click="downloadDocument(currentDocType)">
+            Download
+          </button>
         </div>
       </div>
+
+      <iframe :src="pdfPreviewUrl"></iframe>
+    </div>
+  </div>
+</Teleport>
 
       <Teleport to="body">
         <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
@@ -444,22 +447,54 @@ export default {
       }
     },
 
+    async handleLogout() {
+        try {
+            await api.post("/logout");
+        } catch (error) {
+            console.warn("Logout request failed, clearing local session anyway.", error);
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            sessionStorage.clear();
+            this.$router.push("/login");
+        }
+    },
+
+    clearTransactionCache() {
+    Object.keys(sessionStorage)
+        .filter((key) => key.startsWith("transactions-"))
+        .forEach((key) => sessionStorage.removeItem(key));
+    },
+
+    clearInventoryCache() {
+    Object.keys(sessionStorage)
+        .filter((key) => key.startsWith("inventory-"))
+        .forEach((key) => sessionStorage.removeItem(key));
+    },
+
     async confirmQuotation() {
-      if (!this.transaction) return;
+    if (!this.transaction) return;
 
-      this.actionLoading = true;
-      this.error = "";
+    this.actionLoading = true;
+    this.error = "";
 
-      try {
+    try {
         await api.post(`/transactions/${this.transaction.id}/confirm`);
+
+        if (this.clearTransactionCache) {
+        this.clearTransactionCache();
+        }
+
+        this.clearInventoryCache();
+
         await this.fetchTransaction();
-      } catch (error) {
+    } catch (error) {
         console.error("Error confirming quotation:", error);
         this.error =
-          error.response?.data?.message || "Failed to confirm quotation.";
-      } finally {
+        error.response?.data?.message || "Failed to confirm quotation.";
+    } finally {
         this.actionLoading = false;
-      }
+    }
     },
 
     async markPaid() {
@@ -622,6 +657,13 @@ export default {
         });
 
         this.closePaymentModal();
+
+        if (this.clearTransactionCache) {
+        this.clearTransactionCache();
+        }
+
+        this.clearInventoryCache();
+
         await this.fetchTransaction();
     } catch (error) {
         console.error("Error marking paid:", error);
@@ -807,22 +849,40 @@ export default {
 
 .pdf-modal {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
   background: rgba(15, 15, 15, 0.45);
   backdrop-filter: blur(3px);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 24px;
-  z-index: 9999;
+  z-index: 99999;
 }
 
 .pdf-container {
-  width: min(1100px, 92vw);
+  width: min(95vw, 1400px);
+  height: min(92vh, 1000px);
   background: #fff;
   border-radius: 16px;
-  padding: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-container iframe {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #f5f5f5;
 }
 
 .pdf-topbar {
@@ -841,12 +901,6 @@ export default {
 .pdf-actions {
   display: flex;
   gap: 8px;
-}
-
-.pdf-container iframe {
-  border: 1px solid #ecece8;
-  border-radius: 12px;
-  background: #fafafa;
 }
 
 @media (max-width: 1100px) {

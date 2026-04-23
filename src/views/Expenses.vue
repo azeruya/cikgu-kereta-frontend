@@ -1,10 +1,11 @@
 <template>
   <div class="dash">
     <Sidebar
-      :collapsed="collapsed"
-      :menu="menu"
-      :user="currentUser"
-      @toggle="collapsed = !collapsed"
+    :collapsed="collapsed"
+    :menu="menu"
+    :user="currentUser"
+    @toggle="collapsed = !collapsed"
+    @logout="handleLogout"
     />
 
     <div class="main">
@@ -411,31 +412,17 @@ export default {
   },
 
   methods: {
-    async fetchExpenses(page = 1) {
-      this.loading = true;
-      this.error = "";
-
-      try {
-        const res = await api.get("/expenses", {
-          params: {
-            page,
-            search: this.searchQuery || undefined,
-            category: this.categoryFilter || undefined,
-            from_date: this.fromDate || undefined,
-            to_date: this.toDate || undefined
-          }
-        });
-
-        this.expenses = res.data.data || [];
-        this.page = res.data.current_page || 1;
-        this.totalPages = res.data.last_page || 1;
-        this.summary = res.data.summary || {};
-      } catch (error) {
-        console.error("Error fetching expenses:", error);
-        this.error = error.response?.data?.message || "Failed to load expenses.";
-      } finally {
-        this.loading = false;
-      }
+    async handleLogout() {
+        try {
+            await api.post("/logout");
+        } catch (error) {
+            console.warn("Logout request failed, clearing local session anyway.", error);
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            sessionStorage.clear();
+            this.$router.push("/login");
+        }
     },
 
     async openDetail(expense) {
@@ -530,6 +517,7 @@ export default {
         }
 
         this.closeFormModal();
+        this.clearExpenseCache();
         await this.fetchExpenses(this.page);
       } catch (error) {
         console.error("Error saving expense:", error);
@@ -550,6 +538,7 @@ export default {
           this.closeDetail();
         }
 
+        this.clearExpenseCache();
         await this.fetchExpenses(this.page);
       } catch (error) {
         console.error("Error deleting expense:", error);
@@ -631,7 +620,63 @@ export default {
       if (c.includes("purchase")) return "sp-green";
       if (c.includes("maintenance")) return "sp-purple";
       return "sp-gray";
+    },
+    
+    getExpenseCacheKey(page = 1) {
+    return `expenses-${page}-${JSON.stringify({
+        search: this.searchQuery || "",
+        category: this.categoryFilter || "",
+        from: this.fromDate || "",
+        to: this.toDate || ""
+    })}`;
+    },
+
+    clearExpenseCache() {
+    Object.keys(sessionStorage)
+        .filter(k => k.startsWith("expenses-"))
+        .forEach(k => sessionStorage.removeItem(k));
+    },
+
+    async fetchExpenses(page = 1) {
+    const cacheKey = this.getExpenseCacheKey(page);
+    const cached = sessionStorage.getItem(cacheKey);
+
+    this.error = "";
+
+    if (cached) {
+        const parsed = JSON.parse(cached);
+        this.expenses = parsed.data || [];
+        this.page = parsed.current_page || 1;
+        this.totalPages = parsed.last_page || 1;
+        this.summary = parsed.summary || {};
+    } else {
+        this.loading = true;
     }
+
+    try {
+        const res = await api.get("/expenses", {
+        params: {
+            page,
+            search: this.searchQuery || undefined,
+            category: this.categoryFilter || undefined,
+            from_date: this.fromDate || undefined,
+            to_date: this.toDate || undefined
+        }
+        });
+
+        this.expenses = res.data.data || [];
+        this.page = res.data.current_page || 1;
+        this.totalPages = res.data.last_page || 1;
+        this.summary = res.data.summary || {};
+
+        sessionStorage.setItem(cacheKey, JSON.stringify(res.data));
+    } catch (error) {
+        console.error("Error fetching expenses:", error);
+        this.error = error.response?.data?.message || "Failed to load expenses.";
+    } finally {
+        this.loading = false;
+    }
+    },
   },
 
   watch: {
