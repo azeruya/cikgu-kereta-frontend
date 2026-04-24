@@ -93,6 +93,10 @@ textarea {
 ========================= */
 .sidebar {
   width: 220px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
   background: linear-gradient(180deg, #111111 0%, #0d0d0d 100%);
   display: flex;
   flex-direction: column;
@@ -101,6 +105,11 @@ textarea {
   flex-shrink: 0;
   transition: width 0.2s ease;
   border-right: 1px solid rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.sidebar .nav-item:last-of-type {
+  margin-bottom: 0;
 }
 
 .sidebar.collapsed {
@@ -218,6 +227,7 @@ textarea {
   margin-top: auto;
   padding-top: 16px;
   border-top: 1px solid var(--sidebar-border);
+  flex-shrink: 0;
 }
 
 .user-row {

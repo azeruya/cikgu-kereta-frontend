@@ -1,18 +1,19 @@
 <template>
   <div class="sidebar" :class="{ collapsed }">
-    <div class="brand-row">
-      <button class="collapse-btn" @click="$emit('toggle')">
-        <svg width="18" height="18" viewBox="0 0 16 16">
-          <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-      </button>
+  <div class="brand-row">
+    <button class="collapse-btn" @click="$emit('toggle')">
+      <svg width="18" height="18" viewBox="0 0 16 16">
+        <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </button>
 
-      <div v-if="!collapsed">
-        <div class="brand-name">Cikgu Kereta</div>
-        <div class="brand-sub">Workshop</div>
-      </div>
+    <div v-if="!collapsed">
+      <div class="brand-name">Cikgu Kereta</div>
+      <div class="brand-sub">Workshop</div>
     </div>
+  </div>
 
+  <div class="sidebar-nav">
     <router-link
       v-for="item in menu"
       :key="item.path"
@@ -57,47 +58,48 @@
 
       <span v-if="!collapsed" class="nav-text">{{ item.name }}</span>
     </router-link>
-
-<div class="sidebar-foot">
-  <div class="user-row">
-    <div class="avatar">{{ initials }}</div>
-
-    <div v-if="!collapsed" class="user-meta">
-      <div class="user-name">{{ user?.name || "User" }}</div>
-      <div class="user-role">{{ prettyRole }}</div>
-    </div>
-
-    <button
-      class="logout-icon-btn"
-      @click="$emit('logout')"
-      title="Logout"
-      type="button"
-    >
-      <svg class="logout-icon" viewBox="0 0 16 16" fill="none">
-        <path
-          d="M9.5 3H12.5V13H9.5"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M7 5.5L3.5 8L7 10.5"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M4 8H10.5"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-        />
-      </svg>
-    </button>
   </div>
-</div>
+
+  <div class="sidebar-foot">
+    <div class="user-row">
+      <div class="avatar">{{ initials }}</div>
+
+      <div v-if="!collapsed" class="user-meta">
+        <div class="user-name">{{ user?.name || "User" }}</div>
+        <div class="user-role">{{ prettyRole }}</div>
+      </div>
+
+      <button
+        class="logout-icon-btn"
+        @click="$emit('logout')"
+        title="Logout"
+        type="button"
+      >
+        <svg class="logout-icon" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M9.5 3H12.5V13H9.5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M7 5.5L3.5 8L7 10.5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M4 8H10.5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -131,6 +133,15 @@ export default {
 .user-meta {
   min-width: 0;
   flex: 1;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
 }
 
 .logout-icon-btn {
