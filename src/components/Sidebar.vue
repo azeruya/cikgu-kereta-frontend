@@ -1,17 +1,25 @@
 <template>
   <div class="sidebar" :class="{ collapsed }">
   <div class="brand-row">
-    <button class="collapse-btn" @click="$emit('toggle')">
-      <svg width="18" height="18" viewBox="0 0 16 16">
-        <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-    </button>
+  <button class="collapse-btn" @click="$emit('toggle')">
+    <svg width="18" height="18" viewBox="0 0 16 16">
+      <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+  </button>
 
-    <div v-if="!collapsed">
-      <div class="brand-name">Cikgu Kereta</div>
-      <div class="brand-sub">Workshop</div>
-    </div>
-  </div>
+  <!-- Expanded: full logo -->
+  <img
+    v-if="!collapsed"
+    :src="textWhite"
+    alt="Cikgu Kereta"
+    class="brand-logo-full"
+  />
+</div>
+
+<!-- Collapsed: icon centered below -->
+<div v-if="collapsed" class="brand-collapsed-logo">
+  <img :src="iconWhite" alt="Icon" class="brand-logo-icon" />
+</div>
 
   <div class="sidebar-nav">
     <router-link
@@ -104,13 +112,25 @@
 </template>
 
 <script>
+import textWhite from "../assets/text-white.png";
+import iconWhite from "../assets/icon-white.png";
+
 export default {
   props: {
     collapsed: Boolean,
     menu: Array,
     user: Object
   },
+
   emits: ["toggle", "logout"],
+
+  data() {
+    return {
+      textWhite,
+      iconWhite,
+    };
+  },
+
   computed: {
     initials() {
       const name = this.user?.name || "User";
@@ -121,6 +141,7 @@ export default {
         .slice(0, 2)
         .toUpperCase();
     },
+
     prettyRole() {
       const role = this.user?.role || "staff";
       return role.charAt(0).toUpperCase() + role.slice(1);
@@ -133,6 +154,95 @@ export default {
 .user-meta {
   min-width: 0;
   flex: 1;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #101010 0%, #070707 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 12px 0 30px rgba(0, 0, 0, 0.08);
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px 18px;
+  min-height: 72px;
+}
+
+.brand-logo-full {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.brand-collapsed-logo {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 10px;   
+  margin-top: -8px;      
+}
+
+.brand-logo-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+}
+
+.brand-logo-icon:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.sidebar.collapsed .brand-row {
+  justify-content: center;
+  padding: 18px 0 2px;
+  min-height: auto;
+}
+
+.sidebar.collapsed .brand-logo-area {
+  justify-content: center;
+  flex: unset;
+}
+
+.nav-item {
+  height: 44px;
+  border-radius: 14px;
+  padding: 0 14px;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 600;
+  transition: all 0.18s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.router-link-active {
+  background: rgba(255, 255, 255, 0.13);
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-foot {
+  margin-top: auto;
+  padding: 16px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.user-row {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 10px;
+}
+
+.avatar {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
 }
 
 .sidebar-nav {
@@ -181,4 +291,5 @@ export default {
   gap: 10px;
   justify-content: center;
 }
+
 </style>

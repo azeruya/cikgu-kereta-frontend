@@ -54,7 +54,7 @@
       </div>
 
       <div class="content-row-3">
-        <Card>
+        <Card class="today-card">
           <template #header>
             <span class="card-title">Today's transactions</span>
             <router-link to="/transactions" class="card-link">View all</router-link>
@@ -70,7 +70,7 @@
               </tr>
             </thead>
 
-            <tbody>
+            <tbody v-if="todayTransactions.length > 0">
               <tr v-for="job in todayTransactions" :key="job.id">
                 <td>
                   <div class="job-customer">{{ job.customer }}</div>
@@ -86,6 +86,9 @@
               </tr>
             </tbody>
           </table>
+           <div v-if="!loading && todayTransactions.length === 0" class="empty-state today-empty">
+            No transactions today.
+            </div>
         </Card>
 
         <div class="stack-col">
@@ -107,7 +110,7 @@
                 <div class="qa-desc">Register new customer</div>
               </router-link>
 
-              <router-link to="/inventory" class="qa-btn">
+              <router-link to="/inventory/new" class="qa-btn">
                 <div class="qa-icon qa-blue">📦</div>
                 <div class="qa-label">Inventory</div>
                 <div class="qa-desc">Manage parts & stock</div>
@@ -176,6 +179,9 @@
                 </span>
               </div>
             </div>
+            <div v-if="lowStockItems.length === 0" class="empty-state">
+            No low stock alerts.
+            </div>
           </div>
         </Card>
 
@@ -201,9 +207,16 @@
                 <div class="act-time">{{ activity.time }}</div>
               </div>
             </div>
+            <div v-if="recentActivity.length === 0" class="empty-state">
+            No recent activity yet.
+            </div>
           </div>
         </Card>
       </div>
+
+        <div v-if="error" class="page-error">
+        {{ error }}
+        </div>
     </div>
   </div>
 </template>
@@ -211,6 +224,7 @@
 <script>
 import Sidebar from "../components/Sidebar.vue";
 import Card from "../components/Card.vue";
+import api from "../services/api";
 
 export default {
   components: {
@@ -221,6 +235,9 @@ export default {
   data() {
     return {
       collapsed: false,
+      loading: false,
+      error: "",
+
       menu: [
         { name: "Dashboard", path: "/dashboard", icon: "grid" },
         { name: "Transactions", path: "/transactions", icon: "list" },
@@ -230,116 +247,19 @@ export default {
         { name: "Reports", path: "/reports", icon: "chart" },
       ],
 
-      metrics: [
-        {
-          label: "TODAY'S REVENUE",
-          value: "RM 2,850",
-          sub: '<span class="metric-up">↑ 12%</span>&nbsp;vs yesterday',
-          iconClass: "mi-green",
-          icon: "↗",
-        },
-        {
-          label: "ACTIVE INVOICES",
-          value: "7",
-          sub: "3 awaiting payment",
-          iconClass: "mi-blue",
-          icon: "≡",
-        },
-        {
-          label: "PENDING RECEIPTS",
-          value: "RM 4,120",
-          sub: "From 6 transactions",
-          iconClass: "mi-amber",
-          icon: "◔",
-        },
-        {
-          label: "LOW STOCK ALERTS",
-          value: "5",
-          sub: '<span class="metric-down">2 critical</span>',
-          iconClass: "mi-red",
-          icon: "!",
-        },
-      ],
+      summary: {
+        today_revenue: 0,
+        active_invoices: 0,
+        pending_receipts_amount: 0,
+        pending_receipts_count: 0,
+        low_stock_count: 0,
+        critical_stock_count: 0,
+      },
 
-      todayTransactions: [
-        {
-          id: 1,
-          customer: "Hafiz Rahman",
-          plate: "WPL 1234",
-          work: "Engine service + oil",
-          status: "Receipt",
-          badgeClass: "sp-green",
-          total: "RM 320",
-        },
-        {
-          id: 2,
-          customer: "Nurul Ain",
-          plate: "VCG 8821",
-          work: "Brake pad replacement",
-          status: "Invoice",
-          badgeClass: "sp-blue",
-          total: "RM 180",
-        },
-        {
-          id: 3,
-          customer: "Rizwan Othman",
-          plate: "BJG 4410",
-          work: "AC gas top-up",
-          status: "Invoice",
-          badgeClass: "sp-blue",
-          total: "RM 150",
-        },
-        {
-          id: 4,
-          customer: "Siti Mariam",
-          plate: "PBM 5599",
-          work: "Tyre rotation + alignment",
-          status: "Quotation",
-          badgeClass: "sp-amber",
-          total: "RM 220",
-        },
-      ],
-
-      weeklyRevenueTotal: "RM 14,240 this week",
-      weeklyRevenue: [
-        { label: "Mon", height: 52, isToday: false },
-        { label: "Tue", height: 38, isToday: false },
-        { label: "Wed", height: 65, isToday: false },
-        { label: "Thu", height: 44, isToday: false },
-        { label: "Fri", height: 28, isToday: false },
-        { label: "Sat", height: 72, isToday: false },
-        { label: "Sun", height: 48, isToday: true },
-      ],
-
-      lowStockItems: [
-        { name: "Engine oil 5W-30 (1L)", min: 20, left: 3, level: "critical" },
-        { name: "Oil filter — Toyota Vios", min: 10, left: 2, level: "critical" },
-        { name: "Brake fluid DOT4 (500ml)", min: 15, left: 7, level: "low" },
-        { name: "AC refrigerant R134a", min: 8, left: 5, level: "low" },
-      ],
-
-      recentActivity: [
-        {
-          text: '<span class="act-bold">Invoice #1041</span> marked as paid — <span class="act-bold">Hafiz Rahman</span>',
-          time: "9:42 am",
-          dotClass: "dot-green",
-        },
-        {
-          text: 'New quotation created for <span class="act-bold">Siti Mariam</span>',
-          time: "9:15 am",
-          dotClass: "dot-blue",
-        },
-        {
-          text: '<span class="act-bold">Engine oil 5W-30</span> dropped below minimum stock',
-          time: "8:58 am",
-          dotClass: "dot-amber",
-        },
-        {
-          text: 'New customer registered — <span class="act-bold">Rizwan Othman</span>',
-          time: "Yesterday, 4:12 pm",
-          dotClass: "dot-purple",
-        },
-      ],
+      todayTransactionsRaw: [],
+      weeklyRevenueRaw: [],
+      lowStockItemsRaw: [],
+      recentActivity: [],
     };
   },
 
@@ -372,22 +292,160 @@ export default {
         year: "numeric",
       });
     },
+
+    metrics() {
+      return [
+        {
+          label: "TODAY'S REVENUE",
+          value: `RM ${this.formatMoney(this.summary.today_revenue)}`,
+          sub: "From paid receipts today",
+          iconClass: "mi-green",
+          icon: "↗",
+        },
+        {
+          label: "ACTIVE INVOICES",
+          value: this.summary.active_invoices,
+          sub: "Awaiting payment",
+          iconClass: "mi-blue",
+          icon: "≡",
+        },
+        {
+          label: "PENDING RECEIPTS",
+          value: `RM ${this.formatMoney(this.summary.pending_receipts_amount)}`,
+          sub: `From ${this.summary.pending_receipts_count} transaction(s)`,
+          iconClass: "mi-amber",
+          icon: "◔",
+        },
+        {
+          label: "LOW STOCK ALERTS",
+          value: this.summary.low_stock_count,
+          sub: `<span class="metric-down">${this.summary.critical_stock_count} critical</span>`,
+          iconClass: "mi-red",
+          icon: "!",
+        },
+      ];
+    },
+
+    todayTransactions() {
+      return this.todayTransactionsRaw.map((trx) => {
+        const firstItem = trx.items?.[0];
+        const work =
+          firstItem?.service_name ||
+          firstItem?.part?.name ||
+          firstItem?.item_name ||
+          "Workshop service";
+
+        return {
+          id: trx.id,
+          customer: trx.customer?.name || "-",
+          plate: trx.vehicle?.license_plate || "-",
+          work,
+          status: this.capitalize(trx.status),
+          badgeClass: this.statusClass(trx.status),
+          total: `RM ${this.formatMoney(trx.total_amount)}`,
+        };
+      });
+    },
+
+    weeklyRevenueTotal() {
+      const total = this.weeklyRevenueRaw.reduce(
+        (sum, day) => sum + Number(day.total || 0),
+        0
+      );
+
+      return `RM ${this.formatMoney(total)} this week`;
+    },
+
+    weeklyRevenue() {
+      const max = Math.max(
+        ...this.weeklyRevenueRaw.map((day) => Number(day.total || 0)),
+        0
+      );
+
+      return this.weeklyRevenueRaw.map((day) => ({
+        label: day.label,
+        isToday: day.is_today,
+        height: max > 0 ? Math.max(8, (Number(day.total || 0) / max) * 72) : 8,
+      }));
+    },
+
+    lowStockItems() {
+      return this.lowStockItemsRaw.map((item) => ({
+        id: item.id,
+        name: item.variant ? `${item.name} — ${item.variant}` : item.name,
+        min: item.min_stock_threshold,
+        left: item.stock,
+        level: Number(item.stock || 0) <= 3 ? "critical" : "low",
+      }));
+    },
+  },
+
+  mounted() {
+    this.fetchDashboard();
   },
 
   methods: {
-    async handleLogout() {
-        try {
-            await api.post("/logout");
-        } catch (error) {
-            console.warn("Logout request failed, clearing local session anyway.", error);
-        } finally {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            sessionStorage.clear();
-            this.$router.push("/login");
-        }
+    async fetchDashboard() {
+      const cached = sessionStorage.getItem("dashboard");
+
+      this.error = "";
+
+      if (cached) {
+        this.applyDashboardData(JSON.parse(cached));
+      } else {
+        this.loading = true;
+      }
+
+      try {
+        const res = await api.get("/dashboard");
+
+        this.applyDashboardData(res.data);
+        sessionStorage.setItem("dashboard", JSON.stringify(res.data));
+      } catch (error) {
+        console.error("Error loading dashboard:", error);
+        this.error = error.response?.data?.message || "Failed to load dashboard.";
+      } finally {
+        this.loading = false;
+      }
     },
-}
+
+    applyDashboardData(data) {
+      this.summary = data.summary || this.summary;
+      this.todayTransactionsRaw = data.today_transactions || [];
+      this.weeklyRevenueRaw = data.weekly_revenue || [];
+      this.lowStockItemsRaw = data.low_stock_items || [];
+      this.recentActivity = data.recent_activity || [];
+    },
+
+    async handleLogout() {
+      try {
+        await api.post("/logout");
+      } catch (error) {
+        console.warn("Logout request failed, clearing local session anyway.", error);
+      } finally {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        sessionStorage.clear();
+        this.$router.push("/login");
+      }
+    },
+
+    formatMoney(value) {
+      return Number(value || 0).toFixed(2);
+    },
+
+    capitalize(value) {
+      if (!value) return "-";
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    },
+
+    statusClass(status) {
+      if (status === "receipt") return "sp-green";
+      if (status === "invoice") return "sp-blue";
+      if (status === "quotation") return "sp-amber";
+      return "sp-gray";
+    },
+  },
 };
 </script>
 
@@ -710,6 +768,66 @@ export default {
 
 .link-btn {
   text-decoration: none;
+}
+
+.jobs-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.jobs-table th {
+  text-align: left;
+  padding: 12px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #999;
+  text-transform: uppercase;
+  border-bottom: 1px solid #eeeeea;
+}
+
+.jobs-table td {
+  padding: 14px 10px;
+  font-size: 13px;
+  color: #333;
+  border-bottom: 1px solid #f3f3f0;
+  vertical-align: middle;
+}
+
+.jobs-table th:nth-child(1),
+.jobs-table td:nth-child(1) {
+  width: 30%;
+}
+
+.jobs-table th:nth-child(2),
+.jobs-table td:nth-child(2) {
+  width: 34%;
+}
+
+.jobs-table th:nth-child(3),
+.jobs-table td:nth-child(3) {
+  width: 18%;
+}
+
+.jobs-table th:nth-child(4),
+.jobs-table td:nth-child(4) {
+  width: 18%;
+  text-align: right;
+}
+
+.jobs-table tbody tr:hover {
+  background: #fafaf8;
+}
+
+.today-card {
+  min-height: 380px;
+}
+
+.today-empty {
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 1200px) {
