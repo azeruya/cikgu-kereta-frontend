@@ -11,6 +11,7 @@ import Inventory from "../views/Inventory.vue";
 import Expenses from "../views/Expenses.vue";
 import Reports from "../views/Reports.vue";
 import PartForm from "../views/PartForm.vue";
+import Users from "../views/Users.vue";
 
 const routes = [
   {
@@ -93,7 +94,13 @@ const routes = [
     path: "/reports",
     name: "reports",
     component: Reports,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path: "/users",
+    name: "users",
+    component: Users,
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
 ];
 
@@ -104,12 +111,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   if (to.meta.requiresAuth && !token) {
     return next("/login");
   }
 
-  if (to.meta.guestOnly && token) {
+  if (to.meta.requiresAdmin && user?.role !== "admin") {
     return next("/dashboard");
   }
 

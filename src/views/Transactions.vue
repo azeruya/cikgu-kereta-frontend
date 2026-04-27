@@ -224,15 +224,6 @@ export default {
       actionLoadingId: null,
       error: "",
 
-      menu: [
-        { name: "Dashboard", path: "/dashboard", icon: "grid" },
-        { name: "Transactions", path: "/transactions", icon: "list" },
-        { name: "Customers", path: "/customers", icon: "user" },
-        { name: "Inventory", path: "/inventory", icon: "box" },
-        { name: "Expenses", path: "/expenses", icon: "alert" },
-        { name: "Reports", path: "/reports", icon: "chart" }
-      ],
-
       tabs: [
         { label: "All", value: "all" },
         { label: "Quotations", value: "quotation" },
@@ -267,6 +258,25 @@ export default {
       } catch {
         return null;
       }
+    },
+
+    menu() {
+      const baseMenu = [
+        { name: "Dashboard", path: "/dashboard", icon: "grid" },
+        { name: "Transactions", path: "/transactions", icon: "list" },
+        { name: "Customers", path: "/customers", icon: "user" },
+        { name: "Inventory", path: "/inventory", icon: "box" },
+        { name: "Expenses", path: "/expenses", icon: "alert" },
+      ];
+
+      if (this.currentUser?.role === "admin") {
+        baseMenu.push(
+          { name: "Reports", path: "/reports", icon: "chart" },
+          { name: "Users", path: "/users", icon: "user" }
+        );
+      }
+
+      return baseMenu;
     },
 
     filteredTransactions() {

@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <div class="content-row-3">
+      <div class="content-row-3" :class="{ 'staff-layout': !isAdmin }">
         <Card class="today-card">
           <template #header>
             <span class="card-title">Today's transactions</span>
@@ -124,29 +124,50 @@
             </div>
           </Card>
 
-          <Card>
-            <template #header>
-              <span class="card-title">Weekly revenue</span>
-              <span class="card-link">{{ weeklyRevenueTotal }}</span>
-            </template>
+          <Card v-if="isAdmin">
+          <template #header>
+            <span class="card-title">Weekly revenue</span>
+            <span class="card-link">{{ weeklyRevenueTotal }}</span>
+          </template>
 
-            <div class="chart-bars">
+          <div class="chart-bars">
+            <div
+              v-for="day in weeklyRevenue"
+              :key="day.label"
+              class="chart-bar-wrap"
+            >
               <div
-                v-for="day in weeklyRevenue"
-                :key="day.label"
-                class="chart-bar-wrap"
-              >
-                <div
-                  class="chart-bar"
-                  :class="{ today: day.isToday }"
-                  :style="{ height: day.height + 'px' }"
-                ></div>
-                <div class="chart-day" :class="{ 'chart-day-active': day.isToday }">
-                  {{ day.label }}
-                </div>
+                class="chart-bar"
+                :class="{ today: day.isToday }"
+                :style="{ height: day.height + 'px' }"
+              ></div>
+              <div class="chart-day" :class="{ 'chart-day-active': day.isToday }">
+                {{ day.label }}
               </div>
             </div>
-          </Card>
+          </div>
+        </Card>
+
+        <Card v-if="!isAdmin">
+          <template #header>
+            <span class="card-title">Staff focus</span>
+          </template>
+
+          <div class="staff-focus">
+            <div class="focus-row">
+              <span>Today’s transactions</span>
+              <b>{{ todayTransactions.length }}</b>
+            </div>
+            <div class="focus-row">
+              <span>Invoices awaiting payment</span>
+              <b>{{ summary.active_invoices }}</b>
+            </div>
+            <div class="focus-row">
+              <span>Low stock items</span>
+              <b>{{ summary.low_stock_count }}</b>
+            </div>
+          </div>
+        </Card>
         </div>
       </div>
 
@@ -238,15 +259,6 @@ export default {
       loading: false,
       error: "",
 
-      menu: [
-        { name: "Dashboard", path: "/dashboard", icon: "grid" },
-        { name: "Transactions", path: "/transactions", icon: "list" },
-        { name: "Customers", path: "/customers", icon: "user" },
-        { name: "Inventory", path: "/inventory", icon: "box" },
-        { name: "Expenses", path: "/expenses", icon: "alert" },
-        { name: "Reports", path: "/reports", icon: "chart" },
-      ],
-
       summary: {
         today_revenue: 0,
         active_invoices: 0,
@@ -272,6 +284,29 @@ export default {
       }
     },
 
+    isAdmin() {
+      return this.currentUser?.role === "admin";
+    },
+
+    menu() {
+      const baseMenu = [
+        { name: "Dashboard", path: "/dashboard", icon: "grid" },
+        { name: "Transactions", path: "/transactions", icon: "list" },
+        { name: "Customers", path: "/customers", icon: "user" },
+        { name: "Inventory", path: "/inventory", icon: "box" },
+        { name: "Expenses", path: "/expenses", icon: "alert" },
+      ];
+
+      if (this.currentUser?.role === "admin") {
+        baseMenu.push(
+          { name: "Reports", path: "/reports", icon: "chart" },
+          { name: "Users", path: "/users", icon: "user" }
+        );
+      }
+
+      return baseMenu;
+    },
+
     firstName() {
       const fullName = this.currentUser?.name || "there";
       return fullName.split(" ")[0];
@@ -294,14 +329,19 @@ export default {
     },
 
     metrics() {
-      return [
-        {
+      const baseMetrics = [];
+
+      if (this.isAdmin) {
+        baseMetrics.push({
           label: "TODAY'S REVENUE",
           value: `RM ${this.formatMoney(this.summary.today_revenue)}`,
           sub: "From paid receipts today",
           iconClass: "mi-green",
           icon: "↗",
-        },
+        });
+      }
+
+      baseMetrics.push(
         {
           label: "ACTIVE INVOICES",
           value: this.summary.active_invoices,
@@ -311,8 +351,12 @@ export default {
         },
         {
           label: "PENDING RECEIPTS",
-          value: `RM ${this.formatMoney(this.summary.pending_receipts_amount)}`,
-          sub: `From ${this.summary.pending_receipts_count} transaction(s)`,
+          value: this.isAdmin
+            ? `RM ${this.formatMoney(this.summary.pending_receipts_amount)}`
+            : this.summary.pending_receipts_count,
+          sub: this.isAdmin
+            ? `From ${this.summary.pending_receipts_count} transaction(s)`
+            : "Transaction(s) awaiting receipt",
           iconClass: "mi-amber",
           icon: "◔",
         },
@@ -322,8 +366,10 @@ export default {
           sub: `<span class="metric-down">${this.summary.critical_stock_count} critical</span>`,
           iconClass: "mi-red",
           icon: "!",
-        },
-      ];
+        }
+      );
+
+      return baseMetrics;
     },
 
     todayTransactions() {
@@ -462,7 +508,7 @@ export default {
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 14px;
   margin-bottom: 20px;
 }
@@ -528,6 +574,14 @@ export default {
   grid-template-columns: 2fr 1fr;
   gap: 16px;
   margin-bottom: 20px;
+}
+
+.content-row-3.staff-layout {
+  grid-template-columns: 1.45fr 0.85fr;
+}
+
+.content-row-3.staff-layout .today-card {
+  min-height: 340px;
 }
 
 .stack-col {
@@ -828,6 +882,32 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.staff-focus {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.focus-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #f2f2f0;
+}
+
+.focus-row:last-child {
+  border-bottom: none;
+}
+
+.focus-row span {
+  color: #777;
+}
+
+.focus-row b {
+  color: #111;
 }
 
 @media (max-width: 1200px) {

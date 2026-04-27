@@ -300,15 +300,6 @@ export default {
       loading: false,
       error: "",
 
-      menu: [
-        { name: "Dashboard", path: "/dashboard", icon: "grid" },
-        { name: "Transactions", path: "/transactions", icon: "list" },
-        { name: "Customers", path: "/customers", icon: "user" },
-        { name: "Inventory", path: "/inventory", icon: "box" },
-        { name: "Expenses", path: "/expenses", icon: "alert" },
-        { name: "Reports", path: "/reports", icon: "chart" },
-      ],
-
       searchQuery: "",
       statusFilter: "",
       paymentStatusFilter: "",
@@ -354,6 +345,25 @@ export default {
       return null;
     }
   },
+
+    menu() {
+      const baseMenu = [
+        { name: "Dashboard", path: "/dashboard", icon: "grid" },
+        { name: "Transactions", path: "/transactions", icon: "list" },
+        { name: "Customers", path: "/customers", icon: "user" },
+        { name: "Inventory", path: "/inventory", icon: "box" },
+        { name: "Expenses", path: "/expenses", icon: "alert" },
+      ];
+
+      if (this.currentUser?.role === "admin") {
+        baseMenu.push(
+          { name: "Reports", path: "/reports", icon: "chart" },
+          { name: "Users", path: "/users", icon: "user" }
+        );
+      }
+
+      return baseMenu;
+    },
 
   paidPercentage() {
     const paid = Number(this.paidVsUnpaid.paid || 0);
