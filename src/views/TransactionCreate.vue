@@ -107,87 +107,130 @@
       </div>
 
       <Card>
-        <template #header>
-          <span class="card-title">Transaction Items</span>
-          <button class="pill-btn" type="button" @click="addServiceItem">
-            + Add Service
-          </button>
-        </template>
+  <template #header>
+    <span class="card-title">Transaction Items</span>
+    <button class="pill-btn" type="button" @click="addServiceItem">
+      + Add Service
+    </button>
+  </template>
 
-        <div v-if="form.items.length === 0" class="empty-box">
-          No items added yet.
-        </div>
+  <div v-if="form.items.length === 0" class="empty-box">
+    No items added yet. Add a compatible part or service to begin.
+  </div>
 
-        <div v-else class="items-list">
-          <div
-            v-for="(item, index) in form.items"
-            :key="index"
-            class="item-card"
-          >
-            <div class="item-top">
-              <div class="item-title">
-                {{ item.item_type === 'part' ? 'Part Item' : 'Service Item' }}
-              </div>
-
-              <button type="button" class="mini-btn" @click="removeItem(index)">
-                Remove
-              </button>
-            </div>
-
-            <div class="form-grid item-grid">
-              <div class="field" v-if="item.item_type === 'part'">
-                <label>Part</label>
-                <input
-                  type="text"
-                  :value="item.part_label"
-                  disabled
-                />
-              </div>
-
-              <div class="field" v-if="item.item_type === 'service'">
-                <label>Service name</label>
-                <input
-                  v-model="item.service_name"
-                  type="text"
-                  placeholder="e.g. Brake service"
-                />
-              </div>
-
-              <div class="field">
-                <label>Quantity</label>
-                <input
-                  v-model.number="item.quantity"
-                  type="number"
-                  min="1"
-                />
-              </div>
-
-              <div class="field">
-                <label>Selling price</label>
-                <input
-                  v-model.number="item.selling_price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-
-              <div class="field full">
-                <label>Note</label>
-                <input
-                  v-model="item.note"
-                  type="text"
-                  placeholder="Optional note"
-                />
-              </div>
-            </div>
-
-            <div class="item-total">
-              Line total: RM {{ formatMoney(lineTotal(item)) }}
-            </div>
+  <div v-else class="items-list">
+    <div
+      v-for="(item, index) in form.items"
+      :key="index"
+      class="item-card"
+      :class="item.item_type === 'part' ? 'part-card compact-item-card' : 'service-card'"
+    >
+      <div class="item-top clean-item-top">
+        <div>
+          <div class="item-title">
+            {{ item.item_type === "part" ? item.part_label : (item.service_name || "Unnamed service") }}
+          </div>
+          <div class="item-sub">
+            {{ item.item_type === "part" ? "Part" : "Service" }}
           </div>
         </div>
-      </Card>
+
+        <button type="button" class="mini-btn" @click="removeItem(index)">
+          Remove
+        </button>
+      </div>
+
+      <!-- PART UI: compact -->
+      <div v-if="item.item_type === 'part'" class="part-compact-layout">
+        <div class="compact-inputs">
+          <div class="field compact-field">
+            <label>Qty</label>
+            <input
+              v-model.number="item.quantity"
+              type="number"
+              min="1"
+              step="1"
+            />
+          </div>
+
+          <div class="field compact-field">
+            <label>Unit Price</label>
+            <input
+              v-model.number="item.selling_price"
+              type="number"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <div class="field compact-note">
+            <label>Note</label>
+            <input
+              v-model="item.note"
+              type="text"
+              placeholder="Optional note"
+            />
+          </div>
+
+          <div class="compact-total">
+            <span>Total</span>
+            <strong>RM {{ formatMoney(lineTotal(item)) }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- SERVICE UI: descriptive -->
+      <div v-else class="service-item-layout">
+        <div class="form-grid item-grid">
+          <div class="field full">
+            <label>Service name</label>
+            <input
+              v-model="item.service_name"
+              type="text"
+              placeholder="e.g. Brake service, inspection, labour charge"
+            />
+          </div>
+
+          <div class="field">
+            <label>Duration (hrs)</label>
+            <input
+              v-model.number="item.quantity"
+              type="number"
+              min="0.1"
+              step="0.1"
+              placeholder="e.g. 1.5"
+            />
+          </div>
+
+          <div class="field">
+            <label>Rate (RM/hr)</label>
+            <input
+              v-model.number="item.selling_price"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="e.g. 80"
+            />
+          </div>
+
+          <div class="field full">
+            <label>Note</label>
+            <input
+              v-model="item.note"
+              type="text"
+              placeholder="Optional service note"
+            />
+          </div>
+        </div>
+
+        <div class="item-total">
+          <span>Line total</span>
+          <strong>RM {{ formatMoney(lineTotal(item)) }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</Card>
 
       <div class="bottom-grid">
         <Card>
@@ -600,6 +643,7 @@ export default {
 
 .item-grid {
   margin-top: 10px;
+  gap: 10px;
 }
 
 .vehicle-summary {
@@ -668,7 +712,7 @@ export default {
 .item-card {
   border: 1px solid #ececea;
   border-radius: 10px;
-  padding: 14px;
+  padding: 14px 16px;
   background: #fafaf9;
 }
 
@@ -677,6 +721,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin-bottom: 8px;
 }
 
 .item-title {
@@ -686,19 +731,17 @@ export default {
 }
 
 .mini-btn {
-  padding: 6px 10px;
+  padding: 5px 9px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fff;
   cursor: pointer;
+  font-size: 12px;
+  opacity: 0.72;
 }
 
-.item-total {
-  margin-top: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #111;
-  text-align: right;
+.mini-btn:hover {
+  opacity: 1;
 }
 
 .summary-list {
@@ -743,6 +786,125 @@ export default {
   margin-top: 12px;
   font-size: 12px;
   color: #e53935;
+}
+
+.clean-item-top {
+  margin-bottom: 10px;
+}
+
+.compact-item-card {
+  padding-bottom: 14px;
+}
+
+.part-compact-layout {
+  margin-top: 8px;
+}
+
+.compact-inputs {
+  display: grid;
+  grid-template-columns: 90px 140px 1fr 130px;
+  gap: 12px;
+  align-items: end;
+}
+
+.compact-field input,
+.compact-note input {
+  height: 38px;
+}
+
+.compact-total {
+  height: 38px;
+  border-left: 1px solid #e9e9e6;
+  padding-left: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.compact-total span {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.compact-total strong {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.service-item-layout {
+  margin-top: 6px;
+}
+
+.item-total {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-total span {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #777;
+}
+
+.item-total strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+}
+
+.item-sub {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+
+label {
+  font-size: 11px;
+  color: #999;
+}
+
+.part-card {
+  background: #fcfcfb;
+}
+
+.compact-inputs {
+  grid-template-columns: 90px 140px minmax(220px, 1fr) 150px;
+}
+
+.service-card {
+  background: #fafafa;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.service-item-layout .field input {
+  height: 38px;
+}
+
+@media (max-width: 1000px) {
+  .compact-inputs {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .compact-note {
+    grid-column: 1 / -1;
+  }
+
+  .compact-total {
+    grid-column: 1 / -1;
+    border-left: none;
+    border-top: 1px solid #e9e9e6;
+    padding-left: 0;
+    padding-top: 12px;
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 1100px) {
