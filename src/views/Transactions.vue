@@ -120,7 +120,7 @@
                       :disabled="actionLoadingId === trx.id"
                       @click="openPaymentModal(trx)"
                     >
-                      {{ actionLoadingId === trx.id ? "..." : "Mark Paid" }}
+                      {{ actionLoadingId === trx.id ? "..." : "Add Payment" }}
                     </button>
                   </div>
                 </td>
@@ -277,6 +277,21 @@ export default {
       }
 
       return baseMenu;
+    },
+
+    totalPaid() {
+      return (this.transaction?.payments || []).reduce(
+        (sum, payment) => sum + Number(payment.amount_paid || 0),
+        0
+      );
+    },
+
+    balanceDue() {
+      return Math.max(this.totalAfterDiscount - this.totalPaid, 0);
+    },
+
+    isFullyPaid() {
+      return this.balanceDue <= 0;
     },
 
     filteredTransactions() {

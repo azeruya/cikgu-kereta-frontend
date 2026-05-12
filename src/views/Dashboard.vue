@@ -14,13 +14,10 @@
           <div class="page-title">
             Good {{ greeting }}, {{ firstName }}
           </div>
-          <div class="page-date">
-            {{ todayText }}
-            &nbsp;·&nbsp;
-            <span class="inline-status">
-              <span class="status-dot"></span>
-              Workshop is open
-            </span>
+          <div class="page-date header-meta">
+            <span>{{ todayText }}</span>
+            <span class="meta-dot">•</span>
+            <span>Workshop is open</span>
           </div>
         </div>
 
@@ -56,7 +53,7 @@
       <div class="content-row-3" :class="{ 'staff-layout': !isAdmin }">
         <Card class="today-card">
           <template #header>
-            <span class="card-title">Today's transactions</span>
+            <span class="card-title">Today's Transactions</span>
             <router-link to="/transactions" class="card-link">View all</router-link>
           </template>
 
@@ -86,15 +83,25 @@
               </tr>
             </tbody>
           </table>
-           <div v-if="!loading && todayTransactions.length === 0" class="empty-state today-empty">
+          <div
+            v-if="!loading && todayTransactions.length === 0"
+            class="today-empty"
+          >
             No transactions today.
-            </div>
+          </div>
+
+          <div
+            v-else-if="todayTransactions.length > 0 && todayTransactions.length < 4"
+            class="today-empty"
+          >
+            More transactions will appear here today.
+          </div>
         </Card>
 
         <div class="stack-col">
           <Card>
             <template #header>
-              <span class="card-title">Quick actions</span>
+              <span class="card-title">Quick Actions</span>
             </template>
 
             <div class="quick-actions">
@@ -126,7 +133,7 @@
 
           <Card v-if="isAdmin">
           <template #header>
-            <span class="card-title">Weekly revenue</span>
+            <span class="card-title">Weekly Revenue</span>
             <span class="card-link">{{ weeklyRevenueTotal }}</span>
           </template>
 
@@ -150,7 +157,7 @@
 
         <Card v-if="!isAdmin">
           <template #header>
-            <span class="card-title">Staff focus</span>
+            <span class="card-title">Staff Focus</span>
           </template>
 
           <div class="staff-focus">
@@ -174,7 +181,7 @@
       <div class="content-row">
         <Card>
           <template #header>
-            <span class="card-title">Low stock alerts</span>
+            <span class="card-title">Low Stock Alerts</span>
             <router-link to="/inventory" class="card-link">View inventory</router-link>
           </template>
 
@@ -208,7 +215,7 @@
 
         <Card>
           <template #header>
-            <span class="card-title">Recent activity</span>
+            <span class="card-title">Recent Activity</span>
             <span class="card-link">Latest updates</span>
           </template>
 
@@ -336,7 +343,7 @@ export default {
           label: "TODAY'S REVENUE",
           value: `RM ${this.formatMoney(this.summary.today_revenue)}`,
           sub: "From paid receipts today",
-          iconClass: "mi-green",
+          iconClass: "mi-soft",
           icon: "↗",
         });
       }
@@ -346,7 +353,7 @@ export default {
           label: "ACTIVE INVOICES",
           value: this.summary.active_invoices,
           sub: "Awaiting payment",
-          iconClass: "mi-blue",
+          iconClass: "mi-soft",
           icon: "≡",
         },
         {
@@ -357,14 +364,14 @@ export default {
           sub: this.isAdmin
             ? `From ${this.summary.pending_receipts_count} transaction(s)`
             : "Transaction(s) awaiting receipt",
-          iconClass: "mi-amber",
+          iconClass: "mi-soft",
           icon: "◔",
         },
         {
           label: "LOW STOCK ALERTS",
           value: this.summary.low_stock_count,
           sub: `<span class="metric-down">${this.summary.critical_stock_count} critical</span>`,
-          iconClass: "mi-red",
+          iconClass: "mi-soft",
           icon: "!",
         }
       );
@@ -500,10 +507,21 @@ export default {
   padding: 28px;
 }
 
-.inline-status {
-  display: inline-flex;
+.header-meta {
+  display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  line-height: 1;
+  padding-top: 10px;
+}
+
+.meta-dot {
+  color: #bbb;
+}
+
+.mi-soft {
+  background: #f4f4f3;
+  color: #444;
 }
 
 .metrics-grid {
@@ -581,7 +599,7 @@ export default {
 }
 
 .content-row-3.staff-layout .today-card {
-  min-height: 340px;
+  min-height: 300px;
 }
 
 .stack-col {
@@ -625,9 +643,12 @@ export default {
 }
 
 .qa-green { background: #f0faf0; color: #2e7d32; }
-.qa-blue { background: #eef4ff; color: #1565c0; }
-.qa-amber { background: #fff8ee; color: #e57320; }
-.qa-purple { background: #f5f0ff; color: #7c3aed; }
+.qa-blue,
+.qa-amber,
+.qa-purple {
+  background: #f4f4f3;
+  color: #555;
+}
 
 .qa-label {
   font-size: 12px;
@@ -874,14 +895,20 @@ export default {
 }
 
 .today-card {
-  min-height: 380px;
+  min-height: 300px;
 }
 
 .today-empty {
-  min-height: 260px;
+  height: 130px;
+  border: 1px dashed #e1e1de;
+  border-radius: 14px;
+  background: #fafafa;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #999;
+  font-size: 13px;
+  margin-top: 16px;
 }
 
 .staff-focus {
@@ -908,6 +935,11 @@ export default {
 
 .focus-row b {
   color: #111;
+}
+
+.act-muted {
+  color: #999;
+  font-size: 11px;
 }
 
 @media (max-width: 1200px) {

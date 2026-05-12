@@ -2,41 +2,34 @@
   <div class="container">
     <div class="left">
       <div class="brand">
-        <div class="brand-icon">
-          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="2" width="7" height="7" rx="2" fill="#141414"/>
-            <rect x="11" y="2" width="7" height="7" rx="2" fill="#141414"/>
-            <rect x="2" y="11" width="7" height="7" rx="2" fill="#141414"/>
-            <rect x="11" y="11" width="7" height="7" rx="2" fill="#333"/>
-          </svg>
+        <img src="../assets/vulcan_bg.png" class="brand-logo" />
+        <div>
+          <h1>Vulcan Auto Service</h1>
+          <p class="brand-sub">Workshop Management</p>
         </div>
-        <h1>Cikgu Kereta</h1>
-        <p class="brand-sub">Workshop Management</p>
       </div>
 
-        <div class="feature-block">
+      <div class="feature-block">
         <div class="feature-label">What you can manage</div>
-
         <div class="feature-list">
-            <div class="feat"><span class="feat-dot"></span>Customer management</div>
-            <div class="feat"><span class="feat-dot"></span>Inventory control</div>
-            <div class="feat"><span class="feat-dot"></span>Quotation &amp; invoicing</div>
-            <div class="feat"><span class="feat-dot"></span>Expense tracking</div>
-            <div class="feat"><span class="feat-dot"></span>Reports &amp; receipts</div>
+          <div class="feat"><span class="feat-dot"></span>Customer management</div>
+          <div class="feat"><span class="feat-dot"></span>Inventory control</div>
+          <div class="feat"><span class="feat-dot"></span>Quotation &amp; invoicing</div>
+          <div class="feat"><span class="feat-dot"></span>Expense tracking</div>
+          <div class="feat"><span class="feat-dot"></span>Reports &amp; receipts</div>
         </div>
+      </div>
 
-        <div class="left-foot">
+      <div class="left-foot">
         <div class="left-foot-title">Secure internal access</div>
         <div class="left-foot-text">
-            Use your assigned staff account to access workshop operations, customer records, and transaction tools.
+          Use your assigned staff account to access workshop operations, customer records, and transaction tools.
         </div>
-        </div>
-        </div>
+      </div>
     </div>
 
     <div class="right">
       <div class="dot-bg"></div>
-
       <div class="card">
         <span class="card-pill">Internal access only</span>
         <h2>Sign in to your workspace</h2>
@@ -59,7 +52,10 @@
           </div>
 
           <div class="field">
-            <label>Password</label>
+            <div class="field-row">
+              <label>Password</label>
+              <router-link to="/forgot-password" class="forgot">Forgot password?</router-link>
+            </div>
             <input
               v-model="password"
               type="password"
@@ -100,16 +96,13 @@ export default {
     async login() {
       this.error = "";
       this.loading = true;
-
       try {
         const res = await api.post("/login", {
           email: this.email,
           password: this.password,
         });
-
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
-
         this.$router.push("/dashboard");
       } catch (err) {
         this.error =
@@ -139,78 +132,64 @@ export default {
 }
 
 /* ── Left panel ── */
+.left {
+  width: 280px;
+  background: #141414;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 28px;
+  flex-shrink: 0;
+  gap: 32px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px #2a2a2a;
+}
+
+.left h1 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: #666;
+  margin-top: 3px;
+}
+
 .feature-block {
-  margin-top: 40px;
+  flex: 1;
+  border-top: 1px solid #1f1f1f;
+  padding-top: 24px;
 }
 
 .feature-label {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #8a8a8a;
+  color: #555;
   margin-bottom: 14px;
   font-weight: 600;
 }
 
-.left {
-  width: 300px;
-  background: #141414;
+.feature-list {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 40px 32px;
-  flex-shrink: 0;
-  gap: 20px;
-}
-
-.left-foot {
-  margin-top: auto;
-  padding-top: 24px;
-  border-top: 1px solid #232323;
-}
-
-.left-foot-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #c5bebe;
-  margin-bottom: 6px;
-}
-
-.left-foot-text {
-  font-size: 11px;
-  color: #8a8a8a;
-  line-height: 1.5;
-}
-
-.brand-icon {
-  width: 36px;
-  height: 36px;
-  background: #fff;
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-
-.brand-icon svg {
-  width: 20px;
-  height: 20px;
-}
-
-.left h1 {
-  font-size: 20px;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: -0.4px;
-  line-height: 1;
-}
-
-.brand-sub {
-  font-size: 12px;
-  color: #7a7a7a;
-  font-weight: 400;
-  margin-top: 6px;
+  gap: 10px;
 }
 
 .feat {
@@ -218,23 +197,34 @@ export default {
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: #d1d1d1;
+  color: #c0c0c0;
   line-height: 1.4;
 }
 
-.feature-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
+.feat-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #444;
+  flex-shrink: 0;
 }
 
-.feat-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #6a6a6a;
-  flex-shrink: 0;
+.left-foot {
+  padding-top: 20px;
+  border-top: 1px solid #1f1f1f;
+}
+
+.left-foot-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #aaa;
+  margin-bottom: 6px;
+}
+
+.left-foot-text {
+  font-size: 11px;
+  color: #555;
+  line-height: 1.6;
 }
 
 /* ── Right panel ── */
@@ -246,6 +236,7 @@ export default {
   justify-content: center;
   position: relative;
   overflow: hidden;
+  padding-bottom: 60px; 
 }
 
 .dot-bg {
@@ -321,6 +312,29 @@ export default {
 /* ── Form fields ── */
 .field {
   margin-bottom: 14px;
+}
+
+.field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.field-row label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+}
+
+.forgot {
+  font-size: 11px;
+  color: #999;
+  text-decoration: none;
+}
+
+.forgot:hover {
+  color: #111;
 }
 
 .field label {

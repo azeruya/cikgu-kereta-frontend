@@ -34,12 +34,12 @@
           </button>
 
           <button
-            v-if="transaction?.status === 'invoice'"
+            v-if="transaction?.status === 'invoice' && balanceDue > 0"
             class="pill-btn primary"
             :disabled="actionLoading"
             @click="openPaymentModal"
           >
-            Mark Paid
+            Add Payment
           </button>
         </div>
       </div>
@@ -171,7 +171,7 @@
                 :disabled="actionLoading"
                 @click="openPaymentModal"
               >
-                Mark Paid
+                Add Payment
               </button>
             </div>
 
@@ -186,29 +186,41 @@
                 <span>RM {{ formatMoney(transaction.discount_amount || 0) }}</span>
               </div>
 
-              <div class="summary-row total">
-                <span>Total</span>
-                <span>RM {{ formatMoney(totalAfterDiscount) }}</span>
-              </div>
-              <div v-if="transaction.payments && transaction.payments.length" class="summary-box" style="margin-top:16px;">
-                <div class="summary-row">
-                    <span>Payment Method</span>
-                    <span>{{ transaction.payments[0].payment_method || "-" }}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Amount Paid</span>
-                    <span>RM {{ formatMoney(transaction.payments[0].amount_paid) }}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Reference</span>
-                    <span>{{ transaction.payments[0].payment_reference || "-" }}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Payment Date</span>
-                    <span>{{ formatDateTime(transaction.payments[0].payment_date) }}</span>
-                </div>
-                </div>
-            </div>
+              <div class="summary-row">
+    <span>Total Paid</span>
+    <span>RM {{ formatMoney(totalPaid) }}</span>
+  </div>
+
+  <div class="summary-row">
+    <span>Balance Due</span>
+    <span>RM {{ formatMoney(balanceDue) }}</span>
+  </div>
+
+  <div
+    v-if="transaction.payments && transaction.payments.length"
+    class="payment-history"
+  >
+    <div class="payment-title">Payment History</div>
+
+    <div
+      v-for="payment in transaction.payments"
+      :key="payment.id"
+      class="payment-row"
+    >
+      <div>
+        <div class="payment-method">{{ payment.payment_method || "-" }}</div>
+        <div class="payment-meta">
+          {{ formatDateTime(payment.payment_date) }}
+          <span v-if="payment.payment_reference">
+            · Ref: {{ payment.payment_reference }}
+          </span>
+        </div>
+      </div>
+
+      <strong>RM {{ formatMoney(payment.amount_paid) }}</strong>
+    </div>
+  </div>
+</div>
           </Card>
         </div>
 
@@ -427,7 +439,22 @@ export default {
         Number(this.transaction.total_amount || 0) -
         Number(this.transaction.discount_amount || 0)
       );
-    }
+    },
+
+    totalPaid() {
+      return (this.transaction?.payments || []).reduce(
+        (sum, payment) => sum + Number(payment.amount_paid || 0),
+        0
+      );
+    },
+
+    balanceDue() {
+      return Math.max(this.totalAfterDiscount - this.totalPaid, 0);
+    },
+
+    isFullyPaid() {
+      return this.balanceDue <= 0;
+    },
   },
 
   mounted() {
@@ -638,7 +665,7 @@ export default {
     openPaymentModal() {
     this.paymentFormError = "";
     this.paymentForm = {
-        amount_paid: Number(this.totalAfterDiscount || 0),
+        amount_paid: Number(this.balanceDue || 0),
         payment_method: "cash",
         payment_reference: "",
         payment_date: new Date().toISOString().slice(0, 10),
@@ -911,6 +938,46 @@ export default {
 .pdf-actions {
   display: flex;
   gap: 8px;
+}
+
+.payment-history {
+  margin-top: 12px;
+  border-top: 1px solid #eeeeea;
+  padding-top: 10px;
+}
+
+.payment-title {
+  font-size: 11px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f3f0;
+}
+
+.payment-row:last-child {
+  border-bottom: none;
+}
+
+.payment-method {
+  font-size: 12px;
+  font-weight: 600;
+  color: #111;
+  text-transform: capitalize;
+}
+
+.payment-meta {
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
 }
 
 @media (max-width: 1100px) {

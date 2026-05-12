@@ -11,7 +11,7 @@
             <rect x="11" y="11" width="7" height="7" rx="2" fill="#333"/>
           </svg>
         </div>
-        <h1>CikguKereta</h1>
+        <h1>Vulcan Auto Service</h1>
         <p class="brand-sub">Workshop Management</p>
       </div>
 
