@@ -115,9 +115,24 @@
 
       <Teleport to="body">
       <div class="modal" v-if="activeCustomer" @click.self="closeDetail">
-        <div v-if="detailLoading" class="modal-card">
-          <div class="empty-state">Loading customer details...</div>
-        </div>
+        <div v-if="detailLoading" class="modal-card large">
+  <div class="modal-header">
+    <span>Customer Details</span>
+    <button class="mini-btn" @click="closeDetail">✕</button>
+  </div>
+
+  <div class="modal-body">
+    <div class="skeleton-line title"></div>
+    <div class="skeleton-grid">
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+    </div>
+    <div class="skeleton-line wide"></div>
+    <div class="skeleton-line wide"></div>
+  </div>
+</div>
 
         <div v-else class="modal-card large">
           <div class="modal-header">
@@ -125,80 +140,112 @@
             <button class="mini-btn" @click="closeDetail">✕</button>
           </div>
 
-          <div class="modal-body">
-            <div class="customer-detail-grid">
-              <div><b>Phone:</b> {{ activeCustomer.phone || "-" }}</div>
-              <div><b>Email:</b> {{ activeCustomer.email || "-" }}</div>
-              <div><b>Address:</b> {{ activeCustomer.address || "-" }}</div>
-              <div><b>Total Visits:</b> {{ activeCustomer.transactions_count || 0 }}</div>
-              <div>
-                <b>Total Spent:</b>
-                RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
-              </div>
-            </div>
+          <div class="modal-body modal-detail-body">
+  <!-- CUSTOMER INFO -->
+  <div class="detail-section customer-info-section">
+  <div class="section-title">Customer Information</div>
 
-            <div class="jobs-section">
-              <div class="section-title">Vehicles</div>
+  <div class="customer-info-list">
+    <div class="info-row">
+      <div class="info-item">
+        <span class="info-label">Phone</span>
+        <span class="info-value">{{ activeCustomer.phone || "-" }}</span>
+      </div>
 
-              <div
-                v-for="vehicle in activeCustomer.vehicles || []"
-                :key="vehicle.id"
-                class="job-item"
-              >
-                <div>
-                  <div class="item-name">{{ vehicle.license_plate }}</div>
-                  <small>
-                    {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
-                    <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
-                  </small>
-                </div>
-              </div>
+      <div class="info-item">
+        <span class="info-label">Email</span>
+        <span class="info-value">{{ activeCustomer.email || "-" }}</span>
+      </div>
+  
+      <div class="info-item">
+        <span class="info-label">Address</span>
+        <span class="info-value">{{ activeCustomer.address || "-" }}</span>
+      </div>
 
-              <div
-                v-if="!activeCustomer.vehicles || activeCustomer.vehicles.length === 0"
-                class="empty-small"
-              >
-                No vehicles found
-              </div>
-            </div>
+      <div class="info-item">
+        <span class="info-label">Total Visits</span>
+        <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
+      </div>
 
-            <div class="jobs-section">
-              <div class="section-title">Recent Transactions</div>
+      <div class="info-item">
+        <span class="info-label">Total Spent</span>
+        <span class="info-value">
+          RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
 
-              <div
-                v-for="trx in activeCustomer.transactions || []"
-                :key="trx.id"
-                class="job-item"
-              >
-                <div>
-                  <div class="item-name">{{ trx.document_number || "-" }}</div>
-                  <small>
-                    {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
-                  </small>
-                </div>
-                <div class="job-price">
-                  RM {{ formatMoney(trx.total_amount) }}
-                </div>
-              </div>
+  <!-- VEHICLES -->
+  <div class="detail-section">
+    <div class="section-title">Vehicles</div>
 
-              <div
-                v-if="!activeCustomer.transactions || activeCustomer.transactions.length === 0"
-                class="empty-small"
-              >
-                No recent transactions
-              </div>
-            </div>
-          </div>
+    <div
+      v-for="vehicle in activeCustomer.vehicles || []"
+      :key="vehicle.id"
+      class="detail-list-item"
+    >
+      <div>
+        <div class="item-name">{{ vehicle.license_plate }}</div>
+        <small>
+          {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
+          <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
+        </small>
+      </div>
+    </div>
 
-            <div class="modal-actions">
-            <button type="button" class="mini-btn" @click="closeDetail">✕</button>
-            <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
-            <button @click="openFormModal(activeCustomer)">Edit</button>
-            <button @click="deleteCustomer(activeCustomer)">Delete</button>
-            <button class="primary" @click="viewCustomerTransactions(activeCustomer)">
-                View Transactions
-            </button>
-            </div>
+    <div
+      v-if="!activeCustomer.vehicles || activeCustomer.vehicles.length === 0"
+      class="empty-small"
+    >
+      No vehicles found
+    </div>
+  </div>
+
+  <!-- RECENT TRANSACTIONS -->
+  <div class="detail-section">
+    <div class="section-title">Recent Transactions</div>
+
+    <div
+      v-for="trx in activeCustomer.transactions || []"
+      :key="trx.id"
+      class="detail-list-item"
+    >
+      <div>
+        <div class="item-name">{{ trx.document_number || "-" }}</div>
+        <small>
+          {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
+        </small>
+      </div>
+
+      <div class="job-price">
+        RM {{ formatMoney(trx.total_amount) }}
+      </div>
+    </div>
+
+    <div
+      v-if="!activeCustomer.transactions || activeCustomer.transactions.length === 0"
+      class="empty-small"
+    >
+      No recent transactions
+    </div>
+  </div>
+</div>
+
+<div class="modal-actions split">
+  <div class="left-actions">
+    <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
+    <button @click="openFormModal(activeCustomer)">Edit</button>
+    <button class="primary" @click="viewCustomerTransactions(activeCustomer)">
+      View Transactions
+    </button>
+  </div>
+
+<button class="danger-light" @click="openDeleteModal(activeCustomer)">
+  Delete
+</button>
+</div>
         </div>
       </div>
         </Teleport>
@@ -208,6 +255,48 @@
       </div>
     </div>
   </div>
+
+  <Teleport to="body">
+  <div
+    v-if="showDeleteModal"
+    class="delete-modal-overlay"
+    @click.self="closeDeleteModal"
+  >
+    <div class="delete-modal-card">
+      <div class="delete-icon">!</div>
+
+      <div class="delete-title">
+        Delete customer?
+      </div>
+
+      <div class="delete-message">
+        Are you sure you want to delete
+        <strong>{{ customerToDelete?.name }}</strong>?
+        This action cannot be undone.
+      </div>
+
+      <div class="delete-actions">
+        <button
+          type="button"
+          class="delete-cancel"
+          :disabled="deletingCustomer"
+          @click="closeDeleteModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="delete-confirm"
+          :disabled="deletingCustomer"
+          @click="confirmDeleteCustomer"
+        >
+          {{ deletingCustomer ? "Deleting..." : "Delete" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</Teleport>
 
 <Teleport to="body">
   <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
@@ -354,7 +443,10 @@ export default {
         vehicle_make: "",
         vehicle_model: "",
         vehicle_year: ""
-        },
+      },
+      showDeleteModal: false,
+customerToDelete: null,
+deletingCustomer: false,
     };
   },
 
@@ -660,23 +752,40 @@ export default {
     }
     },
 
-    async deleteCustomer(customer) {
-    const ok = confirm(`Delete customer "${customer.name}"?`);
-    if (!ok) return;
+    openDeleteModal(customer) {
+  this.customerToDelete = customer;
+  this.showDeleteModal = true;
+},
 
-    try {
-        await api.delete(`/customers/${customer.id}`);
+closeDeleteModal() {
+  if (this.deletingCustomer) return;
 
-        if (this.activeCustomer?.id === customer.id) {
-        this.closeDetail();
-        }
+  this.showDeleteModal = false;
+  this.customerToDelete = null;
+},
 
-        await this.fetchCustomers(this.page);
-    } catch (error) {
-        console.error("Error deleting customer:", error);
-        this.error = error.response?.data?.message || "Failed to delete customer.";
-    }
-    },
+async confirmDeleteCustomer() {
+  if (!this.customerToDelete) return;
+
+  this.deletingCustomer = true;
+  this.error = "";
+
+  try {
+    await api.delete(`/customers/${this.customerToDelete.id}`);
+
+    this.showDeleteModal = false;
+    this.customerToDelete = null;
+
+    this.closeDetail();
+    await this.fetchCustomers(this.page);
+  } catch (error) {
+    console.error("Failed to delete customer:", error);
+    this.error =
+      error.response?.data?.message || "Failed to delete customer.";
+  } finally {
+    this.deletingCustomer = false;
+  }
+},
 
     viewCustomerTransactions(customer) {
     this.closeDetail();
@@ -724,11 +833,6 @@ export default {
   margin-top: 14px;
 }
 
-.section-title {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 8px;
-}
 
 .vehicle-form-box {
   margin-top: 16px;
@@ -742,6 +846,403 @@ export default {
   gap: 8px;
   font-size: 12px;
   color: #555;
+}
+
+/* skeleton loading styles */
+.skeleton-line {
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #eee, #f7f7f7, #eee);
+  background-size: 200% 100%;
+  animation: skeleton 1.2s infinite;
+}
+
+.skeleton-line.title {
+  width: 180px;
+  height: 20px;
+  margin-bottom: 24px;
+}
+
+.skeleton-line.wide {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 28px;
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* modal actions */
+.modal-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-section {
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fff;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+
+.customer-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 24px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item.full {
+  grid-column: 1 / -1;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: #888;
+}
+
+.detail-item strong {
+  font-size: 14px;
+  color: #222;
+  font-weight: 600;
+}
+
+.detail-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid #f1f1f1;
+}
+
+.detail-list-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.detail-list-item:last-child {
+  padding-bottom: 0;
+}
+
+.item-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+}
+
+.detail-list-item small {
+  font-size: 12px;
+  color: #666;
+}
+
+.job-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+  white-space: nowrap;
+}
+
+.empty-small {
+  font-size: 13px;
+  color: #999;
+  padding: 8px 0;
+}
+
+.modal-actions.split {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px 18px;
+  border-top: 1px solid #eeeeee;
+}
+
+.left-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-actions button {
+  height: 38px;
+  min-width: 92px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-actions button.primary {
+  min-width: 120px;
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.modal-actions button.danger-light {
+  min-width: 92px;
+  color: #b42318;
+  border-color: #f1b8b2;
+  background: #fff;
+}
+
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 28px;
+  margin-top: 16px;
+}
+
+.detail-item label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+.detail-item span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+
+/* modal */
+.modal-card.large {
+  width: min(520px, calc(100vw - 32px));
+  border-radius: 18px;
+}
+
+.modal-header {
+  padding: 18px 42px 8px;
+}
+
+.modal-header span {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #222;
+}
+
+.modal-body {
+  padding: 10px 42px 14px;
+}
+
+.modal-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-section {
+  border: 1px solid #eeeeee;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fff;
+}
+
+.section-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+
+.customer-info-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 9px 0;
+  border-top: 1px solid #f1f1f1;
+}
+
+.info-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.info-row.last {
+  padding-bottom: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.info-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #8a8a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-value {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.detail-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 0;
+  border-top: 1px solid #f1f1f1;
+}
+
+.detail-list-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.item-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #222;
+}
+
+.detail-list-item small {
+  font-size: 11.5px;
+  color: #666;
+}
+
+.job-price {
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* delete modal */
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(1.5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.delete-modal-card {
+  width: min(360px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  text-align: center;
+}
+
+.delete-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #fff1f0;
+  color: #b42318;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.delete-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #171717;
+  margin-bottom: 8px;
+}
+
+.delete-message {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.delete-message strong {
+  color: #222;
+  font-weight: 700;
+}
+
+.delete-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-actions button {
+  flex: 1;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-cancel {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+}
+
+.delete-confirm {
+  border: 1px solid #b42318;
+  background: #b42318;
+  color: #fff;
+}
+
+.delete-actions button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 @media (max-width: 900px) {

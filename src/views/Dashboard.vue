@@ -131,6 +131,67 @@
             </div>
           </Card>
 
+          <Card>
+            <template #header>
+              <span class="card-title">Online requests</span>
+
+              <button
+                class="card-link btn-link"
+                :disabled="importingRequests"
+                @click="importOnlineRequests"
+              >
+                {{ importingRequests ? "Importing..." : "Import" }}
+              </button>
+            </template>
+
+            <div v-if="importMessage" class="import-message">
+              {{ importMessage }}
+            </div>
+
+            <div v-if="onlineRequests.length === 0" class="empty-state">
+              No online requests imported yet.
+            </div>
+
+            <div v-else class="online-request-list">
+              <div
+                v-for="request in onlineRequests.slice(0, 3)"
+                :key="request.id"
+                class="online-request-item"
+              >
+                <div>
+                  <div class="or-name">
+                    {{ request.customer?.name || "-" }}
+                  </div>
+
+                  <div class="or-meta">
+                    {{ request.vehicle?.license_plate || "-" }}
+                    ·
+                    {{ request.vehicle?.make || "" }}
+                    {{ request.vehicle?.model || "" }}
+                  </div>
+
+                  <div class="or-problem">
+                    {{ request.problem_description || "No problem stated" }}
+                  </div>
+                </div>
+
+<div class="or-actions">
+  <span class="or-status">
+    {{ request.status }}
+  </span>
+
+  <button
+    v-if="request.status !== 'converted'"
+    class="or-convert-btn"
+    @click="convertOnlineRequest(request)"
+  >
+    Convert
+  </button>
+</div>
+              </div>
+            </div>
+          </Card>
+
           <Card v-if="isAdmin">
           <template #header>
             <span class="card-title">Weekly Revenue</span>
@@ -279,6 +340,10 @@ export default {
       weeklyRevenueRaw: [],
       lowStockItemsRaw: [],
       recentActivity: [],
+
+      onlineRequests: [],
+      importingRequests: false,
+      importMessage: "",
     };
   },
 
@@ -435,6 +500,7 @@ export default {
 
   mounted() {
     this.fetchDashboard();
+    this.fetchOnlineRequests();
   },
 
   methods: {
@@ -482,6 +548,61 @@ export default {
         this.$router.push("/login");
       }
     },
+
+    async fetchOnlineRequests() {
+      try {
+        const res = await api.get("/online-requests");
+        this.onlineRequests = res.data || [];
+      } catch (error) {
+        console.error("Error loading online requests:", error);
+      }
+    },
+
+    async importOnlineRequests() {
+      this.importingRequests = true;
+      this.importMessage = "";
+      this.error = "";
+
+      try {
+        const res = await api.post("/online-requests/import");
+
+        this.importMessage = res.data.message || "Import completed.";
+
+        await this.fetchOnlineRequests();
+        await this.fetchDashboard();
+
+        sessionStorage.removeItem("dashboard");
+      } catch (error) {
+        console.error("Error importing online requests:", error);
+        this.error =
+          error.response?.data?.message || "Failed to import online requests.";
+      } finally {
+        this.importingRequests = false;
+      }
+    },
+
+    async convertOnlineRequest(request) {
+  try {
+    this.error = "";
+
+    const res = await api.post(`/online-requests/${request.id}/convert`);
+
+    const redirect = res.data.redirect;
+
+    this.$router.push({
+      path: "/transactions/new",
+      query: {
+        customer_id: redirect.customer_id,
+        vehicle_id: redirect.vehicle_id,
+        request_id: redirect.request_id,
+      },
+    });
+  } catch (error) {
+    console.error("Error converting online request:", error);
+    this.error =
+      error.response?.data?.message || "Failed to convert online request.";
+  }
+},
 
     formatMoney(value) {
       return Number(value || 0).toFixed(2);
@@ -579,6 +700,100 @@ export default {
 .mi-blue { background: #eef4ff; color: #1565c0; }
 .mi-amber { background: #fff8ee; color: #e57320; }
 .mi-red { background: #fff0f0; color: #e53935; }
+
+.btn-link {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.import-message {
+  font-size: 12px;
+  color: #2e7d32;
+  background: #f0faf0;
+  border: 1px solid #d8eddc;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.online-request-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.online-request-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #eeeeea;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.or-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #111;
+}
+
+.or-meta {
+  font-size: 11px;
+  color: #777;
+  margin-top: 2px;
+}
+
+.or-problem {
+  font-size: 11px;
+  color: #999;
+  margin-top: 4px;
+  max-width: 230px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.or-status {
+  height: fit-content;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f4f4f3;
+  color: #555;
+  text-transform: capitalize;
+  flex-shrink: 0;
+}
+
+.or-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.or-convert-btn {
+  border: none;
+  background: #111;
+  color: #fff;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.or-convert-btn:hover {
+  background: #333;
+}
 
 .content-row {
   display: grid;

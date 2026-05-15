@@ -12,12 +12,12 @@
       <div class="top-bar">
         <div class="page-intro">
           <div class="page-title-row">
-            <div class="page-title">Reports</div>
-            <span class="page-chip">{{ periodChartRaw.length || 0 }} period records</span>
+            <div class="page-title">Laporan</div>
+            <span class="page-chip">{{ periodChartRaw.length || 0 }} data periode</span>
           </div>
 
           <div class="page-date">
-            Financial overview and business analytics
+            Ringkasan keuangan dan analitik bisnis
           </div>
         </div>
 
@@ -25,10 +25,10 @@
           <input
             class="search"
             v-model.trim="searchQuery"
-            placeholder="Search customer / plate / make / model..."
+            placeholder="Cari pelanggan / plat nomor / merek / model..."
           />
           <button class="pill-btn" type="button" @click="applyFilters">
-            Refresh
+            Muat Ulang
           </button>
         </div>
       </div>
@@ -36,7 +36,7 @@
       <div class="filter-shell">
         <Card>
           <template #header>
-            <span class="card-title">Filters</span>
+            <span class="card-title">Filter</span>
           </template>
 
           <div class="filters-bar">
@@ -44,20 +44,20 @@
             <input type="date" v-model="endDate" />
 
             <select v-model="statusFilter">
-              <option value="">All Statuses</option>
-              <option value="quotation">Quotation</option>
-              <option value="invoice">Invoice</option>
-              <option value="receipt">Receipt</option>
+              <option value="">Semua Status</option>
+              <option value="quotation">Penawaran</option>
+              <option value="invoice">Faktur</option>
+              <option value="receipt">Struk</option>
             </select>
 
             <select v-model="paymentStatusFilter">
-              <option value="">All Payments</option>
-              <option value="paid">Paid</option>
-              <option value="unpaid">Unpaid</option>
-              <option value="partial">Partial</option>
+              <option value="">Semua Pembayaran</option>
+              <option value="paid">Lunas</option>
+              <option value="unpaid">Belum Lunas</option>
+              <option value="partial">Sebagian</option>
             </select>
 
-            <button class="pill-btn" @click="applyFilters">Apply</button>
+            <button class="pill-btn" @click="applyFilters">Terapkan</button>
             <button class="pill-btn" @click="clearFilters">Reset</button>
           </div>
         </Card>
@@ -67,89 +67,89 @@
       <div class="report-hero-grid">
         <Card>
           <template #header>
-            <span class="card-title hero-title">Financial Overview</span>
-            <span class="card-link">Selected period</span>
+            <span class="card-title hero-title">Ringkasan Keuangan</span>
+            <span class="card-link">Periode terpilih</span>
           </template>
 
           <div class="hero-top">
             <div class="hero-stat">
-              <span>Total Revenue</span>
-              <strong>RM {{ formatMoney(summary.total_revenue) }}</strong>
+              <span>Total Pendapatan</span>
+              <strong>Rp {{ formatMoney(summary.total_revenue) }}</strong>
             </div>
 
             <div class="hero-stat">
-              <span>Total Expenses</span>
-              <strong>RM {{ formatMoney(summary.total_expenses) }}</strong>
+              <span>Total Pengeluaran</span>
+              <strong>Rp {{ formatMoney(summary.total_expenses) }}</strong>
             </div>
 
             <div class="hero-stat">
-              <span>Estimated Profit</span>
+              <span>Estimasi Keuntungan</span>
               <strong :class="Number(summary.estimated_profit) < 0 ? 'danger-text' : ''">
-                RM {{ formatMoney(summary.estimated_profit) }}
+                Rp {{ formatMoney(summary.estimated_profit) }}
               </strong>
             </div>
           </div>
 
-          <div v-if="loading" class="empty-state">Loading report...</div>
+          <div v-if="loading" class="empty-state">Memuat laporan...</div>
 
-            <div v-else-if="periodChartRaw.length === 0" class="empty-state">
-            No chart data found.
-            </div>
+          <div v-else-if="periodChartRaw.length === 0" class="empty-state">
+            Tidak ada data grafik ditemukan.
+          </div>
 
-            <div v-else class="hero-chart apex-chart-wrap">
+          <div v-else class="hero-chart apex-chart-wrap">
             <apexchart
-                type="line"
-                height="340"
-                :options="financialChartOptions"
-                :series="financialChartSeries"
+              type="line"
+              height="340"
+              :options="financialChartOptions"
+              :series="financialChartSeries"
             />
-            </div>
+          </div>
         </Card>
 
         <div class="hero-side">
           <Card>
             <template #header>
-              <span class="card-title">Collection Status</span>
+              <span class="card-title">Status Pembayaran</span>
             </template>
 
             <div class="ring-shell apex-chart-wrap small-chart">
-            <apexchart
+              <apexchart
                 type="radialBar"
                 height="220"
                 :options="paidStatusChartOptions"
                 :series="paidStatusChartSeries"
-            />
+              />
             </div>
 
             <div class="summary-stack">
               <div class="summary-line">
-                <span>Paid</span>
-                <b>RM {{ formatMoney(paidVsUnpaid.paid) }}</b>
+                <span>Lunas</span>
+                <b>Rp {{ formatMoney(paidVsUnpaid.paid) }}</b>
               </div>
               <div class="summary-line">
-                <span>Unpaid</span>
-                <b>RM {{ formatMoney(paidVsUnpaid.unpaid) }}</b>
+                <span>Belum Lunas</span>
+                <b>Rp {{ formatMoney(paidVsUnpaid.unpaid) }}</b>
               </div>
             </div>
           </Card>
 
           <Card>
             <template #header>
-              <span class="card-title">Quick Overview</span>
+              <span class="card-title">Ringkasan Cepat</span>
             </template>
 
             <div class="mini-stat-list">
               <div class="mini-stat-row">
-                <span>Total Transactions</span>
+                <span>Total Transaksi</span>
                 <b>{{ summary.total_transactions }}</b>
               </div>
               <div class="mini-stat-row">
-                <span>Total Paid</span>
-                <b>RM {{ formatMoney(summary.total_paid) }}</b>
+                <span>Total Lunas</span>
+                <b>Rp {{ formatMoney(summary.total_paid) }}</b>
               </div>
               <div class="mini-stat-row">
-                <span>Total Unpaid</span>
-                <b>RM {{ formatMoney(summary.total_unpaid) }}</b>
+                <span>Total Belum Lunas</span>
+                <b>Rp {{ formatMoney(summary.total_unpaid) }}</b>
               </div>
             </div>
           </Card>
@@ -160,64 +160,67 @@
       <div class="analytics-grid">
         <Card>
           <template #header>
-            <span class="card-title">Revenue by Make</span>
+            <span class="card-title">Pendapatan Berdasarkan Merek</span>
           </template>
 
           <div v-if="revenueByMake.length === 0" class="empty-small">
-            No make analytics found.
-            </div>
+            Tidak ada analitik merek ditemukan.
+          </div>
 
-            <div v-else class="apex-chart-wrap medium-chart">
+          <div v-else class="apex-chart-wrap medium-chart">
             <apexchart
-                type="bar"
-                height="280"
-                :options="makeChartOptions"
-                :series="makeChartSeries"
+              type="bar"
+              height="280"
+              :options="makeChartOptions"
+              :series="makeChartSeries"
             />
-            </div>
+          </div>
         </Card>
 
         <Card>
           <template #header>
-            <span class="card-title">Revenue by Model</span>
+            <span class="card-title">Pendapatan Berdasarkan Model</span>
           </template>
 
           <div v-if="revenueByModel.length === 0" class="empty-small">
-            No model analytics found.
-            </div>
+            Tidak ada analitik model ditemukan.
+          </div>
 
-            <div v-else class="apex-chart-wrap medium-chart">
+          <div v-else class="apex-chart-wrap medium-chart">
             <apexchart
-                type="bar"
-                height="280"
-                :options="modelChartOptions"
-                :series="modelChartSeries"
+              type="bar"
+              height="280"
+              :options="modelChartOptions"
+              :series="modelChartSeries"
             />
-            </div>
+          </div>
         </Card>
       </div>
 
       <div class="analytics-grid">
         <Card>
           <template #header>
-            <span class="card-title">Customer Insights</span>
+            <span class="card-title">Insight Pelanggan</span>
           </template>
 
           <div class="insight-stats">
             <div class="insight-stat">
-              <span>Unique Customers</span>
+              <span>Pelanggan Unik</span>
               <strong>{{ customerAnalytics.unique_customers || 0 }}</strong>
             </div>
             <div class="insight-stat">
-              <span>Repeat Customers</span>
+              <span>Pelanggan Tetap</span>
               <strong>{{ customerAnalytics.repeat_customers || 0 }}</strong>
             </div>
           </div>
 
-          <div class="subsection-title">Top Customers</div>
+          <div class="subsection-title">Pelanggan Teratas</div>
 
-          <div v-if="!customerAnalytics.top_customers || customerAnalytics.top_customers.length === 0" class="empty-small">
-            No customer analytics found.
+          <div
+            v-if="!customerAnalytics.top_customers || customerAnalytics.top_customers.length === 0"
+            class="empty-small"
+          >
+            Tidak ada analitik pelanggan ditemukan.
           </div>
 
           <div v-else class="category-list">
@@ -228,29 +231,32 @@
             >
               <div>
                 <div class="item-name">{{ row.name }}</div>
-                <div class="subtext">{{ row.transactions_count }} transaction(s)</div>
+                <div class="subtext">{{ row.transactions_count }} transaksi</div>
               </div>
-              <div class="job-price">RM {{ formatMoney(row.revenue) }}</div>
+              <div class="job-price">Rp {{ formatMoney(row.revenue) }}</div>
             </div>
           </div>
         </Card>
 
         <Card>
           <template #header>
-            <span class="card-title">Vehicle Insights</span>
+            <span class="card-title">Insight Kendaraan</span>
           </template>
 
           <div class="insight-stats single">
             <div class="insight-stat">
-              <span>Unique Vehicles</span>
+              <span>Kendaraan Unik</span>
               <strong>{{ vehicleAnalytics.unique_vehicles || 0 }}</strong>
             </div>
           </div>
 
-          <div class="subsection-title">Top Vehicles</div>
+          <div class="subsection-title">Kendaraan Teratas</div>
 
-          <div v-if="!vehicleAnalytics.top_vehicles || vehicleAnalytics.top_vehicles.length === 0" class="empty-small">
-            No vehicle analytics found.
+          <div
+            v-if="!vehicleAnalytics.top_vehicles || vehicleAnalytics.top_vehicles.length === 0"
+            class="empty-small"
+          >
+            Tidak ada analitik kendaraan ditemukan.
           </div>
 
           <div v-else class="category-list">
@@ -264,10 +270,10 @@
                   {{ row.license_plate }} - {{ row.make }} {{ row.model }}
                 </div>
                 <div class="subtext">
-                  {{ row.year || "-" }} • {{ row.transactions_count }} transaction(s)
+                  {{ row.year || "-" }} • {{ row.transactions_count }} transaksi
                 </div>
               </div>
-              <div class="job-price">RM {{ formatMoney(row.revenue) }}</div>
+              <div class="job-price">Rp {{ formatMoney(row.revenue) }}</div>
             </div>
           </div>
         </Card>
@@ -346,24 +352,24 @@ export default {
     }
   },
 
-    menu() {
-      const baseMenu = [
-        { name: "Dashboard", path: "/dashboard", icon: "grid" },
-        { name: "Transactions", path: "/transactions", icon: "list" },
-        { name: "Customers", path: "/customers", icon: "user" },
-        { name: "Inventory", path: "/inventory", icon: "box" },
-        { name: "Expenses", path: "/expenses", icon: "alert" },
-      ];
+menu() {
+  const baseMenu = [
+    { name: "Beranda", path: "/dashboard", icon: "grid" },
+    { name: "Transaksi", path: "/transactions", icon: "list" },
+    { name: "Pelanggan", path: "/customers", icon: "user" },
+    { name: "Inventaris", path: "/inventory", icon: "box" },
+    { name: "Pengeluaran", path: "/expenses", icon: "alert" },
+  ];
 
-      if (this.currentUser?.role === "admin") {
-        baseMenu.push(
-          { name: "Reports", path: "/reports", icon: "chart" },
-          { name: "Users", path: "/users", icon: "user" }
-        );
-      }
+  if (this.currentUser?.role === "admin") {
+    baseMenu.push(
+      { name: "Laporan", path: "/reports", icon: "chart" },
+      { name: "Pengguna", path: "/users", icon: "user" }
+    );
+  }
 
-      return baseMenu;
-    },
+  return baseMenu;
+},
 
   paidPercentage() {
     const paid = Number(this.paidVsUnpaid.paid || 0);
@@ -373,25 +379,25 @@ export default {
     return (paid / total) * 100;
   },
 
-  financialChartSeries() {
-    return [
-      {
-        name: "Revenue",
-        type: "column",
-        data: this.periodChartRaw.map((row) => Number(row.revenue || 0)),
-      },
-      {
-        name: "Expenses",
-        type: "column",
-        data: this.periodChartRaw.map((row) => Number(row.expense || 0)),
-      },
-      {
-        name: "Profit",
-        type: "line",
-        data: this.periodChartRaw.map((row) => Number(row.profit || 0)),
-      },
-    ];
-  },
+financialChartSeries() {
+  return [
+    {
+      name: "Pendapatan",
+      type: "column",
+      data: this.periodChartRaw.map((row) => Number(row.revenue || 0)),
+    },
+    {
+      name: "Pengeluaran",
+      type: "column",
+      data: this.periodChartRaw.map((row) => Number(row.expense || 0)),
+    },
+    {
+      name: "Keuntungan",
+      type: "line",
+      data: this.periodChartRaw.map((row) => Number(row.profit || 0)),
+    },
+  ];
+},
 
   financialChartOptions() {
     return {
@@ -431,7 +437,7 @@ export default {
       },
       yaxis: {
         labels: {
-          formatter: (value) => `RM ${this.shortMoney(value)}`,
+          formatter: (value) => `Rp ${this.shortMoney(value)}`,
           style: {
             colors: "#888",
             fontSize: "11px",
@@ -444,7 +450,7 @@ export default {
       },
       tooltip: {
         y: {
-          formatter: (value) => `RM ${Number(value || 0).toFixed(2)}`,
+          formatter: (value) => `Rp ${this.formatMoney(value)}`,
         },
       },
       colors: ["#111111", "#9a9a9a", "#2f8f4e"],
@@ -490,7 +496,7 @@ export default {
           },
         },
       },
-      labels: ["Paid"],
+      labels: ["Lunas"],
       colors: ["#111111"],
     };
   },
@@ -498,7 +504,7 @@ export default {
   makeChartSeries() {
     return [
       {
-        name: "Revenue",
+        name: "Pendapatan",
         data: this.revenueByMake.map((row) => Number(row.revenue || 0)),
       },
     ];
@@ -524,7 +530,7 @@ export default {
       xaxis: {
         categories: this.revenueByMake.map((row) => row.make),
         labels: {
-          formatter: (value) => `RM ${this.shortMoney(value)}`,
+          formatter: (value) => `Rp ${this.shortMoney(value)}`,
           style: {
             colors: "#888",
             fontSize: "11px",
@@ -545,7 +551,7 @@ export default {
       },
       tooltip: {
         y: {
-          formatter: (value) => `RM ${Number(value || 0).toFixed(2)}`,
+          formatter: (value) => `Rp ${this.formatMoney(value)}`,
         },
       },
       colors: ["#111111"],
@@ -555,7 +561,7 @@ export default {
   modelChartSeries() {
     return [
       {
-        name: "Revenue",
+        name: "Pendapatan",
         data: this.revenueByModel.map((row) => Number(row.revenue || 0)),
       },
     ];
@@ -581,7 +587,7 @@ export default {
       xaxis: {
         categories: this.revenueByModel.map((row) => row.model),
         labels: {
-          formatter: (value) => `RM ${this.shortMoney(value)}`,
+          formatter: (value) => `Rp ${this.shortMoney(value)}`,
           style: {
             colors: "#888",
             fontSize: "11px",
@@ -602,7 +608,7 @@ export default {
       },
       tooltip: {
         y: {
-          formatter: (value) => `RM ${Number(value || 0).toFixed(2)}`,
+          formatter: (value) => `Rp ${this.formatMoney(value)}`,
         },
       },
       colors: ["#6f6f6f"],
@@ -704,15 +710,34 @@ export default {
       this.fetchReports();
     },
 
-    formatMoney(value) {
-      return Number(value || 0).toFixed(2);
-    },
+formatMoney(value) {
+  const amount = Number(value || 0) * 1000;
 
-    shortMoney(value) {
-      const num = Number(value || 0);
-      if (Math.abs(num) >= 1000) return `${(num / 1000).toFixed(1)}k`;
-      return num.toFixed(0);
-    },
+  return new Intl.NumberFormat("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+},
+
+shortMoney(value) {
+  const num = Number(value || 0) * 1000;
+
+  if (Math.abs(num) >= 1_000_000_000) {
+    return `${(num / 1_000_000_000).toFixed(1)} M`;
+  }
+
+  if (Math.abs(num) >= 1_000_000) {
+    return `${(num / 1_000_000).toFixed(1)} jt`;
+  }
+
+  if (Math.abs(num) >= 1000) {
+    return `${(num / 1000).toFixed(0)} rb`;
+  }
+
+  return new Intl.NumberFormat("id-ID", {
+    maximumFractionDigits: 0,
+  }).format(num);
+},
   },
 
   watch: {

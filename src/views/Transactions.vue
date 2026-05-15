@@ -93,37 +93,34 @@
                 <td>{{ formatDate(trx.created_at) }}</td>
 
                 <td>
-                  <div class="action-group">
-                    <router-link
-                    class="mini-btn link-btn"
-                    :to="`/transactions/${trx.id}`"
-                    >
-                    View
-                    </router-link>
+  <div class="action-group">
+    <router-link class="mini-btn" :to="`/transactions/${trx.id}`">
+      View
+    </router-link>
 
-                    <button class="mini-btn" @click="openWhatsApp(trx)">
-                      WhatsApp
-                    </button>
+    <button class="mini-btn secondary" @click="openWhatsApp(trx)">
+      WhatsApp
+    </button>
 
-                    <button
-                      v-if="trx.status === 'quotation'"
-                      class="mini-btn primary"
-                      :disabled="actionLoadingId === trx.id"
-                      @click="confirmQuotation(trx.id)"
-                    >
-                      {{ actionLoadingId === trx.id ? "..." : "Confirm" }}
-                    </button>
+    <button
+      v-if="trx.status === 'quotation'"
+      class="mini-btn primary"
+      :disabled="actionLoadingId === trx.id"
+      @click="confirmQuotation(trx.id)"
+    >
+      {{ actionLoadingId === trx.id ? "..." : "Confirm" }}
+    </button>
 
-                    <button
-                      v-if="trx.status === 'invoice'"
-                      class="mini-btn success"
-                      :disabled="actionLoadingId === trx.id"
-                      @click="openPaymentModal(trx)"
-                    >
-                      {{ actionLoadingId === trx.id ? "..." : "Add Payment" }}
-                    </button>
-                  </div>
-                </td>
+    <button
+      v-if="trx.status === 'invoice'"
+      class="mini-btn success"
+      :disabled="actionLoadingId === trx.id"
+      @click="openPaymentModal(trx)"
+    >
+      {{ actionLoadingId === trx.id ? "..." : "Add Payment" }}
+    </button>
+  </div>
+</td>
               </tr>
             </tbody>
           </table>
@@ -307,7 +304,9 @@ export default {
       }
 
       return list;
-    }
+    },
+
+    
   },
 
   mounted() {
@@ -354,7 +353,10 @@ export default {
       }
 
       try {
-        const params = { page };
+        const params = {
+          page,
+          per_page: 8,
+        };
 
         if (this.activeTab !== "all") {
           params.status = this.activeTab;

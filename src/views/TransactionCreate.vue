@@ -395,7 +395,9 @@ export default {
     await this.fetchCustomers();
 
     if (this.isEditMode) {
-        await this.loadTransactionForEdit();
+      await this.loadTransactionForEdit();
+    } else {
+      await this.applyOnlineRequestPrefill();
     }
   },
 
@@ -424,6 +426,44 @@ export default {
             this.$router.push("/login");
         }
     },
+
+    async applyOnlineRequestPrefill() {
+  const customerId = this.$route.query.customer_id;
+  const vehicleId = this.$route.query.vehicle_id;
+  const requestId = this.$route.query.request_id;
+
+  if (!customerId) return;
+
+  this.form.customer_id = Number(customerId);
+
+  await this.fetchVehicles(customerId);
+
+  if (vehicleId) {
+    this.form.vehicle_id = Number(vehicleId);
+
+    this.selectedVehicle =
+      this.vehicles.find((v) => Number(v.id) === Number(vehicleId)) || null;
+
+    await this.fetchCompatibleParts(vehicleId);
+  }
+
+if (requestId) {
+  try {
+    const res = await api.get(`/online-requests/${requestId}`);
+
+    const onlineRequest = res.data;
+
+    this.form.notes = `Customer reported issue:
+${onlineRequest.problem_description || "-"}
+
+Created from online request #${requestId}`;
+  } catch (error) {
+    console.error("Failed to load online request", error);
+
+    this.form.notes = `Created from online request #${requestId}`;
+  }
+}
+},
 
     async handleCustomerChange() {
       this.form.vehicle_id = "";
@@ -581,6 +621,7 @@ export default {
         vehicle_id: Number(this.form.vehicle_id),
         discount_amount: Number(this.form.discount_amount || 0),
         notes: this.form.notes,
+        online_request_id: this.$route.query.request_id || null,
         items: this.form.items.map((item) => ({
             item_type: item.item_type,
             part_id: item.item_type === "part" ? item.part_id : null,

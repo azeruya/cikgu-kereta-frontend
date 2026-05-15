@@ -194,121 +194,217 @@
         </div>
       </div>
 
-      <Teleport to ="body">
-      <div class="modal" v-if="activePart && !showRestockModal" @click.self="closeDetail">
-        <div v-if="detailLoading" class="modal-card large">
-          <div class="empty-state">Loading part details...</div>
+      <Teleport to="body">
+  <div
+    class="modal"
+    v-if="activePart && !showRestockModal"
+    @click.self="closeDetail"
+  >
+    <div v-if="detailLoading" class="modal-card large">
+      <div class="modal-header">
+        <span>Part Details</span>
+        <button class="mini-btn" @click="closeDetail">✕</button>
+      </div>
+
+      <div class="modal-body modal-detail-body">
+        <div class="detail-section">
+          <div class="skeleton-line title"></div>
+          <div class="skeleton-grid">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+          </div>
         </div>
 
-        <div v-else class="modal-card large">
-          <div class="modal-header">
-            <span>{{ activePart.name }} <span v-if="activePart.variant">— {{ activePart.variant }}</span></span>
-            <button class="mini-btn" @click="closeDetail">✕</button>
-          </div>
+        <div class="detail-section">
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-line wide"></div>
+        </div>
+      </div>
+    </div>
 
-          <div class="modal-body">
-            <div class="part-detail-grid">
-              <div><b>SKU:</b> {{ activePart.sku || "-" }}</div>
-              <div><b>Type:</b> {{ activePart.is_generic ? "Generic" : "Specific" }}</div>
-              <div><b>Cost Price:</b> RM {{ formatMoney(activePart.cost_price) }}</div>
-              <div><b>Selling Price:</b> RM {{ formatMoney(activePart.selling_price) }}</div>
-              <div><b>Stock:</b> {{ activePart.stock }}</div>
-              <div><b>Min Threshold:</b> {{ activePart.min_stock_threshold }}</div>
-              <div class="full"><b>Description:</b> {{ activePart.description || "-" }}</div>
-            </div>
+    <div v-else class="modal-card large">
+      <div class="modal-header">
+        <span>
+          {{ activePart.name }}
+          <span v-if="activePart.variant">— {{ activePart.variant }}</span>
+        </span>
+        <button class="mini-btn" @click="closeDetail">✕</button>
+      </div>
 
-            <div class="jobs-section">
-              <div class="section-title">Compatibility</div>
+      <div class="modal-body modal-detail-body">
+        <div class="detail-section">
+          <div class="section-title">Part Information</div>
 
-              <div v-if="activePart.is_generic" class="empty-small">
-                This part is marked as generic and can be used across vehicles.
+          <div class="info-list">
+            <div class="info-row">
+              <div class="info-item">
+                <span class="info-label">SKU</span>
+                <span class="info-value">{{ activePart.sku || "-" }}</span>
               </div>
 
-              <div
-                v-else-if="activePart.compatibilities && activePart.compatibilities.length > 0"
-              >
-                <div
-                  v-for="compat in activePart.compatibilities"
-                  :key="compat.id"
-                  class="job-item"
-                >
-                  <div>
-                    <div class="item-name">
-                      {{ compat.make || "-" }} {{ compat.model || "" }}
-                    </div>
-                    <small>
-                      Year:
-                      {{
-                        compat.year_from || compat.year_to
-                          ? `${compat.year_from || "-"} to ${compat.year_to || "-"}`
-                          : "All years"
-                      }}
-                    </small>
-                  </div>
-                </div>
-              </div>
-
-              <div v-else class="empty-small">
-                No compatibility rows found.
+              <div class="info-item">
+                <span class="info-label">Type</span>
+                <span class="info-value">
+                  {{ activePart.is_generic ? "Generic" : "Vehicle Specific" }}
+                </span>
               </div>
             </div>
+
+            <div class="info-row">
+              <div class="info-item">
+                <span class="info-label">Cost Price</span>
+                <span class="info-value">
+                  RM {{ formatMoney(activePart.cost_price) }}
+                </span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Selling Price</span>
+                <span class="info-value">
+                  RM {{ formatMoney(activePart.selling_price) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-item">
+                <span class="info-label">Stock</span>
+                <span :class="['info-value', stockClass(activePart)]">
+                  {{ activePart.stock }} left
+                </span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Minimum Stock</span>
+                <span class="info-value">
+                  {{ activePart.min_stock_threshold }}
+                </span>
+              </div>
+            </div>
+
+            <div class="info-row last">
+              <div class="info-item full">
+                <span class="info-label">Description</span>
+                <span class="info-value">
+                  {{ activePart.description || "-" }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="section-title">Compatibility</div>
+
+          <div v-if="activePart.is_generic" class="empty-small">
+            This part is generic and can be used for all vehicles.
           </div>
 
-          <div class="modal-actions">
-            <router-link
-            :to="`/inventory/${activePart.id}/edit`"
-            class="pill-btn link-btn"
+          <div
+            v-else-if="activePart.compatibilities && activePart.compatibilities.length > 0"
+          >
+            <div
+              v-for="compat in activePart.compatibilities"
+              :key="compat.id"
+              class="detail-list-item"
             >
-            Edit
-            </router-link>
-            <button class="primary" @click="openRestockModal">Restock</button>
+              <div>
+                <div class="item-name">
+                  {{ compat.make || "-" }} {{ compat.model || "" }}
+                </div>
+                <small>
+                  Year:
+                  {{
+                    compat.year_from || compat.year_to
+                      ? `${compat.year_from || "-"} to ${compat.year_to || "-"}`
+                      : "All years"
+                  }}
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div v-else class="empty-small">
+            No compatibility rows found.
           </div>
         </div>
       </div>
-        </Teleport>
+
+      <div class="modal-actions split">
+        <div class="left-actions">
+          <router-link
+            :to="`/inventory/${activePart.id}/edit`"
+            class="modal-action-btn"
+          >
+            Edit
+          </router-link>
+
+          <button class="primary" @click="openRestockModal">
+            Restock
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Teleport>
 
         <Teleport to="body">
-        <div v-if="showRestockModal" class="modal" style="z-index: 2000;" @click.self="closeRestockModal">
-            <div class="modal-card">
-            <div class="modal-header">
-                <span>Restock {{ activePart?.name || "Part" }}</span>
-                <button type="button" class="mini-btn" @click="closeRestockModal">✕</button>
-            </div>
+  <div
+    v-if="showRestockModal"
+    class="stacked-modal"
+    @click.self="closeRestockModal"
+  >
+    <div class="confirm-card restock-card">
+      <div class="confirm-title">
+        Restock part
+      </div>
 
-            <div class="modal-body">
-                <div class="field">
-                <label>Quantity to add</label>
-                <input
-                    v-model.number="restockForm.quantity"
-                    type="number"
-                    min="1"
-                    step="1"
-                />
-                </div>
+      <div class="confirm-message left">
+        Add stock for <strong>{{ activePart?.name || "this part" }}</strong>.
+      </div>
 
-                <div v-if="activePart" style="margin-top: 10px; font-size: 12px; color: #666;">
-                Current stock: <b>{{ activePart.stock }}</b>
-                </div>
+      <div class="field">
+        <label>Quantity to add</label>
+        <input
+          v-model.number="restockForm.quantity"
+          type="number"
+          min="1"
+          step="1"
+        />
+      </div>
 
-                <div v-if="restockError" class="page-error" style="margin-top: 12px;">
-                {{ restockError }}
-                    </div>
-                </div>
+      <div v-if="activePart" class="current-stock-box">
+        Current stock: <strong>{{ activePart.stock }}</strong>
+      </div>
 
-                <div class="modal-actions">
-                    <button type="button" @click="closeRestockModal">Cancel</button>
-                    <button
-                    type="button"
-                    class="primary"
-                    :disabled="restockLoading"
-                    @click="submitRestock"
-                    >
-                    {{ restockLoading ? "Saving..." : "Confirm Restock" }}
-                    </button>
-                </div>
-                </div>
-            </div>
-            </Teleport>
+      <div v-if="restockError" class="page-error" style="margin-top: 12px;">
+        {{ restockError }}
+      </div>
+
+      <div class="confirm-actions">
+        <button
+          type="button"
+          class="confirm-cancel"
+          :disabled="restockLoading"
+          @click="closeRestockModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="confirm-primary"
+          :disabled="restockLoading"
+          @click="submitRestock"
+        >
+          {{ restockLoading ? "Saving..." : "Confirm" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</Teleport>
 
       <div v-if="error" class="page-error">
         {{ error }}
@@ -683,22 +779,413 @@ export default {
   white-space: nowrap;
 }
 
-.part-detail-grid {
+/* Inventory layout polish */
+.inventory-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 16px;
-  font-size: 12px;
-  color: #555;
+  grid-template-columns: minmax(0, 1.45fr) 0.8fr;
+  gap: 16px;
+  align-items: start;
 }
 
-.part-detail-grid .full {
+.table th {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background: #fafafa;
+}
+
+.item-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+}
+
+.item-sub {
+  font-size: 12px;
+  color: #888;
+}
+
+.stock-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.stock-pill.stock-normal {
+  background: #eaf8ef;
+  color: #287a3e;
+}
+
+.stock-pill.stock-danger {
+  background: #fff1f0;
+  color: #d92d20;
+}
+
+.summary-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  color: #666;
+}
+
+.summary-line:first-child {
+  padding-top: 0;
+}
+
+.summary-line:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.summary-line b {
+  font-size: 15px;
+  color: #222;
+}
+
+.stock-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stock-preview-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 13px;
+  border: 1px solid #ececea;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.stock-preview-item:hover {
+  background: #fafafa;
+}
+
+.stock-preview-right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Modal style matching Customer page */
+.modal-card.large {
+  width: min(520px, calc(100vw - 32px));
+  border-radius: 18px;
+}
+
+.modal-header {
+  padding: 18px 42px 8px;
+}
+
+.modal-header span {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #222;
+}
+
+.modal-body {
+  padding: 10px 42px 14px;
+}
+
+.modal-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-section {
+  border: 1px solid #eeeeee;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fff;
+}
+
+.section-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 8px 0;
+}
+
+.info-row:first-child {
+  padding-top: 0;
+}
+
+.info-row.last {
+  padding-bottom: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.info-item.full {
   grid-column: 1 / -1;
 }
 
+.info-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8a8a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.info-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.info-value.stock-normal {
+  color: #287a3e;
+}
+
+.info-value.stock-danger {
+  color: #d92d20;
+}
+
+.detail-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 0;
+  border-top: 1px solid #f1f1f1;
+}
+
+.detail-list-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.detail-list-item small {
+  font-size: 11.5px;
+  color: #666;
+}
+
+.empty-small {
+  font-size: 12px;
+  color: #999;
+  padding: 4px 0;
+}
+
+.modal-actions.split {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 42px 18px;
+  border-top: 1px solid #eeeeee;
+}
+
+.left-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-actions button,
+.modal-action-btn {
+  height: 34px;
+  min-width: 82px;
+  padding: 0 12px;
+  border-radius: 11px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-actions button.primary {
+  min-width: 92px;
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/* Skeleton loading matching Customer modal */
+.skeleton-line {
+  height: 13px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #eee, #f7f7f7, #eee);
+  background-size: 200% 100%;
+  animation: skeleton 1.2s infinite;
+}
+
+.skeleton-line.title {
+  width: 180px;
+  height: 18px;
+  margin-bottom: 16px;
+}
+
+.skeleton-line.wide {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Stacked restock modal */
+.stacked-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(1.5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.confirm-card {
+  width: min(360px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+}
+
+.confirm-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #171717;
+  margin-bottom: 8px;
+}
+
+.confirm-message {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.confirm-message.left {
+  text-align: left;
+}
+
+.current-stock-box {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #666;
+  background: #fafafa;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.confirm-actions button {
+  flex: 1;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.confirm-cancel {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+}
+
+.confirm-primary {
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+}
+
+.confirm-actions button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 @media (max-width: 1100px) {
-  .inventory-grid,
-  .part-detail-grid {
+  .inventory-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .info-row,
+  .skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-actions.split {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 </style>
