@@ -14,14 +14,14 @@
         <div class="page-title-row">
             <div class="page-title">Inventory</div>
             <span class="page-chip">
-            {{
-                activeTab === "all"
-                ? `${filteredParts.length} item${filteredParts.length === 1 ? "" : "s"}`
-                : activeTab === "low_stock"
-                    ? `${filteredParts.length} low stock`
-                    : `${filteredParts.length} ${activeTab}`
-            }}
-            </span>
+  {{
+    activeTab === "all"
+      ? `${totalRecords} item${totalRecords === 1 ? "" : "s"}`
+      : activeTab === "low_stock"
+          ? `${filteredParts.length} low stock`
+          : `${filteredParts.length} ${activeTab}`
+  }}
+</span>
         </div>
 
         <div class="page-date">
@@ -57,7 +57,9 @@
         <Card>
           <template #header>
             <span class="card-title">Parts List</span>
-            <span class="card-link">{{ filteredParts.length }} item(s)</span>
+            <span class="card-link">
+  {{ totalRecords }} item(s)
+</span>
           </template>
 
           <div v-if="loading" class="empty-state">Loading inventory...</div>
@@ -102,10 +104,14 @@
                   </td>
 
                   <td>
-                    <div :class="['stock-text', stockClass(part)]">
-                      {{ part.stock }}
+                    <div class="stock-block">
+                      <span :class="['stock-main', stockClass(part)]">
+                        {{ part.stock }} left
+                      </span>
+                      <span class="stock-min">
+                        Min {{ part.min_stock_threshold }}
+                      </span>
                     </div>
-                    <small class="item-sub">Min {{ part.min_stock_threshold }}</small>
                   </td>
 
                   <td>RM {{ formatMoney(part.selling_price) }}</td>
@@ -168,26 +174,37 @@
               No low stock alerts.
             </div>
 
-            <div v-else class="stock-preview-list">
-              <div
-                v-for="part in lowStockPreview"
-                :key="part.id"
-                class="stock-preview-item"
-                @click="openDetail(part)"
-              >
-                <div>
-                  <div class="item-name">
-                    {{ part.name }}
-                    <span v-if="part.variant">— {{ part.variant }}</span>
-                  </div>
-                  <small class="item-sub">Min {{ part.min_stock_threshold }}</small>
+            <div
+              v-for="part in lowStockPreview"
+              :key="part.id"
+              class="stock-preview-item"
+              @click="openDetail(part)"
+            >
+              <div class="stock-alert-main">
+                <div class="item-name">
+                  {{ part.name }}
+                  <span v-if="part.variant">— {{ part.variant }}</span>
                 </div>
 
-                <div class="stock-preview-right">
-                  <div :class="['stock-text', stockClass(part)]">
-                    {{ part.stock }} left
-                  </div>
+                <small class="item-sub">
+                  {{ part.stock }} / {{ part.min_stock_threshold }} minimum
+                </small>
+
+                <div class="stock-meter">
+                  <div
+                    class="stock-meter-fill"
+                    :style="{ width: stockMeterWidth(part) + '%' }"
+                  ></div>
                 </div>
+              </div>
+
+              <div class="stock-preview-right">
+                <div class="stock-danger-text">
+                  {{ Number(part.min_stock_threshold) - Number(part.stock) }} short
+                </div>
+                <button class="restock-link" @click.stop="openRestockFromList(part)">
+                  Restock
+                </button>
               </div>
             </div>
           </Card>
@@ -443,6 +460,8 @@ export default {
       parts: [],
       page: 1,
       totalPages: 1,
+      perPage: 5,
+      totalRecords: 0,
       activePart: null,
       showRestockModal: false,
       restockLoading: false,
@@ -529,47 +548,61 @@ export default {
 
   methods: {
     getCacheKey(page = 1) {
-      return `inventory-${this.activeTab}-page-${page}`;
-    },
+  const search = this.searchQuery || "none";
+  return `inventory-${this.activeTab}-search-${search}-page-${page}-per-${this.perPage}`;
+},
 
     async fetchParts(page = 1) {
-      const cacheKey = this.getCacheKey(page);
-      const cached = sessionStorage.getItem(cacheKey);
+  const cacheKey = this.getCacheKey(page);
+  const cached = sessionStorage.getItem(cacheKey);
 
-      this.error = "";
+  this.error = "";
 
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        this.parts = parsed.data || [];
-        this.page = parsed.current_page || 1;
-        this.totalPages = parsed.last_page || 1;
-      } else {
-        this.loading = true;
-      }
+  if (cached) {
+    const parsed = JSON.parse(cached);
 
-      try {
-        let res;
+    this.parts = parsed.data || [];
+    this.page = parsed.current_page || 1;
+    this.totalPages = parsed.last_page || 1;
+    this.totalRecords = parsed.total || 0;
+  } else {
+    this.loading = true;
+  }
 
-        if (this.activeTab === "low_stock") {
-          res = await api.get("/parts/low-stock");
-          this.parts = res.data || [];
-          this.page = 1;
-          this.totalPages = 1;
-        } else {
-          res = await api.get(`/parts?page=${page}`);
-          this.parts = res.data.data || [];
-          this.page = res.data.current_page || 1;
-          this.totalPages = res.data.last_page || 1;
-          sessionStorage.setItem(cacheKey, JSON.stringify(res.data));
-        }
-      } catch (error) {
-        console.error("Error fetching inventory:", error);
-        this.error =
-          error.response?.data?.message || "Failed to load inventory.";
-      } finally {
-        this.loading = false;
-      }
-    },
+  try {
+    let res;
+
+    if (this.activeTab === "low_stock") {
+      res = await api.get("/parts/low-stock");
+
+      this.parts = res.data || [];
+      this.page = 1;
+      this.totalPages = 1;
+      this.totalRecords = this.parts.length;
+    } else {
+      res = await api.get("/parts", {
+        params: {
+          page,
+          per_page: this.perPage,
+          search: this.searchQuery || undefined,
+        },
+      });
+
+      this.parts = res.data.data || [];
+      this.page = res.data.current_page || 1;
+      this.totalPages = res.data.last_page || 1;
+      this.totalRecords = res.data.total || 0;
+
+      sessionStorage.setItem(cacheKey, JSON.stringify(res.data));
+    }
+  } catch (error) {
+    console.error("Error fetching inventory:", error);
+    this.error =
+      error.response?.data?.message || "Failed to load inventory.";
+  } finally {
+    this.loading = false;
+  }
+},
 
     changeTab(tab) {
       this.activeTab = tab;
@@ -620,17 +653,17 @@ export default {
       this.detailLoading = false;
     },
 
-    nextPage() {
-      if (this.page < this.totalPages) {
-        this.fetchParts(this.page + 1);
-      }
-    },
-
     prevPage() {
-      if (this.page > 1) {
-        this.fetchParts(this.page - 1);
-      }
-    },
+  if (this.page > 1) {
+    this.fetchParts(this.page - 1);
+  }
+},
+
+nextPage() {
+  if (this.page < this.totalPages) {
+    this.fetchParts(this.page + 1);
+  }
+},
 
     formatMoney(value) {
       return Number(value || 0).toFixed(2);
@@ -675,6 +708,20 @@ export default {
     this.restockForm = {
         quantity: 1,
     };
+    },
+
+    stockMeterWidth(part) {
+      const stock = Number(part.stock || 0);
+      const min = Number(part.min_stock_threshold || 1);
+
+      return Math.max(0, Math.min(100, (stock / min) * 100));
+    },
+
+    openRestockFromList(part) {
+      this.activePart = part;
+      this.showRestockModal = true;
+      this.restockForm.quantity = 1;
+      this.restockError = "";
     },
 
     async submitRestock() {
@@ -731,14 +778,15 @@ export default {
 <style scoped>
 .inventory-grid {
   display: grid;
-  grid-template-columns: 1.4fr 0.8fr;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.8fr) 340px;
+  gap: 18px;
+  align-items: start;
 }
 
 .stack-col {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .item-sub {
@@ -757,36 +805,7 @@ export default {
   color: #e53935;
 }
 
-.stock-preview-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.stock-preview-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid #ececea;
-  border-radius: 10px;
-  background: #fafaf9;
-  cursor: pointer;
-}
-
-.stock-preview-right {
-  text-align: right;
-  white-space: nowrap;
-}
-
 /* Inventory layout polish */
-.inventory-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.45fr) 0.8fr;
-  gap: 16px;
-  align-items: start;
-}
-
 .table th {
   font-size: 11px;
   letter-spacing: 0.05em;
@@ -846,14 +865,13 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 13px 0;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 13px;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 12px;
   color: #666;
 }
 
 .summary-line:first-child {
-  padding-top: 0;
+  padding-top: 8px;
 }
 
 .summary-line:last-child {
@@ -862,34 +880,9 @@ export default {
 }
 
 .summary-line b {
-  font-size: 15px;
+  font-size: 13.5px;
+  font-weight: 700;
   color: #222;
-}
-
-.stock-preview-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.stock-preview-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 13px;
-  border: 1px solid #ececea;
-  border-radius: 12px;
-  background: #fff;
-  cursor: pointer;
-}
-
-.stock-preview-item:hover {
-  background: #fafafa;
-}
-
-.stock-preview-right {
-  text-align: right;
-  white-space: nowrap;
 }
 
 /* Modal style matching Customer page */
@@ -1167,6 +1160,133 @@ export default {
 .confirm-actions button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* min stock */
+.stock-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stock-main {
+  font-size: 12.8px;
+  font-weight: 700;
+  color: #287a3e;
+  white-space: nowrap;
+}
+
+.stock-main.stock-danger {
+  color: #d92d20;
+}
+
+.stock-main.stock-normal {
+  color: #287a3e;
+}
+
+.stock-min {
+  font-size: 11px;
+  color: #999;
+}
+
+
+/* low stock */
+.stock-preview-right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.stock-preview-right .stock-danger {
+  font-size: 13px;
+  font-weight: 800;
+  color: #d92d20;
+}
+
+.stock-preview-right small {
+  font-size: 11px;
+  color: #999;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.status-pill.sp-blue {
+  background: #eef4ff;
+  color: #4d6fa8;
+}
+
+.status-pill.sp-amber {
+  background: #fff3e6;
+  color: #a8662a;
+}
+
+/* low stock meter */
+.stock-preview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 13px;
+  border: 1px solid #ececea;
+  border-radius: 13px;
+  background: #fff;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.stock-preview-item:hover {
+  background: #fafafa;
+}
+
+.stock-alert-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.stock-alert-main .item-name{
+  font-size: 12px;
+}
+
+.stock-meter {
+  height: 3px;
+  margin-top: 7px;
+  border-radius: 999px;
+  background: #eeeeee;
+  overflow: hidden;
+}
+
+.stock-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #f06b6b; /* softer red */
+}
+
+.stock-danger-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #d24b4b;
+}
+
+.restock-link {
+  margin-top: 3px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #999;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.restock-link:hover {
+  color: #d24b4b;
 }
 
 @media (max-width: 1100px) {

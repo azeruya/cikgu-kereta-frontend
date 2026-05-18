@@ -581,27 +581,15 @@ export default {
       }
     },
 
-    async convertOnlineRequest(request) {
-  try {
-    this.error = "";
-
-    const res = await api.post(`/online-requests/${request.id}/convert`);
-
-    const redirect = res.data.redirect;
-
-    this.$router.push({
-      path: "/transactions/new",
-      query: {
-        customer_id: redirect.customer_id,
-        vehicle_id: redirect.vehicle_id,
-        request_id: redirect.request_id,
-      },
-    });
-  } catch (error) {
-    console.error("Error converting online request:", error);
-    this.error =
-      error.response?.data?.message || "Failed to convert online request.";
-  }
+ convertOnlineRequest(request) {
+  this.$router.push({
+    path: "/transactions/new",
+    query: {
+      customer_id: request.customer_id,
+      vehicle_id: request.vehicle_id,
+      request_id: request.id,
+    },
+  });
 },
 
     formatMoney(value) {

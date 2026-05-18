@@ -58,7 +58,7 @@
               <option>Misc</option>
             </select>
 
-            <button class="pill-btn" @click="fetchExpenses(1)">Apply</button>
+            <button class="pill-btn" @click="applyFilters">Apply</button>
             <button class="pill-btn" @click="clearFilters">Reset</button>
           </div>
 
@@ -93,23 +93,75 @@
                   </td>
 
                   <td>
-                    <div class="item-name">{{ expense.description || "-" }}</div>
-                  </td>
-
-                  <td>RM {{ formatMoney(expense.amount) }}</td>
-
-                  <td>
-                    <span v-if="expense.receipt_file" class="link-text">Available</span>
-                    <span v-else>-</span>
-                  </td>
+  <div
+    class="description-cell"
+    :class="{ empty: !expense.description }"
+  >
+    {{ expense.description || "No description" }}
+  </div>
+</td>
 
                   <td>
-                    <div class="action-group" @click.stop>
-                      <button class="mini-btn" @click="openDetail(expense)">View</button>
-                      <button class="mini-btn" @click="openFormModal(expense)">Edit</button>
-                      <button class="mini-btn" @click="confirmDelete(expense)">Delete</button>
-                    </div>
+                    <span class="money-cell">RM {{ formatMoney(expense.amount) }}</span>
                   </td>
+
+                  <td class="center">
+                    <button
+                      v-if="expense.receipt_file"
+                      class="icon-action receipt"
+                      @click.stop="viewReceipt(expense)"
+                      title="Open receipt"
+                    >
+                      <svg viewBox="0 0 24 24" class="icon-svg">
+                        <path d="M7 3h10a2 2 0 0 1 2 2v16l-3-2-2 2-2-2-2 2-2-2-3 2V5a2 2 0 0 1 2-2z" />
+                        <path d="M9 8h6" />
+                        <path d="M9 12h6" />
+                        <path d="M9 16h3" />
+                      </svg>
+                    </button>
+
+                    <span v-else class="empty-inline">No receipt</span>
+                  </td>
+
+                  <td class="right">
+  <div class="action-icon-group" @click.stop>
+    <button
+      class="icon-action"
+      title="View expense"
+      @click="openDetail(expense)"
+    >
+      <svg viewBox="0 0 24 24" class="icon-svg">
+        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    </button>
+
+    <button
+      class="icon-action"
+      title="Edit expense"
+      @click="openFormModal(expense)"
+    >
+      <svg viewBox="0 0 24 24" class="icon-svg">
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
+      </svg>
+    </button>
+
+    <button
+      class="icon-action danger"
+      title="Delete expense"
+      @click="openDeleteModal(expense)"
+    >
+      <svg viewBox="0 0 24 24" class="icon-svg">
+        <path d="M3 6h18" />
+        <path d="M8 6V4h8v2" />
+        <path d="M19 6l-1 15H6L5 6" />
+        <path d="M10 11v6" />
+        <path d="M14 11v6" />
+      </svg>
+    </button>
+  </div>
+</td>
                 </tr>
               </tbody>
             </table>
@@ -138,15 +190,15 @@
             <div class="summary-stack">
               <div class="summary-line">
                 <span>Total Records</span>
-                <b>{{ expenses.length }}</b>
+                <b>{{ summary.total_records }}</b>
               </div>
               <div class="summary-line">
                 <span>Total Expenses</span>
-                <b>RM {{ formatMoney(totalExpenses) }}</b>
+                <b>RM {{ formatMoney(summary.total_expenses) }}</b>
               </div>
               <div class="summary-line">
                 <span>This Month</span>
-                <b>RM {{ formatMoney(monthExpenses) }}</b>
+                <b>RM {{ formatMoney(summary.this_month) }}</b>
               </div>
             </div>
           </Card>
@@ -156,21 +208,32 @@
               <span class="card-title">Monthly Trend</span>
             </template>
 
-            <div v-if="monthlyChart.length === 0" class="empty-small">
+            <div v-if="monthlyTrend.length === 0" class="empty-small">
               No monthly data.
             </div>
 
-            <div v-else class="mini-chart">
-              <div
-                v-for="bar in normalizedMonthlyChart"
-                :key="bar.label"
-                class="mini-chart-col"
-              >
-                <div class="mini-chart-bar-wrap">
-                  <div class="mini-chart-bar" :style="{ height: bar.height + 'px' }"></div>
+            <div v-else-if="monthlyTrend.length === 1" class="single-trend-card">
+              <div>
+                <div class="single-trend-label">{{ monthlyTrend[0].label }}</div>
+                <div class="single-trend-value">
+                  RM {{ formatMoney(monthlyTrend[0].total) }}
                 </div>
-                <div class="mini-chart-label">{{ bar.label }}</div>
-                <div class="mini-chart-value">RM {{ shortMoney(bar.total) }}</div>
+              </div>
+              <span class="single-trend-note">Only one month recorded</span>
+            </div>
+
+            <div v-else class="trend-list">
+              <div
+                v-for="row in monthlyTrend"
+                :key="row.label"
+                class="trend-row"
+              >
+                <div>
+                  <div class="trend-label">{{ row.label }}</div>
+                  <div class="trend-sub">Operating expenses</div>
+                </div>
+
+                <strong>RM {{ formatMoney(row.total) }}</strong>
               </div>
             </div>
           </Card>
@@ -190,7 +253,10 @@
                 :key="row.category"
                 class="category-row"
               >
-                <div class="item-name">{{ row.category }}</div>
+              <div class="category-name-wrap">
+                  <span class="category-dot" :class="categoryClass(row.category)"></span>
+                  <span class="item-name">{{ row.category }}</span>
+                </div>
                 <div class="job-price">RM {{ formatMoney(row.total) }}</div>
               </div>
             </div>
@@ -201,105 +267,217 @@
       <!-- Detail Modal -->
     <Teleport to="body">
       <div class="modal" v-if="activeExpense" @click.self="closeDetail">
-        <div v-if="detailLoading" class="modal-card">
-          <div class="empty-state">Loading expense detail...</div>
-        </div>
-
-        <div v-else class="modal-card large">
+        <div v-if="detailLoading" class="modal-card large">
           <div class="modal-header">
-            <span>{{ activeExpense.category || "Expense Detail" }}</span>
+            <span>Expense Detail</span>
             <button class="mini-btn" @click="closeDetail">✕</button>
           </div>
 
-          <div class="modal-body">
-            <div class="expense-detail-grid">
-              <div><b>Date:</b> {{ formatDate(activeExpense.expense_date) }}</div>
-              <div><b>Category:</b> {{ activeExpense.category || "-" }}</div>
-              <div><b>Amount:</b> RM {{ formatMoney(activeExpense.amount) }}</div>
-              <div>
-                <b>Receipt:</b>
-                <template v-if="activeExpense.receipt_file">
-                  Available
-                </template>
-                <template v-else>-</template>
-              </div>
-              <div class="full">
-                <b>Description:</b> {{ activeExpense.description || "-" }}
+          <div class="modal-body modal-detail-body">
+            <div class="detail-section">
+              <div class="skeleton-line title"></div>
+              <div class="skeleton-grid">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="modal-actions">
-            <button @click="openFormModal(activeExpense)">Edit</button>
-            <button @click="confirmDelete(activeExpense)">Delete</button>
-            <button
-              class="primary"
-              :disabled="!activeExpense.receipt_file"
-              @click="viewReceipt(activeExpense)"
-            >
-              View Receipt
-            </button>
+      <div v-else class="modal-card large">
+      <div class="modal-header">
+        <span>{{ activeExpense.category || "Expense Detail" }}</span>
+        <button class="mini-btn" @click="closeDetail">✕</button>
+      </div>
+
+      <div class="modal-body modal-detail-body">
+        <div class="detail-section">
+          <div class="section-title">Expense Information</div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <div class="info-item">
+                <span class="info-label">Date</span>
+                <span class="info-value">{{ formatDate(activeExpense.expense_date) }}</span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Category</span>
+                <span class="info-value">{{ activeExpense.category || "-" }}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-item">
+                <span class="info-label">Amount</span>
+                <span class="info-value">RM {{ formatMoney(activeExpense.amount) }}</span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Receipt</span>
+                <span class="info-value">
+                  {{ activeExpense.receipt_file ? "Available" : "-" }}
+                </span>
+              </div>
+            </div>
+
+            <div class="info-row last">
+              <div class="info-item full">
+                <span class="info-label">Description</span>
+                <span class="info-value">{{ activeExpense.description || "-" }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Add/Edit Modal -->
-      <div class="modal" v-if="showFormModal" @click.self="closeFormModal">
-        <div class="modal-card large">
-          <div class="modal-header">
-            <span>{{ editingExpenseId ? "Edit Expense" : "Add Expense" }}</span>
-            <button class="mini-btn" @click="closeFormModal">✕</button>
-          </div>
-
-          <div class="modal-body">
-            <div class="form-grid">
-              <div class="field">
-                <label>Category</label>
-                <select v-model="form.category">
-                  <option value="">Select category</option>
-                  <option>Salary</option>
-                  <option>Utility</option>
-                  <option>Purchase</option>
-                  <option>Maintenance</option>
-                  <option>Misc</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>Expense Date</label>
-                <input v-model="form.expense_date" type="date" />
-              </div>
-
-              <div class="field">
-                <label>Amount</label>
-                <input v-model="form.amount" type="number" step="0.01" min="0.01" />
-              </div>
-
-              <div class="field">
-                <label>Receipt File</label>
-                <input type="file" @change="handleReceiptUpload" accept=".jpg,.jpeg,.png,.pdf" />
-              </div>
-
-              <div class="field full">
-                <label>Description</label>
-                <textarea v-model="form.description" rows="4" placeholder="Optional notes"></textarea>
-              </div>
-            </div>
-
-            <div v-if="formError" class="page-error" style="margin-top:12px;">
-              {{ formError }}
-            </div>
-          </div>
-
-          <div class="modal-actions">
-            <button @click="closeFormModal">Cancel</button>
-            <button class="primary" :disabled="savingForm" @click="submitExpense">
-              {{ savingForm ? "Saving..." : (editingExpenseId ? "Update" : "Create") }}
-            </button>
-          </div>
+      <div class="modal-actions split">
+        <div class="left-actions">
+          <button @click="openFormModal(activeExpense)">Edit</button>
+          <button
+            class="primary"
+            :disabled="!activeExpense.receipt_file"
+            @click="viewReceipt(activeExpense)"
+          >
+            View Receipt
+          </button>
         </div>
+
+        <button class="danger-light" @click="openDeleteModal(activeExpense)">
+          Delete
+        </button>
       </div>
-         </Teleport>
+    </div>
+  </div>
+</Teleport>
+
+<Teleport to="body">
+  <div
+    v-if="showDeleteModal"
+    class="delete-modal-overlay"
+    @click.self="closeDeleteModal"
+  >
+    <div class="delete-modal-card">
+      <div class="delete-icon">!</div>
+
+      <div class="delete-title">Delete expense?</div>
+
+      <div class="delete-message">
+        Are you sure you want to delete this
+        <strong>{{ expenseToDelete?.category }}</strong>
+        expense? This action cannot be undone.
+      </div>
+
+      <div class="delete-actions">
+        <button
+          type="button"
+          class="delete-cancel"
+          :disabled="deletingExpense"
+          @click="closeDeleteModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="delete-confirm"
+          :disabled="deletingExpense"
+          @click="confirmDeleteExpense"
+        >
+          {{ deletingExpense ? "Deleting..." : "Delete" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</Teleport>
+
+        <Teleport to="body">
+          <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
+            <div class="modal-card large form-modal-card">
+              <div class="modal-header">
+                <span>{{ editingExpenseId ? "Edit Expense" : "Add Expense" }}</span>
+                <button type="button" class="mini-btn" @click="closeFormModal">✕</button>
+              </div>
+
+              <div class="modal-body form-modal-body">
+                <div class="form-section">
+                  <div class="section-title">Expense Information</div>
+
+                  <div class="form-grid expense-form-grid">
+                    <div class="field">
+                      <label>Date</label>
+                      <input v-model="form.expense_date" type="date" />
+                    </div>
+
+                    <div class="field">
+                      <label>Category</label>
+                      <select v-model="form.category">
+                        <option value="">Select category</option>
+                        <option>Salary</option>
+                        <option>Utility</option>
+                        <option>Purchase</option>
+                        <option>Maintenance</option>
+                        <option>Misc</option>
+                      </select>
+                    </div>
+
+                    <div class="field">
+                      <label>Amount</label>
+                      <input
+                        v-model.number="form.amount"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                      />
+                    </div>
+
+                    <div class="field">
+                      <label>Receipt</label>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        @change="handleReceiptChange"
+                      />
+                    </div>
+
+                    <div class="field full">
+                      <label>Description</label>
+                      <textarea
+                        v-model="form.description"
+                        rows="3"
+                        placeholder="Optional expense note"
+                      ></textarea>
+                    </div>
+
+                      <small v-if="editingExpenseId && form.existing_receipt" class="field-hint">
+                        Current receipt uploaded
+                      </small>
+                    </div>
+                  </div>
+     
+
+                <div v-if="formError" class="page-error" style="margin-top:12px;">
+                  {{ formError }}
+                </div>
+              </div>
+
+              <div class="modal-actions form-actions">
+                <button type="button" @click="closeFormModal">Cancel</button>
+                <button
+                  type="button"
+                  class="primary"
+                  :disabled="savingForm"
+                  @click="submitExpense"
+                >
+                  {{ savingForm ? "Saving..." : (editingExpenseId ? "Update" : "Create") }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </Teleport>
 
       <div v-if="error" class="page-error">
         {{ error }}
@@ -331,20 +509,34 @@ export default {
       expenses: [],
       page: 1,
       totalPages: 1,
+      perPage: 8,
+      totalRecords: 0,
       searchQuery: "",
       activeExpense: null,
-      summary: {},
+      summary: {
+        total_records: 0,
+        total_expenses: 0,
+        this_month: 0,
+      },
+
+      monthlyTrend: [],
+      categoryTotals: [],
       fromDate: "",
       toDate: "",
       categoryFilter: "",
+      showDeleteModal: false,
+      expenseToDelete: null,
+      deletingExpense: false,
       showFormModal: false,
       editingExpenseId: null,
+      searchTimer: null,
       form: {
         category: "",
         description: "",
         amount: "",
         expense_date: "",
-        receipt_file: null
+        receipt_file: null,
+        existing_receipt: null  
       }
     };
   },
@@ -391,34 +583,22 @@ export default {
       return list;
     },
 
-    totalExpenses() {
-      return this.summary?.total || 0;
-    },
-
-    monthExpenses() {
-      return this.summary?.monthly || 0;
-    },
-
-    categoryTotals() {
-      return this.summary?.category_totals || [];
-    },
-
-    monthlyChart() {
-      return this.summary?.monthly_chart || [];
-    },
-
     normalizedMonthlyChart() {
-      const max = Math.max(...this.monthlyChart.map((x) => Number(x.total || 0)), 0);
+      const max = Math.max(
+        ...this.monthlyTrend.map((x) => Number(x.total || 0)),
+        0
+      );
 
-      return this.monthlyChart.map((item) => ({
+      return this.monthlyTrend.map((item) => ({
         ...item,
-        height: max > 0 ? Math.max(12, (Number(item.total || 0) / max) * 70) : 12
+        height: max > 0 ? Math.max(12, (Number(item.total || 0) / max) * 70) : 12,
       }));
-    }
+    },
   },
 
   mounted() {
     this.fetchExpenses();
+    this.fetchExpenseSummary();
   },
 
   methods: {
@@ -464,31 +644,59 @@ export default {
       this.detailLoading = false;
     },
 
-    openFormModal(expense = null) {
-      this.formError = "";
-
-      if (expense) {
-        this.editingExpenseId = expense.id;
-        this.form = {
-          category: expense.category || "",
-          description: expense.description || "",
-          amount: expense.amount || "",
-          expense_date: expense.expense_date || "",
-          receipt_file: null
-        };
-      } else {
-        this.editingExpenseId = null;
-        this.form = {
-          category: "",
-          description: "",
-          amount: "",
-          expense_date: "",
-          receipt_file: null
-        };
-      }
-
-      this.showFormModal = true;
+    handleReceiptChange(event) {
+      const file = event.target.files?.[0] || null;
+      this.form.receipt_file = file;
     },
+
+    applyFilters() {
+      this.page = 1;
+      this.fetchExpenses(1);
+      this.fetchExpenseSummary();
+    },
+
+    clearFilters() {
+      this.fromDate = "";
+      this.toDate = "";
+      this.categoryFilter = "";
+      this.searchQuery = "";
+      this.page = 1;
+
+      this.fetchExpenses(1);
+      this.fetchExpenseSummary();
+    },
+
+    openFormModal(expense = null) {
+  this.formError = "";
+
+  if (expense) {
+    this.editingExpenseId = expense.id;
+
+    this.form = {
+      expense_date: expense.expense_date
+        ? String(expense.expense_date).slice(0, 10)
+        : "",
+      category: expense.category || "",
+      amount: Number(expense.amount || 0),
+      description: expense.description || "",
+      receipt_file: null,
+      existing_receipt: expense.receipt_file || null,
+    };
+  } else {
+    this.editingExpenseId = null;
+
+    this.form = {
+      expense_date: new Date().toISOString().slice(0, 10),
+      category: "",
+      amount: "",
+      description: "",
+      receipt_file: null,
+      existing_receipt: null,
+    };
+  }
+
+  this.showFormModal = true;
+},
 
     closeFormModal() {
       this.showFormModal = false;
@@ -500,59 +708,67 @@ export default {
       this.form.receipt_file = event.target.files[0] || null;
     },
 
+    viewReceipt(expense) {
+      if (!expense.receipt_file) return;
+
+      const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http://127.0.0.1:8000";
+
+      window.open(`${baseUrl}/storage/${expense.receipt_file}`, "_blank");
+    },
+
     async submitExpense() {
-      this.savingForm = true;
       this.formError = "";
+      this.savingForm = true;
 
       try {
         const formData = new FormData();
-        formData.append("category", this.form.category);
-        formData.append("description", this.form.description || "");
-        formData.append("amount", this.form.amount);
+
         formData.append("expense_date", this.form.expense_date);
+        formData.append("category", this.form.category);
+        formData.append("amount", this.form.amount || 0);
+        formData.append("description", this.form.description || "");
 
         if (this.form.receipt_file) {
           formData.append("receipt_file", this.form.receipt_file);
         }
 
+        let res;
+
         if (this.editingExpenseId) {
           formData.append("_method", "PUT");
-          await api.post(`/expenses/${this.editingExpenseId}`, formData, {
-            headers: { "Content-Type": "multipart/form-data" }
+
+          res = await api.post(`/expenses/${this.editingExpenseId}`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           });
         } else {
-          await api.post("/expenses", formData, {
-            headers: { "Content-Type": "multipart/form-data" }
+          res = await api.post("/expenses", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           });
         }
 
         this.closeFormModal();
         this.clearExpenseCache();
+
         await this.fetchExpenses(this.page);
+        await this.fetchExpenseSummary();
       } catch (error) {
-        console.error("Error saving expense:", error);
-        this.formError = error.response?.data?.message || "Failed to save expense.";
+        console.error("Failed to save expense:", error);
+
+        if (error.response?.data?.errors) {
+          const firstError = Object.values(error.response.data.errors)[0];
+          this.formError = Array.isArray(firstError)
+            ? firstError[0]
+            : "Validation failed.";
+        } else {
+          this.formError =
+            error.response?.data?.message || "Failed to save expense.";
+        }
       } finally {
         this.savingForm = false;
-      }
-    },
-
-    async confirmDelete(expense) {
-      const ok = confirm(`Delete this expense (${expense.category})?`);
-      if (!ok) return;
-
-      try {
-        await api.delete(`/expenses/${expense.id}`);
-
-        if (this.activeExpense?.id === expense.id) {
-          this.closeDetail();
-        }
-
-        this.clearExpenseCache();
-        await this.fetchExpenses(this.page);
-      } catch (error) {
-        console.error("Error deleting expense:", error);
-        this.error = error.response?.data?.message || "Failed to delete expense.";
       }
     },
 
@@ -579,20 +795,6 @@ export default {
         console.error("Error exporting CSV:", error);
         this.error = "Failed to export CSV.";
       }
-    },
-
-    viewReceipt(expense) {
-      if (!expense.receipt_file) return;
-
-      const base = import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http://127.0.0.1:8000";
-      window.open(`${base}/storage/${expense.receipt_file}`, "_blank");
-    },
-
-    clearFilters() {
-      this.fromDate = "";
-      this.toDate = "";
-      this.categoryFilter = "";
-      this.fetchExpenses(1);
     },
 
     nextPage() {
@@ -648,66 +850,158 @@ export default {
     },
 
     async fetchExpenses(page = 1) {
-    const cacheKey = this.getExpenseCacheKey(page);
-    const cached = sessionStorage.getItem(cacheKey);
+      const cacheKey = this.getExpenseCacheKey(page);
+      const cached = sessionStorage.getItem(cacheKey);
 
-    this.error = "";
+      this.error = "";
 
-    if (cached) {
+      if (cached) {
         const parsed = JSON.parse(cached);
+
         this.expenses = parsed.data || [];
         this.page = parsed.current_page || 1;
         this.totalPages = parsed.last_page || 1;
-        this.summary = parsed.summary || {};
-    } else {
-        this.loading = true;
-    }
+        this.totalRecords = parsed.total || 0;
 
-    try {
+        // show cached data immediately, no full loading state
+        this.loading = false;
+      } else {
+        this.loading = true;
+      }
+
+      try {
         const res = await api.get("/expenses", {
-        params: {
+          params: {
             page,
+            per_page: this.perPage,
             search: this.searchQuery || undefined,
             category: this.categoryFilter || undefined,
             from_date: this.fromDate || undefined,
-            to_date: this.toDate || undefined
-        }
+            to_date: this.toDate || undefined,
+          },
         });
 
         this.expenses = res.data.data || [];
         this.page = res.data.current_page || 1;
         this.totalPages = res.data.last_page || 1;
-        this.summary = res.data.summary || {};
+        this.totalRecords = res.data.total || 0;
 
         sessionStorage.setItem(cacheKey, JSON.stringify(res.data));
-    } catch (error) {
+      } catch (error) {
         console.error("Error fetching expenses:", error);
-        this.error = error.response?.data?.message || "Failed to load expenses.";
-    } finally {
+        this.error =
+          error.response?.data?.message || "Failed to load expenses.";
+      } finally {
         this.loading = false;
-    }
+      }
+    },
+
+    async fetchExpenseSummary() {
+      try {
+        const res = await api.get("/expenses/summary", {
+          params: {
+            search: this.searchQuery || undefined,
+            category: this.categoryFilter || undefined,
+            from_date: this.fromDate || undefined,
+            to_date: this.toDate || undefined,
+          },
+        });
+
+        this.summary = res.data.summary || {
+          total_records: 0,
+          total_expenses: 0,
+          this_month: 0,
+        };
+
+        this.monthlyTrend = res.data.monthly_trend || [];
+        this.categoryTotals = res.data.category_totals || [];
+      } catch (error) {
+        console.error("Error fetching expense summary:", error);
+      }
+    },
+
+    openDeleteModal(expense) {
+      this.expenseToDelete = expense;
+      this.showDeleteModal = true;
+    },
+
+    closeDeleteModal() {
+      if (this.deletingExpense) return;
+
+      this.showDeleteModal = false;
+      this.expenseToDelete = null;
+    },
+
+    async confirmDeleteExpense() {
+      if (!this.expenseToDelete) return;
+
+      this.deletingExpense = true;
+      this.error = "";
+
+      try {
+        await api.delete(`/expenses/${this.expenseToDelete.id}`);
+
+        this.showDeleteModal = false;
+        this.expenseToDelete = null;
+
+        this.closeDetail();
+
+        this.clearExpenseCache();
+        await this.fetchExpenses(this.page);
+        await this.fetchExpenseSummary();
+      } catch (error) {
+        console.error("Failed to delete expense:", error);
+        this.error =
+          error.response?.data?.message || "Failed to delete expense.";
+      } finally {
+        this.deletingExpense = false;
+      }
     },
   },
 
-  watch: {
-    searchQuery() {
-      this.fetchExpenses(1);
+    watch: {
+      searchQuery() {
+        clearTimeout(this.searchTimer);
+
+        this.searchTimer = setTimeout(() => {
+          this.page = 1;
+          this.fetchExpenses(1);
+          this.fetchExpenseSummary();
+        }, 300);
+      }
     }
-  }
 };
 </script>
 
 <style scoped>
 .expense-grid {
   display: grid;
-  grid-template-columns: 1.4fr 0.8fr;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.8fr) 340px;
+  gap: 18px;
+  align-items: start;
 }
 
 .stack-col {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+}
+
+.stack-col .card {
+  border-radius: 18px;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.04);
+}
+
+.stack-col .card-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.stack-col .card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
 }
 
 .filters-bar {
@@ -730,18 +1024,67 @@ export default {
 .category-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
 .category-row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #f2f2f0;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f1f1f1;
 }
 
 .category-row:last-child {
   border-bottom: none;
+}
+
+.category-row .item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #222;
+}
+
+.category-row .job-price {
+  font-size: 12px;
+  font-weight: 500;
+  color: #222;
+  white-space: nowrap;
+}
+
+.category-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  display: inline-block;
+  flex-shrink: 0;
+  background: #b8b8b8;
+}
+
+.category-dot.sp-blue {
+  background: #94bff5;
+}
+
+.category-dot.sp-amber {
+  background: #f2c078;
+}
+
+.category-dot.sp-green {
+  background: #7fc78d;
+}
+
+.category-dot.sp-purple {
+  background: #d9b8ff;
+}
+
+.category-dot.sp-gray {
+  background: #b8b8b8;
 }
 
 .expense-detail-grid {
@@ -756,53 +1099,307 @@ export default {
   grid-column: 1 / -1;
 }
 
-.mini-chart {
-  display: flex;
-  align-items: end;
-  gap: 10px;
-  height: 120px;
-}
-
-.mini-chart-col {
-  flex: 1;
-  text-align: center;
-}
-
-.mini-chart-bar-wrap {
-  height: 80px;
-  display: flex;
-  align-items: end;
-  justify-content: center;
-}
-
-.mini-chart-bar {
-  width: 100%;
-  max-width: 22px;
-  background: #111;
-  border-radius: 8px 8px 0 0;
-}
-
-.mini-chart-label {
-  margin-top: 8px;
-  font-size: 11px;
-  color: #666;
-}
-
-.mini-chart-value {
-  font-size: 10px;
-  color: #999;
-  margin-top: 2px;
-}
-
-.link-text {
-  font-size: 12px;
-  color: #3366cc;
-  font-weight: 600;
-}
-
 .sp-purple {
   background: #f2eaff;
   color: #7b3fe4;
+}
+
+/* action group buttons */
+.action-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.mini-btn {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 9px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mini-btn:hover {
+  background: #fafafa;
+}
+
+.mini-btn.danger-text {
+  color: #b42318;
+  border-color: #f1b8b2;
+}
+
+/* modal */
+.modal-card.large {
+  width: min(500px, calc(100vw - 32px));
+  border-radius: 18px;
+}
+
+.modal-header {
+  padding: 18px 42px 8px;
+}
+
+.modal-header span {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #222;
+}
+
+.modal-body {
+  padding: 10px 42px 14px;
+}
+
+.modal-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-section {
+  border: 1px solid #eeeeee;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fff;
+}
+
+.section-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 8px 0;
+}
+
+.info-row.last {
+  padding-bottom: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.info-item.full {
+  grid-column: 1 / -1;
+}
+
+.info-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8a8a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.info-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+/* buttons */
+.modal-actions.split {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 42px 18px;
+  border-top: 1px solid #eeeeee;
+}
+
+.modal-actions .danger-light {
+  min-width: 96px;
+  max-width: 110px;
+}
+
+.left-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-actions button {
+  height: 34px;
+  min-width: 82px;
+  padding: 0 12px;
+  border-radius: 11px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-actions button.primary {
+  min-width: 106px;
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.modal-actions button.danger-light {
+  min-width: 82px;
+  color: #b42318;
+  border-color: #f1b8b2;
+  background: #fff;
+}
+
+/* category card */
+.category-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.category-row:last-child {
+  border-bottom: none;
+}
+
+.job-price {
+  font-size: 13px;
+  font-weight: 400;
+  color: #222;
+}
+
+/* delete modal */
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(1.5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.delete-modal-card {
+  width: min(360px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  text-align: center;
+}
+
+.delete-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #fff1f0;
+  color: #b42318;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.delete-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #171717;
+  margin-bottom: 8px;
+}
+
+.delete-message {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.delete-message strong {
+  color: #222;
+}
+
+.delete-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-actions button {
+  flex: 1;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-cancel {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+}
+
+.delete-confirm {
+  border: 1px solid #b42318;
+  background: #b42318;
+  color: #fff;
+}
+
+/* trend single card */
+.single-trend-card {
+  min-height: 96px;
+  border: 1px solid #eeeeee;
+  border-radius: 14px;
+  background: #fafafa;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.single-trend-label {
+  font-size: 12px;
+  color: #777;
+  font-weight: 600;
+}
+
+.single-trend-value {
+  font-size: 20px;
+  color: #111;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.single-trend-note {
+  font-size: 11.5px;
+  color: #999;
 }
 
 @media (max-width: 1100px) {
@@ -815,4 +1412,251 @@ export default {
     flex-wrap: wrap;
   }
 }
-</style>
+
+.modal-actions.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 42px 18px;
+  border-top: 1px solid #eeeeee;
+}
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: #fafafa;
+  border-color: #d8d8d8;
+}
+
+.receipt-btn {
+  color: #444;
+}
+
+.muted-dash {
+  color: #aaa;
+}
+
+.ghost-btn {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  color: #444;
+}
+
+/* table */
+.table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 105px;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 125px;
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: auto;
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 105px;
+}
+
+.table th:nth-child(5),
+.table td:nth-child(5) {
+  width: 92px;
+  text-align: center;
+}
+
+.table th:nth-child(6),
+.table td:nth-child(6) {
+  width: 130px;
+  text-align: right;
+}
+
+.table td {
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.description-cell {
+  max-width: 220px;
+  color: #444;
+  line-height: 1.35;
+  font-size: 12.5px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.muted-dash {
+  color: #aaa;
+}
+
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+
+.description-cell {
+  max-width: 220px;
+  color: #333;
+  font-size: 12.5px;
+  line-height: 1.35;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.description-cell.empty {
+  color: #8a8a8a;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.money-cell {
+  white-space: nowrap;
+  font-size: 12.8px;
+  font-weight: 400;
+  color: #222;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty-inline {
+  font-size: 11.5px;
+  color: #aaa;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.action-icon-group {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 7px;
+}
+
+.icon-action {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  border: 1px solid #dedede;
+  background: #fff;
+  color: #6f6f6f; 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.icon-action:hover {
+  background: #f8f8f8;
+  border-color: #cfcfcf;
+  color: #333; 
+}
+
+.icon-action:active {
+  transform: scale(0.96);
+}
+
+.icon-action.receipt {
+  background: #faf9f4;
+}
+
+.icon-action.danger {
+  color: #8a6a66; 
+}
+
+.icon-action.danger:hover {
+  color: #b42318; 
+  background: #fff1f0;
+  border-color: #f1b8b2;
+}
+
+.icon-svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* trend cards */
+.trend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid #eeeeee;
+  border-radius: 13px;
+  background: #fafafa;
+}
+
+.trend-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+}
+
+.trend-sub {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: #999;
+}
+
+.trend-row strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: #222;
+  white-space: nowrap;
+}
+
+.field input[type="file"] {
+  height: auto;
+  padding: 9px 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: #888;
+  margin-top: 2px;
+}
+
+</style> 
