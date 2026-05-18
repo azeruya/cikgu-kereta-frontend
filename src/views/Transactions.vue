@@ -92,35 +92,65 @@
                 <td>RM {{ formatMoney(trx.total_amount) }}</td>
                 <td>{{ formatDate(trx.created_at) }}</td>
 
-                <td>
-  <div class="action-group">
-    <router-link class="mini-btn" :to="`/transactions/${trx.id}`">
-      View
-    </router-link>
+                <td class="right">
+                  <div class="action-icon-group" @click.stop>
+                    <!-- View -->
+                    <router-link
+                      class="icon-action"
+                      :to="`/transactions/${trx.id}`"
+                      title="View transaction"
+                    >
+                      <svg viewBox="0 0 24 24" class="icon-svg">
+                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    </router-link>
 
-    <button class="mini-btn secondary" @click="openWhatsApp(trx)">
-      WhatsApp
-    </button>
+                    <!-- WhatsApp -->
+                    <button
+                      class="icon-action"
+                      title="Send WhatsApp"
+                      @click="openWhatsApp(trx)"
+                    >
+                      <svg viewBox="0 0 24 24" class="icon-svg">
+                        <path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L4 20l1.2-4.2A8.5 8.5 0 1 1 21 11.5z" />
+                        <path d="M9.5 8.5c.3 2.5 1.7 4.3 4 5.4" />
+                        <path d="M14 14l1.5-1" />
+                      </svg>
+                    </button>
 
-    <button
-      v-if="trx.status === 'quotation'"
-      class="mini-btn primary"
-      :disabled="actionLoadingId === trx.id"
-      @click="confirmQuotation(trx.id)"
-    >
-      {{ actionLoadingId === trx.id ? "..." : "Confirm" }}
-    </button>
+                    <!-- Confirm quotation -->
+                    <button
+                      v-if="trx.status === 'quotation'"
+                      class="icon-action confirm"
+                      :disabled="actionLoadingId === trx.id"
+                      title="Confirm quotation"
+                      @click="openConfirmQuotationModal(trx)"
+                    >
+                      <span v-if="actionLoadingId === trx.id" class="icon-loading">...</span>
+                      <svg v-else viewBox="0 0 24 24" class="icon-svg">
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                    </button>
 
-    <button
-      v-if="trx.status === 'invoice'"
-      class="mini-btn success"
-      :disabled="actionLoadingId === trx.id"
-      @click="openPaymentModal(trx)"
-    >
-      {{ actionLoadingId === trx.id ? "..." : "Add Payment" }}
-    </button>
-  </div>
-</td>
+                    <!-- Add payment -->
+                    <button
+                      v-if="trx.status === 'invoice'"
+                      class="icon-action payment"
+                      :disabled="actionLoadingId === trx.id"
+                      title="Add payment"
+                      @click="openPaymentModal(trx)"
+                    >
+                      <span v-if="actionLoadingId === trx.id" class="icon-loading">...</span>
+                      <svg v-else viewBox="0 0 24 24" class="icon-svg">
+                        <path d="M3 7h18v10H3z" />
+                        <path d="M3 10h18" />
+                        <path d="M12 14h5" />
+                        <path d="M7 14h1" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -136,73 +166,124 @@
           </div>
         </template>
       </div>
+
       <Teleport to="body">
-  <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
-    <div class="modal-card large">
-      <div class="modal-header">
-        <span>Record Payment for {{ paymentTransactionDocNo }}</span>
-        <button type="button" class="mini-btn" @click="closePaymentModal">✕</button>
-      </div>
+        <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
+          <div class="modal-card large form-modal-card">
+            <div class="modal-header">
+              <span>Record Payment</span>
+              <button type="button" class="mini-btn" @click="closePaymentModal">✕</button>
+            </div>
 
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="field">
-            <label>Amount Paid</label>
-            <input
-              v-model.number="paymentForm.amount_paid"
-              type="number"
-              min="0.01"
-              step="0.01"
-            />
-          </div>
+            <div class="modal-body form-modal-body">
+              <div class="form-section">
+                <div class="section-title">
+                  {{ paymentTransactionDocNo }}
+                </div>
 
-          <div class="field">
-            <label>Payment Method</label>
-            <select v-model="paymentForm.payment_method">
-              <option value="cash">Cash</option>
-              <option value="bank_transfer">Bank Transfer</option>
-              <option value="qr">QR</option>
-              <option value="card">Card</option>
-            </select>
-          </div>
+                <div class="payment-summary-box">
+                  <span>Amount due</span>
+                  <strong>RM {{ formatMoney(paymentTransactionTotal) }}</strong>
+                </div>
 
-          <div class="field">
-            <label>Payment Reference</label>
-            <input
-              v-model="paymentForm.payment_reference"
-              type="text"
-              placeholder="Optional reference"
-            />
-          </div>
+                <div class="form-grid payment-form-grid">
+                  <div class="field">
+                    <label>Amount Paid</label>
+                    <input
+                      v-model.number="paymentForm.amount_paid"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
 
-          <div class="field">
-            <label>Payment Date</label>
-            <input
-              v-model="paymentForm.payment_date"
-              type="date"
-            />
+                  <div class="field">
+                    <label>Payment Method</label>
+                    <select v-model="paymentForm.payment_method">
+                      <option value="cash">Cash</option>
+                      <option value="bank_transfer">Bank Transfer</option>
+                      <option value="card">Card</option>
+                      <option value="ewallet">E-wallet</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label>Payment Reference</label>
+                    <input
+                      v-model="paymentForm.payment_reference"
+                      type="text"
+                      placeholder="Optional reference"
+                    />
+                  </div>
+
+                  <div class="field">
+                    <label>Payment Date</label>
+                    <input v-model="paymentForm.payment_date" type="date" />
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
+                {{ paymentFormError }}
+              </div>
+            </div>
+
+            <div class="modal-actions form-actions">
+              <button type="button" @click="closePaymentModal">Cancel</button>
+              <button
+                type="button"
+                class="primary"
+                :disabled="actionLoadingId === paymentTransactionId"
+                @click="submitPayment"
+              >
+                {{ actionLoadingId === paymentTransactionId ? "Saving..." : "Confirm Payment" }}
+              </button>
+            </div>
           </div>
         </div>
+      </Teleport>
 
-        <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
-          {{ paymentFormError }}
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" @click="closePaymentModal">Cancel</button>
-        <button
-          type="button"
-          class="primary"
-          :disabled="actionLoading"
-          @click="submitPayment"
+      <Teleport to="body">
+        <div
+          v-if="showConfirmQuotationModal"
+          class="delete-modal-overlay"
+          @click.self="closeConfirmQuotationModal"
         >
-          {{ actionLoading ? "Processing..." : "Confirm Payment" }}
-        </button>
-      </div>
-    </div>
-  </div>
-</Teleport>
+          <div class="confirm-modal-card">
+            <div class="confirm-icon">✓</div>
+
+            <div class="delete-title">Confirm quotation?</div>
+
+            <div class="delete-message">
+              This will convert
+              <strong>{{ quotationToConfirm?.document_number || "this quotation" }}</strong>
+              for
+              <strong>{{ quotationToConfirm?.customer?.name || "this customer" }}</strong>
+              into an invoice.
+            </div>
+
+            <div class="delete-actions">
+              <button
+                type="button"
+                class="delete-cancel"
+                :disabled="actionLoadingId === quotationToConfirm?.id"
+                @click="closeConfirmQuotationModal"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                class="confirm-action"
+                :disabled="actionLoadingId === quotationToConfirm?.id"
+                @click="submitConfirmQuotation"
+              >
+                {{ actionLoadingId === quotationToConfirm?.id ? "Confirming..." : "Confirm" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Teleport>
     </div>
   </div>
 </template>
@@ -237,6 +318,8 @@ export default {
       paymentTransactionId: null,
       paymentTransactionTotal: 0,
       actionLoading: false,
+      showConfirmQuotationModal: false,
+      quotationToConfirm: null,
       showPaymentModal: false,
       paymentFormError: "",
       paymentForm: {
@@ -390,24 +473,6 @@ export default {
         .forEach((key) => sessionStorage.removeItem(key));
     },
 
-    async confirmQuotation(id) {
-    this.actionLoadingId = id;
-    this.error = "";
-
-    try {
-        await api.post(`/transactions/${id}/confirm`);
-        this.clearTransactionCache();
-        this.clearInventoryCache();
-        await this.fetchTransactions(this.page);
-    } catch (error) {
-        console.error("Error confirming quotation:", error);
-        this.error =
-        error.response?.data?.message || "Failed to confirm quotation.";
-    } finally {
-        this.actionLoadingId = null;
-    }
-    },
-
     nextPage() {
       if (this.page < this.totalPages) {
         this.fetchTransactions(this.page + 1);
@@ -417,6 +482,45 @@ export default {
     prevPage() {
       if (this.page > 1) {
         this.fetchTransactions(this.page - 1);
+      }
+    },
+
+    openConfirmQuotationModal(trx) {
+      this.quotationToConfirm = trx;
+      this.showConfirmQuotationModal = true;
+    },
+
+    closeConfirmQuotationModal() {
+      if (this.actionLoadingId) return;
+
+      this.showConfirmQuotationModal = false;
+      this.quotationToConfirm = null;
+    },
+
+    async submitConfirmQuotation() {
+      if (!this.quotationToConfirm) return;
+
+      const id = this.quotationToConfirm.id;
+
+      this.actionLoadingId = id;
+      this.error = "";
+
+      try {
+        await api.post(`/transactions/${id}/confirm`);
+
+        this.clearTransactionCache();
+        this.clearInventoryCache();
+
+        this.showConfirmQuotationModal = false;
+        this.quotationToConfirm = null;
+
+        await this.fetchTransactions(this.page);
+      } catch (error) {
+        console.error("Error confirming quotation:", error);
+        this.error =
+          error.response?.data?.message || "Failed to confirm quotation.";
+      } finally {
+        this.actionLoadingId = null;
       }
     },
 
@@ -634,4 +738,337 @@ export default {
   text-decoration: none;
 }
 
+/* action buttons */
+.right {
+  text-align: right;
+}
+
+.action-icon-group {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 7px;
+}
+
+.icon-action {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  color: #6f6f6f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.icon-action:hover {
+  color: #333;
+  background: #f9f9f9;
+  border-color: #d8d8d8;
+}
+
+.icon-action:active {
+  transform: scale(0.96);
+}
+
+.icon-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.icon-action.confirm {
+  color: #5f6f4f;
+  border-color: #dfe9d8;
+}
+
+.icon-action.confirm:hover {
+  color: #287a3e;
+  background: #f3faf4;
+  border-color: #cce5d2;
+}
+
+.icon-action.payment {
+  color: #4f6f58;
+  border-color: #d7eadc;
+}
+
+.icon-action.payment:hover {
+  color: #1f7a3a;
+  background: #f3faf4;
+  border-color: #cce5d2;
+}
+
+.icon-svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-loading {
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+}
+
+/* payment modal */
+.form-modal-card {
+  width: min(560px, calc(100vw - 32px));
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 38px 10px;
+}
+
+.modal-header span {
+  font-size: 15px;
+  font-weight: 700;
+  color: #222;
+}
+
+.modal-body {
+  padding: 10px 38px 16px;
+}
+
+.form-section {
+  border: 1px solid #eeeeee;
+  border-radius: 15px;
+  padding: 16px;
+  background: #fff;
+}
+
+.section-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+}
+
+.payment-summary-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 13px;
+  background: #fafafa;
+  border: 1px solid #eeeeee;
+}
+
+.payment-summary-box span {
+  font-size: 12.5px;
+  color: #777;
+}
+
+.payment-summary-box strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: #222;
+}
+
+.payment-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 13px;
+  color: #222;
+  outline: none;
+  padding: 0 13px;
+  box-sizing: border-box;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #111;
+}
+
+.modal-actions.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 38px 20px;
+  border-top: 1px solid #eeeeee;
+}
+
+.modal-actions.form-actions button {
+  height: 36px;
+  min-width: 96px;
+  padding: 0 14px;
+  border-radius: 11px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-actions.form-actions button.primary {
+  min-width: 135px;
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/*confirm quotation modal */
+.confirm-modal-card {
+  width: min(370px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  text-align: center;
+}
+
+.confirm-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #f3faf4;
+  color: #287a3e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.confirm-action {
+  flex: 1;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+}
+
+.confirm-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(1.5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.confirm-modal-card {
+  width: min(370px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  text-align: center;
+}
+
+.confirm-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #f3faf4;
+  color: #287a3e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.delete-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #171717;
+  margin-bottom: 8px;
+}
+
+.delete-message {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.delete-message strong {
+  color: #222;
+}
+
+.delete-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-actions button {
+  flex: 1;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-cancel {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+}
+
+.confirm-action {
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+}
+
+.confirm-action:disabled,
+.delete-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 </style>
