@@ -4,7 +4,7 @@
     :collapsed="collapsed"
     :menu="menu"
     :user="currentUser"
-    @toggle="collapsed = !collapsed"
+    @toggle="toggleSidebar"
     @logout="handleLogout"
     />
 
@@ -297,7 +297,7 @@ export default {
 
   data() {
     return {
-      collapsed: false,
+      collapsed: localStorage.getItem("sidebar-collapsed") === "true",
       loading: false,
       actionLoadingId: null,
       error: "",
@@ -399,6 +399,11 @@ export default {
   methods: {
     getCacheKey(page = 1) {
       return `transactions-${this.activeTab}-page-${page}`;
+    },
+
+    toggleSidebar() {
+      this.collapsed = !this.collapsed;
+      localStorage.setItem("sidebar-collapsed", String(this.collapsed));
     },
 
     async handleLogout() {

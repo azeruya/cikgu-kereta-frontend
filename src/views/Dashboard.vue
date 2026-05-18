@@ -4,7 +4,7 @@
     :collapsed="collapsed"
     :menu="menu"
     :user="currentUser"
-    @toggle="collapsed = !collapsed"
+    @toggle="toggleSidebar"
     @logout="handleLogout"
     />
 
@@ -323,7 +323,7 @@ export default {
 
   data() {
     return {
-      collapsed: false,
+      collapsed: localStorage.getItem("sidebar-collapsed") === "true",
       loading: false,
       error: "",
 
@@ -534,6 +534,11 @@ export default {
       this.weeklyRevenueRaw = data.weekly_revenue || [];
       this.lowStockItemsRaw = data.low_stock_items || [];
       this.recentActivity = data.recent_activity || [];
+    },
+
+    toggleSidebar() {
+      this.collapsed = !this.collapsed;
+      localStorage.setItem("sidebar-collapsed", String(this.collapsed));
     },
 
     async handleLogout() {

@@ -4,7 +4,7 @@
     :collapsed="collapsed"
     :menu="menu"
     :user="currentUser"
-    @toggle="collapsed = !collapsed"
+    @toggle="toggleSidebar"
     @logout="handleLogout"
     />
 
@@ -93,7 +93,7 @@
                   </span>
                 </td>
                 <td>
-                  <span :class="['status-pill', customerStatusClass(cust)]">
+                  <span :class="['empty-inline', customerStatusClass(cust)]">
                     {{ customerStatusLabel(cust) }}
                   </span>
                 </td>
@@ -141,111 +141,111 @@
           </div>
 
           <div class="modal-body modal-detail-body">
-  <!-- CUSTOMER INFO -->
-  <div class="detail-section customer-info-section">
-  <div class="section-title">Customer Information</div>
+          <!-- CUSTOMER INFO -->
+          <div class="detail-section customer-info-section">
+          <div class="section-title">Customer Information</div>
 
-  <div class="customer-info-list">
-    <div class="info-row">
-      <div class="info-item">
-        <span class="info-label">Phone</span>
-        <span class="info-value">{{ activeCustomer.phone || "-" }}</span>
-      </div>
+          <div class="customer-info-list">
+            <div class="info-row">
+              <div class="info-item">
+                <span class="info-label">Phone</span>
+                <span class="info-value">{{ activeCustomer.phone || "-" }}</span>
+              </div>
 
-      <div class="info-item">
-        <span class="info-label">Email</span>
-        <span class="info-value">{{ activeCustomer.email || "-" }}</span>
-      </div>
-  
-      <div class="info-item">
-        <span class="info-label">Address</span>
-        <span class="info-value">{{ activeCustomer.address || "-" }}</span>
-      </div>
+              <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ activeCustomer.email || "-" }}</span>
+              </div>
+          
+              <div class="info-item">
+                <span class="info-label">Address</span>
+                <span class="info-value">{{ activeCustomer.address || "-" }}</span>
+              </div>
 
-      <div class="info-item">
-        <span class="info-label">Total Visits</span>
-        <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
-      </div>
+              <div class="info-item">
+                <span class="info-label">Total Visits</span>
+                <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
+              </div>
 
-      <div class="info-item">
-        <span class="info-label">Total Spent</span>
-        <span class="info-value">
-          RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+              <div class="info-item">
+                <span class="info-label">Total Spent</span>
+                <span class="info-value">
+                  RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <!-- VEHICLES -->
-  <div class="detail-section">
-    <div class="section-title">Vehicles</div>
+          <!-- VEHICLES -->
+          <div class="detail-section">
+            <div class="section-title">Vehicles</div>
 
-    <div
-      v-for="vehicle in activeCustomer.vehicles || []"
-      :key="vehicle.id"
-      class="detail-list-item"
-    >
-      <div>
-        <div class="item-name">{{ vehicle.license_plate }}</div>
-        <small>
-          {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
-          <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
-        </small>
-      </div>
-    </div>
+            <div
+              v-for="vehicle in activeCustomer.vehicles || []"
+              :key="vehicle.id"
+              class="detail-list-item"
+            >
+              <div>
+                <div class="item-name">{{ vehicle.license_plate }}</div>
+                <small>
+                  {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
+                  <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
+                </small>
+              </div>
+            </div>
 
-    <div
-      v-if="!activeCustomer.vehicles || activeCustomer.vehicles.length === 0"
-      class="empty-small"
-    >
-      No vehicles found
-    </div>
-  </div>
+            <div
+              v-if="!activeCustomer.vehicles || activeCustomer.vehicles.length === 0"
+              class="empty-small"
+            >
+              No vehicles found
+            </div>
+          </div>
 
-  <!-- RECENT TRANSACTIONS -->
-  <div class="detail-section">
-    <div class="section-title">Recent Transactions</div>
+          <!-- RECENT TRANSACTIONS -->
+          <div class="detail-section">
+            <div class="section-title">Recent Transactions</div>
 
-    <div
-      v-for="trx in activeCustomer.transactions || []"
-      :key="trx.id"
-      class="detail-list-item"
-    >
-      <div>
-        <div class="item-name">{{ trx.document_number || "-" }}</div>
-        <small>
-          {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
-        </small>
-      </div>
+            <div
+              v-for="trx in activeCustomer.transactions || []"
+              :key="trx.id"
+              class="detail-list-item"
+            >
+              <div>
+                <div class="item-name">{{ trx.document_number || "-" }}</div>
+                <small>
+                  {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
+                </small>
+              </div>
 
-      <div class="job-price">
-        RM {{ formatMoney(trx.total_amount) }}
-      </div>
-    </div>
+              <div class="job-price">
+                RM {{ formatMoney(trx.total_amount) }}
+              </div>
+            </div>
 
-    <div
-      v-if="!activeCustomer.transactions || activeCustomer.transactions.length === 0"
-      class="empty-small"
-    >
-      No recent transactions
-    </div>
-  </div>
-</div>
+            <div
+              v-if="!activeCustomer.transactions || activeCustomer.transactions.length === 0"
+              class="empty-small"
+            >
+              No recent transactions
+            </div>
+          </div>
+  </div>  
 
-<div class="modal-actions split">
-  <div class="left-actions">
-    <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
-    <button @click="openFormModal(activeCustomer)">Edit</button>
-    <button class="primary" @click="viewCustomerTransactions(activeCustomer)">
-      View Transactions
-    </button>
-  </div>
+          <div class="modal-actions split">
+            <div class="left-actions">
+              <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
+              <button @click="openFormModal(activeCustomer)">Edit</button>
+              <button class="primary" @click="viewCustomerTransactions(activeCustomer)">
+                View Transactions
+              </button>
+            </div>
 
-<button class="danger-light" @click="openDeleteModal(activeCustomer)">
-  Delete
-</button>
-</div>
+          <button class="danger-light" @click="openDeleteModal(activeCustomer)">
+            Delete
+          </button>
+          </div>
         </div>
       </div>
         </Teleport>
@@ -412,7 +412,7 @@ export default {
 
   data() {
     return {
-      collapsed: false,
+      collapsed: localStorage.getItem("sidebar-collapsed") === "true",
       loading: false,
       detailLoading: false,
       error: "",
@@ -445,8 +445,8 @@ export default {
         vehicle_year: ""
       },
       showDeleteModal: false,
-customerToDelete: null,
-deletingCustomer: false,
+      customerToDelete: null,
+      deletingCustomer: false,
     };
   },
 
@@ -547,6 +547,11 @@ deletingCustomer: false,
       this.fetchCustomers(1);
     },
 
+    toggleSidebar() {
+      this.collapsed = !this.collapsed;
+      localStorage.setItem("sidebar-collapsed", String(this.collapsed));
+    },
+
     async handleLogout() {
         try {
             await api.post("/logout");
@@ -643,7 +648,7 @@ deletingCustomer: false,
       if (status === "invoice") return "sp-green";
       if (status === "quotation") return "sp-amber";
       if (status === "receipt") return "sp-blue";
-      return "sp-gray";
+      return "empty-inline";
     },
 
     openFormModal(customer = null) {
@@ -1243,6 +1248,13 @@ async confirmDeleteCustomer() {
 .delete-actions button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.empty-inline {
+  font-size: 11.5px;
+  color: #aaa;
+  font-style: italic;
+  white-space: nowrap;
 }
 
 @media (max-width: 900px) {

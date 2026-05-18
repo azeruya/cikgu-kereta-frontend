@@ -92,7 +92,7 @@ textarea {
    SIDEBAR
 ========================= */
 .sidebar {
-  width: 220px;
+  width: 210px;
   height: 100vh;
   position: sticky;
   top: 0;

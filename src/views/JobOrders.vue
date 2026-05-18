@@ -1,6 +1,6 @@
 <template>
   <div class="dash">
-    <Sidebar :collapsed="collapsed" :menu="menu" @toggle="collapsed = !collapsed" />
+    <Sidebar :collapsed="collapsed" :menu="menu" @toggle="toggleSidebar" />
 
     <div class="main">
       <div class="top-bar">
@@ -152,7 +152,7 @@ export default {
 
   data() {
     return {
-      collapsed: false,
+      collapsed: localStorage.getItem("sidebar-collapsed") === "true",
 
       menu: [
         { name: "Dashboard", path: "/dashboard", icon: "grid" },

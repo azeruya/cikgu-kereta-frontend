@@ -4,7 +4,7 @@
     :collapsed="collapsed"
     :menu="menu"
     :user="currentUser"
-    @toggle="collapsed = !collapsed"
+    @toggle="toggleSidebar"
     @logout="handleLogout"
     />
 
@@ -310,7 +310,7 @@ export default {
 
   data() {
     return {
-      collapsed: false,
+      collapsed: localStorage.getItem("sidebar-collapsed") === "true",
       customers: [],
       vehicles: [],
       compatibleParts: [],
@@ -412,6 +412,11 @@ export default {
       } finally {
         this.loadingCustomers = false;
       }
+    },
+
+    toggleSidebar() {
+      this.collapsed = !this.collapsed;
+      localStorage.setItem("sidebar-collapsed", String(this.collapsed));
     },
 
     async handleLogout() {
