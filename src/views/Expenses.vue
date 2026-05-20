@@ -436,11 +436,19 @@
 
                     <div class="field">
                       <label>Receipt</label>
-                      <input
-                        type="file"
-                        accept="image/*,.pdf"
-                        @change="handleReceiptChange"
-                      />
+
+                      <label class="upload-field">
+                        <span class="upload-button">Choose file</span>
+                        <span class="upload-name">
+                          {{ receiptFileName || "No file selected" }}
+                        </span>
+
+                        <input
+                          type="file"
+                          accept="image/*,.pdf"
+                          @change="handleReceiptFile"
+                        />
+                      </label>
                     </div>
 
                     <div class="field full">
@@ -452,9 +460,29 @@
                       ></textarea>
                     </div>
 
-                      <small v-if="editingExpenseId && form.existing_receipt" class="field-hint">
-                        Current receipt uploaded
-                      </small>
+                     <div v-if="editingExpenseId && form.existing_receipt" class="receipt-chip">
+                    <div class="receipt-chip-left">
+                      <svg class="receipt-chip-icon" viewBox="0 0 16 16">
+                        <path d="M5 2h5l3 3v9H5z" />
+                        <path d="M10 2v3h3" />
+                        <path d="M7 8h4" />
+                        <path d="M7 11h4" />
+                      </svg>
+
+                      <div>
+                        <div class="receipt-chip-title">Receipt uploaded</div>
+                        <div class="receipt-chip-sub">Choose a new file to replace it</div>
+                      </div>
+                    </div>
+
+                  <button
+                    type="button"
+                    class="receipt-chip-action"
+                    @click="viewReceipt({ receipt_file: form.existing_receipt })"
+                  >
+                    View
+                  </button>
+                  </div>
                     </div>
                   </div>
      
@@ -530,6 +558,7 @@ export default {
       showFormModal: false,
       editingExpenseId: null,
       searchTimer: null,
+      receiptFileName: "",
       form: {
         category: "",
         description: "",
@@ -606,7 +635,7 @@ export default {
       this.collapsed = !this.collapsed;
       localStorage.setItem("sidebar-collapsed", String(this.collapsed));
     },
-    
+
     async handleLogout() {
         try {
             await api.post("/logout");
@@ -649,9 +678,11 @@ export default {
       this.detailLoading = false;
     },
 
-    handleReceiptChange(event) {
+    handleReceiptFile(event) {
       const file = event.target.files?.[0] || null;
+
       this.form.receipt_file = file;
+      this.receiptFileName = file ? file.name : "";
     },
 
     applyFilters() {
@@ -709,16 +740,24 @@ export default {
       this.formError = "";
     },
 
-    handleReceiptUpload(event) {
-      this.form.receipt_file = event.target.files[0] || null;
-    },
-
     viewReceipt(expense) {
-      if (!expense.receipt_file) return;
+      const file = expense?.receipt_file;
 
-      const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http://127.0.0.1:8000";
+      if (!file) {
+        this.error = "No receipt file found.";
+        return;
+      }
 
-      window.open(`${baseUrl}/storage/${expense.receipt_file}`, "_blank");
+      if (file.startsWith("http://") || file.startsWith("https://")) {
+        window.open(file, "_blank");
+        return;
+      }
+
+      const baseUrl =
+        import.meta.env.VITE_API_BASE_URL?.replace("/api", "") ||
+        "http://127.0.0.1:8000";
+
+      window.open(`${baseUrl}/storage/${file}`, "_blank");
     },
 
     async submitExpense() {
@@ -1175,7 +1214,7 @@ export default {
 .section-title {
   font-size: 10px;
   font-weight: 700;
-  color: #777;
+  color: #444;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 10px;
@@ -1652,16 +1691,129 @@ export default {
 }
 
 .field input[type="file"] {
-  height: auto;
-  padding: 9px 10px;
+  padding: 8px 10px;
+  height: 38px;
   font-size: 12px;
   color: #666;
+}
+
+.field input[type="file"]::file-selector-button {
+  height: 24px;
+  margin-right: 10px;
+  border: 1px solid #dedede;
+  border-radius: 8px;
+  background: #f8f8f7;
+  color: #333;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .field-hint {
   font-size: 11.5px;
   color: #888;
   margin-top: 2px;
+}
+
+.upload-field {
+  height: 38px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.upload-field input[type="file"] {
+  display: none;
+}
+
+.upload-button {
+  height: 100%;
+  padding: 0 12px;
+  border-right: 1px solid #e5e5e5;
+  background: #f8f8f7;
+  color: #333;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.upload-name {
+  flex: 1;
+  min-width: 0;
+  padding: 0 12px;
+  color: #777;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.receipt-chip {
+  grid-column: 1 / -1;
+  margin-top: 2px;
+  padding: 10px 12px;
+  border: 1px solid #eeeeee;
+  border-radius: 13px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.receipt-chip-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.receipt-chip-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: #777;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.receipt-chip-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #222;
+  line-height: 1.2;
+}
+
+.receipt-chip-sub {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: #888;
+  line-height: 1.2;
+}
+
+.receipt-chip-action {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid #e3e3e3;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.receipt-chip-action:hover {
+  background: #f7f7f6;
 }
 
 </style> 

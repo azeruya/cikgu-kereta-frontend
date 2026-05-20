@@ -68,18 +68,20 @@ textarea {
 ========================= */
 .dash {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .main {
   flex: 1;
+  height: 100vh;
   background: var(--bg);
   overflow-y: auto;
   padding: 30px 34px 40px;
 }
 
 .main > * {
-  max-width: 1320px;
+  max-width: 1400px;
 }
 
 @media (max-width: 1200px) {
@@ -752,8 +754,9 @@ textarea {
   width: 30px;
   height: 30px;
   border-radius: 999px;
-  background: #171717;
-  color: #fff;
+  background: #f1f1ef;
+  color: #333;
+  border: 1px solid #e2e2de;
   display: flex;
   align-items: center;
   justify-content: center;

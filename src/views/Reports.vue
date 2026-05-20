@@ -1,6 +1,3 @@
-Report page eng
-
-
 <template>
   <div class="dash">
     <Sidebar
@@ -36,99 +33,227 @@ Report page eng
         </div>
       </div>
 
-      <div class="filter-shell">
-        <Card>
-          <template #header>
-            <span class="card-title">Filters</span>
-          </template>
-
-          <div class="filters-bar">
-            <input type="date" v-model="startDate" />
-            <input type="date" v-model="endDate" />
-
-            <select v-model="statusFilter">
-              <option value="">All Statuses</option>
-              <option value="quotation">Quotation</option>
-              <option value="invoice">Invoice</option>
-              <option value="receipt">Receipt</option>
-            </select>
-
-            <select v-model="paymentStatusFilter">
-              <option value="">All Payments</option>
-              <option value="paid">Paid</option>
-              <option value="unpaid">Unpaid</option>
-              <option value="partial">Partial</option>
-            </select>
-
-            <button class="pill-btn" @click="applyFilters">Apply</button>
-            <button class="pill-btn" @click="clearFilters">Reset</button>
+      <div class="report-filter-card">
+        <div class="filter-left">
+          <div class="filter-title">Filters</div>
+          <div class="filter-subtitle">
+            Narrow reports by date, transaction status, or payment status
           </div>
-        </Card>
+        </div>
+
+        <div class="report-filters">
+          <input type="date" v-model="startDate" />
+          <input type="date" v-model="endDate" />
+
+          <select v-model="statusFilter">
+            <option value="">All statuses</option>
+            <option value="quotation">Quotation</option>
+            <option value="invoice">Invoice</option>
+            <option value="receipt">Receipt</option>
+          </select>
+
+          <select v-model="paymentStatusFilter">
+            <option value="">All payments</option>
+            <option value="paid">Paid</option>
+            <option value="unpaid">Unpaid</option>
+            <option value="partial">Partial</option>
+          </select>
+
+          <button class="filter-btn primary" type="button" @click="applyFilters">
+            Apply
+          </button>
+
+          <button class="filter-btn" type="button" @click="clearFilters">
+            Reset
+          </button>
+        </div>
       </div>
 
       <!-- Hero -->
-      <div class="report-hero-grid">
-        <Card>
-          <template #header>
-            <span class="card-title hero-title">Financial Overview</span>
-            <span class="card-link">Selected period</span>
-          </template>
+      <div class="report-layout">
+        <!-- Main column -->
+        <div class="report-main">
+          <Card class="financial-card">
+            <template #header>
+              <span class="card-title">Financial Overview</span>
+              <span class="card-link">{{ periodChartRaw.length || 0 }} period(s)</span>
+            </template>
 
-          <div class="hero-top">
-            <div class="hero-stat">
-              <span>Total Revenue</span>
-              <strong>RM {{ formatMoney(summary.total_revenue) }}</strong>
+            <div class="report-kpis">
+              <div class="report-kpi">
+                <span>Total Revenue</span>
+                <strong>RM {{ formatMoney(summary.total_revenue) }}</strong>
+              </div>
+
+              <div class="report-kpi">
+                <span>Total Expenses</span>
+                <strong>RM {{ formatMoney(summary.total_expenses) }}</strong>
+              </div>
+
+              <div class="report-kpi">
+                <span>Estimated Profit</span>
+                <strong :class="Number(summary.estimated_profit) < 0 ? 'danger-text' : ''">
+                  RM {{ formatMoney(summary.estimated_profit) }}
+                </strong>
+              </div>
             </div>
 
-            <div class="hero-stat">
-              <span>Total Expenses</span>
-              <strong>RM {{ formatMoney(summary.total_expenses) }}</strong>
-            </div>
-
-            <div class="hero-stat">
-              <span>Estimated Profit</span>
-              <strong :class="Number(summary.estimated_profit) < 0 ? 'danger-text' : ''">
-                RM {{ formatMoney(summary.estimated_profit) }}
-              </strong>
-            </div>
-          </div>
-
-          <div v-if="loading" class="empty-state">Loading report...</div>
+            <div v-if="loading" class="empty-state">Loading report...</div>
 
             <div v-else-if="periodChartRaw.length === 0" class="empty-state">
-            No chart data found.
+              No chart data found.
             </div>
 
-            <div v-else class="hero-chart apex-chart-wrap">
-            <apexchart
+            <div v-else class="apex-chart-wrap financial-chart">
+              <apexchart
                 type="line"
-                height="340"
+                height="260"
                 :options="financialChartOptions"
                 :series="financialChartSeries"
-            />
+              />
             </div>
-        </Card>
+          </Card>
 
-        <div class="hero-side">
-          <Card>
+          <div class="analytics-grid">
+            <Card class="analytics-card">
+              <template #header>
+                <span class="card-title">Revenue by Make</span>
+              </template>
+
+              <div v-if="revenueByMake.length === 0" class="empty-small">
+                No make analytics found.
+              </div>
+
+              <div v-else class="apex-chart-wrap medium-chart">
+                <apexchart
+                  type="bar"
+                  height="230"
+                  :options="makeChartOptions"
+                  :series="makeChartSeries"
+                />
+              </div>
+            </Card>
+
+            <Card class="analytics-card">
+              <template #header>
+                <span class="card-title">Revenue by Model</span>
+              </template>
+
+              <div v-if="revenueByModel.length === 0" class="empty-small">
+                No model analytics found.
+              </div>
+
+              <div v-else class="apex-chart-wrap medium-chart">
+                <apexchart
+                  type="bar"
+                  height="230"
+                  :options="modelChartOptions"
+                  :series="modelChartSeries"
+                />
+              </div>
+            </Card>
+          </div>
+
+          <div class="analytics-grid">
+            <Card>
+              <template #header>
+                <span class="card-title">Top Customers</span>
+                <span class="card-link">{{ customerAnalytics.unique_customers || 0 }} unique</span>
+              </template>
+
+              <div class="insight-stats">
+                <div class="insight-stat">
+                  <span>Unique Customers</span>
+                  <strong>{{ customerAnalytics.unique_customers || 0 }}</strong>
+                </div>
+
+                <div class="insight-stat">
+                  <span>Repeat Customers</span>
+                  <strong>{{ customerAnalytics.repeat_customers || 0 }}</strong>
+                </div>
+              </div>
+
+              <div
+                v-if="!customerAnalytics.top_customers || customerAnalytics.top_customers.length === 0"
+                class="empty-small"
+              >
+                No customer analytics found.
+              </div>
+
+              <div v-else class="report-list">
+                <div
+                  v-for="row in customerAnalytics.top_customers"
+                  :key="row.id"
+                  class="report-list-row"
+                >
+                  <div>
+                    <div class="item-name">{{ row.name }}</div>
+                    <div class="subtext">{{ row.transactions_count }} transaction(s)</div>
+                  </div>
+
+                  <div class="job-price">RM {{ formatMoney(row.revenue) }}</div>
+                </div>
+              </div>
+            </Card>
+
+            <Card>
+              <template #header>
+                <span class="card-title">Top Vehicles</span>
+                <span class="card-link">{{ vehicleAnalytics.unique_vehicles || 0 }} unique</span>
+              </template>
+
+              <div
+                v-if="!vehicleAnalytics.top_vehicles || vehicleAnalytics.top_vehicles.length === 0"
+                class="empty-small"
+              >
+                No vehicle analytics found.
+              </div>
+
+              <div v-else class="report-list">
+                <div
+                  v-for="row in vehicleAnalytics.top_vehicles"
+                  :key="row.id"
+                  class="report-list-row"
+                >
+                  <div>
+                    <div class="item-name">
+                      {{ row.license_plate }} — {{ row.make }} {{ row.model }}
+                    </div>
+
+                    <div class="subtext">
+                      {{ row.year || "-" }} · {{ row.transactions_count }} transaction(s)
+                    </div>
+                  </div>
+
+                  <div class="job-price">RM {{ formatMoney(row.revenue) }}</div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="report-side">
+          <Card class="collection-card">
             <template #header>
               <span class="card-title">Collection Status</span>
             </template>
 
             <div class="ring-shell apex-chart-wrap small-chart">
-            <apexchart
+              <apexchart
                 type="radialBar"
-                height="220"
+                height="150"
                 :options="paidStatusChartOptions"
                 :series="paidStatusChartSeries"
-            />
+              />
             </div>
 
-            <div class="summary-stack">
+            <div class="summary-stack compact">
               <div class="summary-line">
                 <span>Paid</span>
                 <b>RM {{ formatMoney(paidVsUnpaid.paid) }}</b>
               </div>
+
               <div class="summary-line">
                 <span>Unpaid</span>
                 <b>RM {{ formatMoney(paidVsUnpaid.unpaid) }}</b>
@@ -146,134 +271,29 @@ Report page eng
                 <span>Total Transactions</span>
                 <b>{{ summary.total_transactions }}</b>
               </div>
+
               <div class="mini-stat-row">
                 <span>Total Paid</span>
                 <b>RM {{ formatMoney(summary.total_paid) }}</b>
               </div>
+
               <div class="mini-stat-row">
                 <span>Total Unpaid</span>
                 <b>RM {{ formatMoney(summary.total_unpaid) }}</b>
               </div>
+
+              <div class="mini-stat-row">
+                <span>Gross Sales</span>
+                <b>RM {{ formatMoney(summary.gross_sales) }}</b>
+              </div>
+
+              <div class="mini-stat-row">
+                <span>Discounts</span>
+                <b>RM {{ formatMoney(summary.total_discount) }}</b>
+              </div>
             </div>
           </Card>
         </div>
-      </div>
-
-      <!-- Analytics -->
-      <div class="analytics-grid">
-        <Card>
-          <template #header>
-            <span class="card-title">Revenue by Make</span>
-          </template>
-
-          <div v-if="revenueByMake.length === 0" class="empty-small">
-            No make analytics found.
-            </div>
-
-            <div v-else class="apex-chart-wrap medium-chart">
-            <apexchart
-                type="bar"
-                height="280"
-                :options="makeChartOptions"
-                :series="makeChartSeries"
-            />
-            </div>
-        </Card>
-
-        <Card>
-          <template #header>
-            <span class="card-title">Revenue by Model</span>
-          </template>
-
-          <div v-if="revenueByModel.length === 0" class="empty-small">
-            No model analytics found.
-            </div>
-
-            <div v-else class="apex-chart-wrap medium-chart">
-            <apexchart
-                type="bar"
-                height="280"
-                :options="modelChartOptions"
-                :series="modelChartSeries"
-            />
-            </div>
-        </Card>
-      </div>
-
-      <div class="analytics-grid">
-        <Card>
-          <template #header>
-            <span class="card-title">Customer Insights</span>
-          </template>
-
-          <div class="insight-stats">
-            <div class="insight-stat">
-              <span>Unique Customers</span>
-              <strong>{{ customerAnalytics.unique_customers || 0 }}</strong>
-            </div>
-            <div class="insight-stat">
-              <span>Repeat Customers</span>
-              <strong>{{ customerAnalytics.repeat_customers || 0 }}</strong>
-            </div>
-          </div>
-
-          <div class="subsection-title">Top Customers</div>
-
-          <div v-if="!customerAnalytics.top_customers || customerAnalytics.top_customers.length === 0" class="empty-small">
-            No customer analytics found.
-          </div>
-
-          <div v-else class="category-list">
-            <div
-              v-for="row in customerAnalytics.top_customers"
-              :key="row.id"
-              class="category-row"
-            >
-              <div>
-                <div class="item-name">{{ row.name }}</div>
-                <div class="subtext">{{ row.transactions_count }} transaction(s)</div>
-              </div>
-              <div class="job-price">RM {{ formatMoney(row.revenue) }}</div>
-            </div>
-          </div>
-        </Card>
-
-        <Card>
-          <template #header>
-            <span class="card-title">Vehicle Insights</span>
-          </template>
-
-          <div class="insight-stats single">
-            <div class="insight-stat">
-              <span>Unique Vehicles</span>
-              <strong>{{ vehicleAnalytics.unique_vehicles || 0 }}</strong>
-            </div>
-          </div>
-
-          <div class="subsection-title">Top Vehicles</div>
-
-          <div v-if="!vehicleAnalytics.top_vehicles || vehicleAnalytics.top_vehicles.length === 0" class="empty-small">
-            No vehicle analytics found.
-          </div>
-
-          <div v-else class="category-list">
-            <div
-              v-for="row in vehicleAnalytics.top_vehicles"
-              :key="row.id"
-              class="category-row"
-            >
-              <div>
-                <div class="item-name">
-                  {{ row.license_plate }} - {{ row.make }} {{ row.model }}
-                </div>
-                <div class="subtext">
-                  {{ row.year || "-" }} • {{ row.transactions_count }} transaction(s)
-                </div>
-              </div>
-              <div class="job-price">RM {{ formatMoney(row.revenue) }}</div>
-            </div>
-          </div>
-        </Card>
       </div>
 
       <div v-if="error" class="page-error">
@@ -750,7 +770,7 @@ export default {
 }
 
 .small-chart {
-  min-height: 220px;
+  min-height: 150px;
 }
 
 .medium-chart {
@@ -759,64 +779,6 @@ export default {
 
 .filter-shell {
   margin-bottom: 16px;
-}
-
-.report-hero-grid {
-  display: grid;
-  grid-template-columns: 1.55fr 0.75fr;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.report-hero-grid > :first-child {
-  padding: 22px;
-  border-radius: 20px;
-}
-
-.hero-side {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.hero-side .card {
-  padding: 16px;
-}
-
-.hero-title {
-  font-size: 18px;
-}
-
-.hero-top {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.hero-stat {
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-.hero-stat span {
-  display: block;
-  font-size: 11px;
-  color: #999;
-  margin-bottom: 8px;
-}
-
-.hero-stat strong {
-  font-size: 26px;
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-}
-
-.hero-chart {
-  margin-top: 10px;
-  padding-top: 6px;
 }
 
 .mini-stat-list {
@@ -883,24 +845,6 @@ export default {
   color: #666;
 }
 
-.category-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.category-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 12px 0;
-  border-bottom: 1px solid #f2f2f0;
-}
-
-.category-row:last-child {
-  border-bottom: none;
-}
-
 .subtext {
   font-size: 11px;
   color: #888;
@@ -909,6 +853,396 @@ export default {
 
 .danger-text {
   color: #c73a3a;
+}
+
+/* =========================
+   REPORTS PAGE
+========================= */
+
+.report-filter-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.filter-left {
+  min-width: 180px;
+}
+
+.filter-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.filter-subtitle {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.35;
+  color: #999;
+}
+
+.report-filters {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.report-filters input,
+.report-filters select {
+  height: 35px;
+  min-width: 135px;
+  padding: 0 11px;
+  border-radius: 11px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #222;
+  font-size: 12px;
+  outline: none;
+}
+
+.report-filters input:focus,
+.report-filters select:focus {
+  border-color: #111;
+}
+
+.filter-btn {
+  height: 35px;
+  padding: 0 14px;
+  border-radius: 11px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filter-btn.primary {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.filter-btn:hover {
+  background: #f8f8f7;
+}
+
+.filter-btn.primary:hover {
+  background: #000;
+}
+
+/* Main report layout */
+.report-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 18px;
+  align-items: start;
+}
+
+.report-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.report-side {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  padding-left: 18px;
+  border-left: 1px solid #e8e8e3;
+
+  padding-bottom: 4px;
+}
+
+/* Financial hero */
+.financial-card {
+  min-height: auto;
+}
+
+.financial-chart {
+  margin-top: 4px;
+  min-height: 260px;
+}
+
+.report-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.report-kpi {
+  border: 1px solid #eeeeee;
+  background: #fafafa;
+  border-radius: 14px;
+  padding: 13px 14px;
+}
+
+.report-kpi span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8a8a8a;
+  margin-bottom: 7px;
+}
+
+.report-kpi strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: #171717;
+  letter-spacing: -0.03em;
+}
+
+.danger-text {
+  color: #b42318 !important;
+}
+
+/* Analytics */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.analytics-card {
+  min-height: 280px;
+}
+
+.medium-chart {
+  min-height: 210px;
+}
+
+.apex-chart-wrap {
+  width: 100%;
+  min-width: 0;
+}
+
+.apex-chart-wrap :deep(.apexcharts-tooltip) {
+  border-radius: 12px !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid #eeeeee !important;
+}
+
+.apex-chart-wrap :deep(.apexcharts-tooltip-title) {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.apex-chart-wrap :deep(text) {
+  fill: #777 !important;
+}
+
+/* Right side cards */
+.collection-card {
+  padding-bottom: 16px;
+}
+
+.ring-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -14px;
+  margin-bottom: -14px;
+}
+
+.small-chart {
+  min-height: 135px;
+}
+
+.summary-stack.compact {
+  margin-top: 4px;
+}
+
+.summary-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid #f1f1ef;
+  font-size: 12.5px;
+  color: #666;
+}
+
+.summary-line:last-child {
+  border-bottom: none;
+}
+
+.summary-line b {
+  color: #222;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Quick overview */
+.mini-stat-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mini-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f1ef;
+  font-size: 12.5px;
+  color: #666;
+}
+
+.mini-stat-row:last-child {
+  border-bottom: none;
+}
+
+.mini-stat-row b {
+  color: #222;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Insights */
+.insight-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.insight-stat {
+  border: 1px solid #eeeeee;
+  border-radius: 13px;
+  background: #fafafa;
+  padding: 12px 13px;
+}
+
+.insight-stat span {
+  display: block;
+  font-size: 11.5px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.insight-stat strong {
+  font-size: 20px;
+  font-weight: 800;
+  color: #222;
+}
+
+.report-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.report-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f1ef;
+}
+
+.report-list-row:last-child {
+  border-bottom: none;
+}
+
+.subtext {
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #999;
+  line-height: 1.35;
+}
+
+.job-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.empty-small {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  color: #999;
+  font-size: 12.5px;
+  font-style: italic;
+}
+
+.empty-state {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 13px;
+  font-style: italic;
+  border: 1px dashed #e3e3df;
+  border-radius: 14px;
+  background: #fafafa;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .report-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .report-side {
+    border-left: none;
+    padding-left: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .report-filter-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .report-filters {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .report-kpis,
+  .analytics-grid,
+  .report-side {
+    grid-template-columns: 1fr;
+  }
+
+  .report-filters input,
+  .report-filters select {
+    flex: 1;
+    min-width: 150px;
+  }
 }
 
 @media (max-width: 1200px) {

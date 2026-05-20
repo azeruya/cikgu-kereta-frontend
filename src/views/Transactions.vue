@@ -856,7 +856,7 @@ export default {
 .section-title {
   font-size: 10.5px;
   font-weight: 700;
-  color: #777;
+  color: #444;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 12px;

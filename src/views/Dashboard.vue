@@ -1,142 +1,331 @@
 <template>
   <div class="dash">
     <Sidebar
-    :collapsed="collapsed"
-    :menu="menu"
-    :user="currentUser"
-    @toggle="toggleSidebar"
-    @logout="handleLogout"
+      :collapsed="collapsed"
+      :menu="menu"
+      :user="currentUser"
+      @toggle="toggleSidebar"
+      @logout="handleLogout"
     />
 
     <div class="main">
-      <div class="top-bar">
-        <div>
-          <div class="page-title">
+      <!-- HERO / GREETING -->
+      <div class="dashboard-hero">
+        <div class="hero-copy">
+          <div class="hero-meta">
+            {{ todayText }} <span>•</span> Workshop is open
+          </div>
+
+          <h1 class="hero-title">
             Good {{ greeting }}, {{ firstName }}
-          </div>
-          <div class="page-date header-meta">
-            <span>{{ todayText }}</span>
-            <span class="meta-dot">•</span>
-            <span>Workshop is open</span>
-          </div>
+          </h1>
+
+          <p class="hero-subtitle">
+            Here's what's happening at your workshop today.
+          </p>
         </div>
 
-        <div class="top-right">
-          <button class="pill-btn">
+        <div class="hero-actions">
+          <button class="pill-btn" type="button">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2" />
-              <path d="M6 3v3l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+              <circle
+                cx="6"
+                cy="6"
+                r="5"
+                stroke="currentColor"
+                stroke-width="1.2"
+              />
+              <path
+                d="M6 3v3l2 2"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+              />
             </svg>
             Today
           </button>
 
           <router-link to="/transactions/new" class="pill-btn primary link-btn">
-            + New Transaction
+            + New transaction
           </router-link>
         </div>
       </div>
 
-      <div class="metrics-grid">
-        <div class="metric-card" v-for="metric in metrics" :key="metric.label">
-          <div class="metric-label">
-            {{ metric.label }}
-            <div class="metric-icon" :class="metric.iconClass">
-              <span v-html="metric.icon"></span>
+      <!-- MAIN DASHBOARD SPLIT -->
+      <div class="dashboard-shell">
+        <!-- LEFT MAIN AREA -->
+        <section class="dashboard-main-panel">
+          <!-- KPI CARDS -->
+          <div
+            class="metrics-grid dashboard-metrics"
+            :class="{ 'staff-metrics': !isAdmin }"
+          >
+            <div
+              v-for="metric in metrics"
+              :key="metric.label"
+              class="metric-card"
+            >
+              <div class="metric-label">
+                <span>{{ metric.label }}</span>
+
+                <div class="metric-icon" :class="metric.iconClass">
+                  <span v-html="metric.icon"></span>
+                </div>
+              </div>
+
+              <div class="metric-value">
+                {{ metric.value }}
+              </div>
+
+              <div class="metric-sub" v-html="metric.sub"></div>
             </div>
           </div>
 
-          <div class="metric-value">{{ metric.value }}</div>
-          <div class="metric-sub" v-html="metric.sub"></div>
-        </div>
-      </div>
-
-      <div class="content-row-3" :class="{ 'staff-layout': !isAdmin }">
-        <Card class="today-card">
-          <template #header>
-            <span class="card-title">Today's Transactions</span>
-            <router-link to="/transactions" class="card-link">View all</router-link>
-          </template>
-
-          <table class="jobs-table">
-            <thead>
-              <tr>
-                <th>Customer / Plate</th>
-                <th>Work</th>
-                <th>Status</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-
-            <tbody v-if="todayTransactions.length > 0">
-              <tr v-for="job in todayTransactions" :key="job.id">
-                <td>
-                  <div class="job-customer">{{ job.customer }}</div>
-                  <div class="job-plate">{{ job.plate }}</div>
-                </td>
-                <td>{{ job.work }}</td>
-                <td>
-                  <span class="status-pill" :class="job.badgeClass">
-                    {{ job.status }}
-                  </span>
-                </td>
-                <td>{{ job.total }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div
-            v-if="!loading && todayTransactions.length === 0"
-            class="today-empty"
-          >
-            No transactions today.
-          </div>
-
-          <div
-            v-else-if="todayTransactions.length > 0 && todayTransactions.length < 4"
-            class="today-empty"
-          >
-            More transactions will appear here today.
-          </div>
-        </Card>
-
-        <div class="stack-col">
-          <Card>
+          <!-- TODAY'S TRANSACTIONS -->
+          <Card class="today-card dashboard-fixed-card">
             <template #header>
-              <span class="card-title">Quick Actions</span>
+              <span class="card-title">Today's transactions</span>
+              <router-link to="/transactions" class="card-link">
+                View all
+              </router-link>
             </template>
 
-            <div class="quick-actions">
-              <router-link to="/transactions/new" class="qa-btn">
-                <div class="qa-icon qa-green">+</div>
-                <div class="qa-label">New transaction</div>
-                <div class="qa-desc">Create quotation or invoice</div>
-              </router-link>
+            <div class="card-scroll today-scroll">
+              <table
+                v-if="todayTransactions.length > 0"
+                class="table compact-table"
+              >
+                <thead>
+                  <tr>
+                    <th>Customer / Plate</th>
+                    <th>Work</th>
+                    <th>Status</th>
+                    <th class="right">Total</th>
+                  </tr>
+                </thead>
 
-              <router-link to="/customers" class="qa-btn">
-                <div class="qa-icon qa-purple">👤</div>
-                <div class="qa-label">Add customer</div>
-                <div class="qa-desc">Register new customer</div>
-              </router-link>
+                <tbody>
+                  <tr v-for="job in todayTransactions" :key="job.id">
+                    <td>
+                      <div class="item-name">{{ job.customer }}</div>
+                      <div class="item-sub">{{ job.plate }}</div>
+                    </td>
 
-              <router-link to="/inventory/new" class="qa-btn">
-                <div class="qa-icon qa-blue">📦</div>
-                <div class="qa-label">Inventory</div>
-                <div class="qa-desc">Manage parts & stock</div>
-              </router-link>
+                    <td>
+                      <div class="item-name">{{ job.work }}</div>
+                    </td>
 
-              <router-link to="/expenses" class="qa-btn">
-                <div class="qa-icon qa-amber">💳</div>
-                <div class="qa-label">Add expense</div>
-                <div class="qa-desc">Log operating expense</div>
-              </router-link>
+                    <td>
+                      <span class="status-pill" :class="job.badgeClass">
+                        {{ job.status }}
+                      </span>
+                    </td>
+
+                    <td class="right">
+                      {{ job.total }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div v-else class="dashboard-empty-line">
+                No transactions today.
+              </div>
             </div>
           </Card>
 
-          <Card>
+          <!-- RECENT ACTIVITY -->
+          <Card class="activity-card dashboard-fixed-card">
+            <template #header>
+              <span class="card-title">Recent activity</span>
+            </template>
+
+            <div v-if="recentActivity.length === 0" class="dashboard-empty-line">
+              No recent activity yet.
+            </div>
+
+            <div v-else class="activity-list card-scroll activity-scroll">
+              <div
+                v-for="activity in recentActivity"
+                :key="activity.text"
+                class="activity-item"
+              >
+                <div class="act-dot-wrap">
+                  <div class="act-dot" :class="activity.dotClass"></div>
+                  <div class="act-line"></div>
+                </div>
+
+                <div class="activity-content">
+                  <div class="act-text" v-html="activity.text"></div>
+                  <div class="act-time">{{ activity.time }}</div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </section>
+
+        <!-- RIGHT RAIL -->
+        <aside class="dashboard-right-panel">
+          <!-- QUICK ACTIONS -->
+          <Card class="quick-card dashboard-fixed-card">
+            <template #header>
+              <span class="card-title rail-title">Quick actions</span>
+            </template>
+
+            <div class="quick-actions compact">
+              <router-link to="/transactions/new" class="qa-btn">
+  <div class="qa-icon qa-green">
+    <svg class="qa-svg" viewBox="0 0 16 16">
+      <path d="M8 3v10M3 8h10" />
+    </svg>
+  </div>
+
+  <div>
+    <div class="qa-label">New transaction</div>
+    <div class="qa-desc">Create quotation or invoice</div>
+  </div>
+</router-link>
+
+<router-link to="/inventory/new" class="qa-btn">
+  <div class="qa-icon qa-blue">
+    <svg class="qa-svg" viewBox="0 0 16 16">
+      <path d="M3 5.5L8 3l5 2.5v5L8 13l-5-2.5v-5Z" />
+      <path d="M3 5.5L8 8l5-2.5" />
+      <path d="M8 8v5" />
+    </svg>
+  </div>
+
+  <div>
+    <div class="qa-label">Add part</div>
+    <div class="qa-desc">Create inventory part</div>
+  </div>
+</router-link>
+
+<button
+  class="qa-btn"
+  type="button"
+  :disabled="importingRequests"
+  @click="importOnlineRequests"
+>
+  <div class="qa-icon qa-amber">
+    <svg class="qa-svg" viewBox="0 0 16 16">
+      <path d="M8 11V4" />
+      <path d="M5.5 6.5L8 4l2.5 2.5" />
+      <path d="M3 11.5v1.5h10v-1.5" />
+      <path d="M4.5 9.5H3.5a1 1 0 0 0-1 1v2.5" />
+      <path d="M11.5 9.5h1a1 1 0 0 1 1 1v2.5" />
+    </svg>
+  </div>
+
+  <div>
+    <div class="qa-label">Import</div>
+    <div class="qa-desc">
+      {{ importingRequests ? "Importing..." : "Online requests" }}
+    </div>
+  </div>
+</button>
+
+<router-link v-if="isAdmin" to="/reports" class="qa-btn">
+  <div class="qa-icon qa-purple">
+    <svg class="qa-svg" viewBox="0 0 16 16">
+      <path d="M3 13V8" />
+      <path d="M8 13V4" />
+      <path d="M13 13V6" />
+      <path d="M2 13h12" />
+    </svg>
+  </div>
+
+  <div>
+    <div class="qa-label">Report</div>
+    <div class="qa-desc">View business report</div>
+  </div>
+</router-link>
+
+<router-link v-else to="/customers" class="qa-btn">
+  <div class="qa-icon qa-purple">
+    <svg class="qa-svg" viewBox="0 0 16 16">
+      <circle cx="8" cy="5" r="3" />
+      <path d="M2.5 14c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5" />
+    </svg>
+  </div>
+
+  <div>
+    <div class="qa-label">Customer</div>
+    <div class="qa-desc">View customer list</div>
+  </div>
+</router-link>
+            </div>
+          </Card>
+
+          <!-- LOW STOCK -->
+          <Card class="low-stock-card dashboard-fixed-card">
+            <template #header>
+              <span class="card-title">Low stock alerts</span>
+              <router-link to="/inventory" class="card-link">
+                View inventory
+              </router-link>
+            </template>
+
+            <div v-if="lowStockItems.length === 0" class="dashboard-empty-line">
+              No low stock alerts.
+            </div>
+
+            <div v-else class="stock-list card-scroll stock-scroll">
+              <div
+                v-for="item in lowStockItems"
+                :key="item.id || item.name"
+                class="stock-item"
+              >
+                <div class="stock-top">
+                  <div class="stock-info">
+                    <div class="stock-name">{{ item.name }}</div>
+                    <div class="stock-min">
+                      {{ item.left }} / {{ item.min }} minimum
+                    </div>
+                  </div>
+
+                  <div class="stock-right">
+                    <div class="stock-qty">{{ item.left }} left</div>
+
+                    <span
+                      class="stock-badge"
+                      :class="item.level === 'critical' ? 'badge-crit' : 'badge-warn'"
+                    >
+                      {{ item.level === "critical" ? "Critical" : "Low" }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="stock-meter">
+                  <div
+                    class="stock-meter-fill"
+                    :class="{ critical: item.level === 'critical' }"
+                    :style="{
+                      width:
+                        Math.max(
+                          0,
+                          Math.min(
+                            100,
+                            (Number(item.left || 0) /
+                              Math.max(Number(item.min || 1), 1)) *
+                              100
+                          )
+                        ) + '%'
+                    }"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <!-- ONLINE REQUESTS -->
+          <Card class="online-card dashboard-fixed-card">
             <template #header>
               <span class="card-title">Online requests</span>
 
               <button
                 class="card-link btn-link"
+                type="button"
                 :disabled="importingRequests"
                 @click="importOnlineRequests"
               >
@@ -148,164 +337,61 @@
               {{ importMessage }}
             </div>
 
-            <div v-if="onlineRequests.length === 0" class="empty-state">
-              No online requests imported yet.
+            <div v-if="onlineRequests.length === 0" class="dashboard-empty-line">
+              No online requests.
             </div>
 
-            <div v-else class="online-request-list">
+            <div v-else class="online-request-list card-scroll online-scroll">
               <div
-                v-for="request in onlineRequests.slice(0, 3)"
+                v-for="request in onlineRequests"
                 :key="request.id"
                 class="online-request-item"
               >
-                <div>
+                <div class="or-content">
                   <div class="or-name">
-                    {{ request.customer?.name || "-" }}
+                    {{ request.customer?.name || request.customer_name || "-" }}
                   </div>
 
                   <div class="or-meta">
-                    {{ request.vehicle?.license_plate || "-" }}
-                    ·
-                    {{ request.vehicle?.make || "" }}
-                    {{ request.vehicle?.model || "" }}
+                    {{ request.vehicle?.license_plate || request.license_plate || "-" }}
+
+                    <span v-if="request.vehicle?.make || request.vehicle_make">
+                      · {{ request.vehicle?.make || request.vehicle_make }}
+                    </span>
+
+                    <span v-if="request.vehicle?.model || request.vehicle_model">
+                      {{ request.vehicle?.model || request.vehicle_model }}
+                    </span>
                   </div>
 
                   <div class="or-problem">
-                    {{ request.problem_description || "No problem stated" }}
+                    {{ request.problem_description || request.problem || "No problem stated" }}
                   </div>
                 </div>
 
-<div class="or-actions">
-  <span class="or-status">
-    {{ request.status }}
-  </span>
+                <div class="or-actions">
+                  <span class="or-status">
+                    {{ request.status }}
+                  </span>
 
-  <button
-    v-if="request.status !== 'converted'"
-    class="or-convert-btn"
-    @click="convertOnlineRequest(request)"
-  >
-    Convert
-  </button>
-</div>
+                  <button
+                    v-if="request.status !== 'converted'"
+                    class="or-convert-btn"
+                    type="button"
+                    @click="convertOnlineRequest(request)"
+                  >
+                    Convert
+                  </button>
+                </div>
               </div>
             </div>
           </Card>
-
-          <Card v-if="isAdmin">
-          <template #header>
-            <span class="card-title">Weekly Revenue</span>
-            <span class="card-link">{{ weeklyRevenueTotal }}</span>
-          </template>
-
-          <div class="chart-bars">
-            <div
-              v-for="day in weeklyRevenue"
-              :key="day.label"
-              class="chart-bar-wrap"
-            >
-              <div
-                class="chart-bar"
-                :class="{ today: day.isToday }"
-                :style="{ height: day.height + 'px' }"
-              ></div>
-              <div class="chart-day" :class="{ 'chart-day-active': day.isToday }">
-                {{ day.label }}
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card v-if="!isAdmin">
-          <template #header>
-            <span class="card-title">Staff Focus</span>
-          </template>
-
-          <div class="staff-focus">
-            <div class="focus-row">
-              <span>Today’s transactions</span>
-              <b>{{ todayTransactions.length }}</b>
-            </div>
-            <div class="focus-row">
-              <span>Invoices awaiting payment</span>
-              <b>{{ summary.active_invoices }}</b>
-            </div>
-            <div class="focus-row">
-              <span>Low stock items</span>
-              <b>{{ summary.low_stock_count }}</b>
-            </div>
-          </div>
-        </Card>
-        </div>
+        </aside>
       </div>
 
-      <div class="content-row">
-        <Card>
-          <template #header>
-            <span class="card-title">Low Stock Alerts</span>
-            <router-link to="/inventory" class="card-link">View inventory</router-link>
-          </template>
-
-          <div class="stock-list">
-            <div
-              v-for="item in lowStockItems"
-              :key="item.name"
-              class="stock-item"
-              :class="{ critical: item.level === 'critical' }"
-            >
-              <div>
-                <div class="stock-name">{{ item.name }}</div>
-                <div class="stock-min">Min stock: {{ item.min }} units</div>
-              </div>
-
-              <div class="stock-right">
-                <div class="stock-qty">{{ item.left }} left</div>
-                <span
-                  class="stock-badge"
-                  :class="item.level === 'critical' ? 'badge-crit' : 'badge-warn'"
-                >
-                  {{ item.level === "critical" ? "Critical" : "Low" }}
-                </span>
-              </div>
-            </div>
-            <div v-if="lowStockItems.length === 0" class="empty-state">
-            No low stock alerts.
-            </div>
-          </div>
-        </Card>
-
-        <Card>
-          <template #header>
-            <span class="card-title">Recent Activity</span>
-            <span class="card-link">Latest updates</span>
-          </template>
-
-          <div class="activity-list">
-            <div
-              v-for="activity in recentActivity"
-              :key="activity.text"
-              class="activity-item"
-            >
-              <div class="act-dot-wrap">
-                <div class="act-dot" :class="activity.dotClass"></div>
-                <div class="act-line"></div>
-              </div>
-
-              <div>
-                <div class="act-text" v-html="activity.text"></div>
-                <div class="act-time">{{ activity.time }}</div>
-              </div>
-            </div>
-            <div v-if="recentActivity.length === 0" class="empty-state">
-            No recent activity yet.
-            </div>
-          </div>
-        </Card>
-      </div>
-
-        <div v-if="error" class="page-error">
+      <div v-if="error" class="page-error">
         {{ error }}
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -617,82 +703,21 @@ export default {
 </script>
 
 <style scoped>
+/* =========================
+   PAGE BASE
+========================= */
 .main {
   padding: 28px;
+  background: var(--bg);
 }
 
-.header-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  line-height: 1;
-  padding-top: 10px;
+.right {
+  text-align: right;
 }
 
-.meta-dot {
-  color: #bbb;
+.link-btn {
+  text-decoration: none;
 }
-
-.mi-soft {
-  background: #f4f4f3;
-  color: #444;
-}
-
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-.metric-card {
-  background: #fff;
-  border: 1px solid #e8e8e6;
-  border-radius: 12px;
-  padding: 16px 18px;
-}
-
-.metric-label {
-  font-size: 11px;
-  color: #999;
-  font-weight: 500;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.metric-value {
-  font-size: 22px;
-  font-weight: 600;
-  color: #111;
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-
-.metric-sub {
-  font-size: 11px;
-  color: #999;
-  margin-top: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.metric-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-
-.mi-green { background: #f0faf0; color: #2e7d32; }
-.mi-blue { background: #eef4ff; color: #1565c0; }
-.mi-amber { background: #fff8ee; color: #e57320; }
-.mi-red { background: #fff0f0; color: #e53935; }
 
 .btn-link {
   border: none;
@@ -706,6 +731,539 @@ export default {
   cursor: not-allowed;
 }
 
+/* =========================
+   HERO / GREETING
+========================= */
+.dashboard-hero {
+  max-width: 1320px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hero-meta span {
+  color: #b8b8b8;
+}
+
+.hero-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  color: #121212;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.hero-subtitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #8a8a8a;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   DASHBOARD SPLIT LAYOUT
+========================= */
+.dashboard-shell {
+  max-width: 1320px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.dashboard-main-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.dashboard-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 0 0 20px;
+  border-left: 1px solid #e3e3dc;
+  background: linear-gradient(
+    90deg,
+    rgba(245, 244, 238, 0.85) 0%,
+    rgba(245, 244, 238, 0.35) 100%
+  );
+  min-width: 0;
+}
+
+.dashboard-fixed-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-fixed-card :deep(.card-header),
+.dashboard-fixed-card :deep(.card-head) {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+/* Card heights */
+.today-card {
+  height: 190px;
+}
+
+.activity-card {
+  height: 330px;
+}
+
+.quick-card {
+  height: 235px;
+}
+
+.low-stock-card {
+  height: 285px;
+}
+
+.online-card {
+  height: 255px;
+}
+
+/* =========================
+   KPI CARDS
+========================= */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Staff only has 3 metrics, so stretch them evenly */
+.dashboard-metrics.staff-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dashboard-metrics.staff-metrics .metric-card {
+  min-height: 104px;
+}
+
+.metric-card {
+  min-height: 92px;
+  background: #fff;
+  border: 1px solid #e7e7e2;
+  border-radius: 15px;
+  padding: 14px 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.035);
+}
+
+.metric-label {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #777;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.metric-sub {
+  margin-top: 8px;
+  font-size: 11.8px;
+  color: #888;
+  line-height: 1.25;
+}
+
+.metric-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.mi-soft {
+  background: #f4f4f3;
+  color: #444;
+}
+
+.mi-green {
+  background: #eff9eb;
+  color: #2e7d32;
+}
+
+.mi-blue {
+  background: #eef5ff;
+  color: #1565c0;
+}
+
+.mi-amber {
+  background: #fff5e7;
+  color: #b8731f;
+}
+
+.mi-red {
+  background: #fff0f0;
+  color: #c93434;
+}
+
+/* =========================
+   SCROLL AREAS
+========================= */
+.card-scroll {
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 4px;
+}
+
+.today-scroll {
+  max-height: 120px;
+}
+
+.activity-scroll {
+  max-height: 255px;
+}
+
+.stock-scroll {
+  max-height: 215px;
+}
+
+.online-scroll {
+  max-height: 185px;
+}
+
+.card-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.card-scroll::-webkit-scrollbar-thumb {
+  background: #eeeeea;
+  border-radius: 999px;
+}
+
+.card-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-empty-line {
+  padding: 10px 0 4px;
+  font-size: 12.5px;
+  color: #999;
+  font-style: italic;
+}
+
+/* =========================
+   TODAY'S TRANSACTIONS
+========================= */
+.today-card .compact-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.compact-table th {
+  padding: 8px 10px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #8f8f8f;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid #eeeeea;
+  text-align: left;
+}
+
+.compact-table td {
+  padding: 10px 10px;
+  font-size: 12.5px;
+  color: #2a2a2a;
+  border-bottom: 1px solid #f3f3f0;
+  vertical-align: middle;
+}
+
+.compact-table th:nth-child(1),
+.compact-table td:nth-child(1) {
+  width: 30%;
+}
+
+.compact-table th:nth-child(2),
+.compact-table td:nth-child(2) {
+  width: 34%;
+}
+
+.compact-table th:nth-child(3),
+.compact-table td:nth-child(3) {
+  width: 18%;
+}
+
+.compact-table th:nth-child(4),
+.compact-table td:nth-child(4) {
+  width: 18%;
+}
+
+.compact-table tbody tr:hover {
+  background: #fafaf8;
+}
+
+.item-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+  line-height: 1.25;
+}
+
+.item-sub {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #999;
+  line-height: 1.25;
+}
+
+/* If status-pill is global, this just tightens it inside dashboard */
+.today-card .status-pill {
+  height: 22px;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================
+   QUICK ACTIONS
+========================= */
+.rail-title {
+  color: #777;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.quick-actions.compact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.qa-btn {
+  min-height: 64px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid #e8e8e3;
+  background: #fbfbfa;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.qa-btn:hover {
+  background: #fff;
+  border-color: #d8d8d2;
+}
+
+.qa-btn:active {
+  transform: scale(0.98);
+}
+
+.qa-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.qa-svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.qa-icon {
+  width: 27px;
+  height: 27px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.qa-green {
+  background: #f2faf0;
+  color: #3d8b40;
+}
+
+.qa-blue {
+  background: #f1f6ff;
+  color: #3478bd;
+}
+
+.qa-amber {
+  background: #fff7ea;
+  color: #b47a2a;
+}
+
+.qa-purple {
+  background: #f4f1ff;
+  color: #6b61b8;
+}
+
+.qa-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #222;
+  line-height: 1.15;
+}
+
+.qa-desc {
+  margin-top: 4px;
+  font-size: 11.2px;
+  color: #999;
+  line-height: 1.25;
+}
+
+/* =========================
+   LOW STOCK
+========================= */
+.stock-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.stock-item {
+  padding: 12px 13px;
+  border: 1px solid #eeeeea;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.stock-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stock-info {
+  min-width: 0;
+}
+
+.stock-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #222;
+  line-height: 1.25;
+}
+
+.stock-min {
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #888;
+  line-height: 1.2;
+}
+
+.stock-right {
+  text-align: right;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stock-qty {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #d24b4b;
+  line-height: 1.2;
+}
+
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  min-height: 20px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.badge-warn {
+  background: #fff3df;
+  color: #9b5d13;
+}
+
+.badge-crit {
+  background: #ffecec;
+  color: #c93434;
+}
+
+.stock-meter {
+  height: 3px;
+  margin-top: 9px;
+  border-radius: 999px;
+  background: #ededeb;
+  overflow: hidden;
+}
+
+.stock-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #f0a33a;
+}
+
+.stock-meter-fill.critical {
+  background: #ef5b5b;
+}
+
+/* =========================
+   ONLINE REQUESTS
+========================= */
 .import-message {
   font-size: 12px;
   color: #2e7d32;
@@ -719,58 +1277,69 @@ export default {
 .online-request-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 }
 
 .online-request-item {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
-  padding: 10px;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
   border: 1px solid #eeeeea;
-  border-radius: 10px;
-  background: #fafafa;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.or-content {
+  min-width: 0;
 }
 
 .or-name {
-  font-size: 12px;
-  font-weight: 600;
-  color: #111;
+  font-size: 13px;
+  font-weight: 800;
+  color: #222;
+  line-height: 1.25;
 }
 
 .or-meta {
-  font-size: 11px;
+  margin-top: 3px;
+  font-size: 11.5px;
   color: #777;
-  margin-top: 2px;
+  line-height: 1.25;
 }
 
 .or-problem {
-  font-size: 11px;
-  color: #999;
-  margin-top: 4px;
+  margin-top: 5px;
   max-width: 230px;
+  font-size: 11.5px;
+  color: #999;
+  line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.or-status {
-  height: fit-content;
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: #f4f4f3;
-  color: #555;
-  text-transform: capitalize;
-  flex-shrink: 0;
 }
 
 .or-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
+  gap: 7px;
   flex-shrink: 0;
+}
+
+.or-status {
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #f2f2f0;
+  color: #777;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .or-convert-btn {
@@ -778,203 +1347,18 @@ export default {
   background: #111;
   color: #fff;
   border-radius: 999px;
-  padding: 5px 10px;
-  font-size: 10px;
-  font-weight: 600;
+  padding: 6px 12px;
+  font-size: 10.5px;
+  font-weight: 800;
   cursor: pointer;
 }
 
-.or-convert-btn:hover {
-  background: #333;
-}
-
-.content-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.content-row-3 {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.content-row-3.staff-layout {
-  grid-template-columns: 1.45fr 0.85fr;
-}
-
-.content-row-3.staff-layout .today-card {
-  min-height: 300px;
-}
-
-.stack-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.quick-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.qa-btn {
-  background: #f9f9f8;
-  border: 1px solid #e8e8e6;
-  border-radius: 10px;
-  padding: 14px;
-  cursor: pointer;
-  transition: all 0.12s;
-  text-align: left;
-  text-decoration: none;
-  color: inherit;
-}
-
-.qa-btn:hover {
-  background: #f0f0ee;
-  border-color: #d8d8d4;
-}
-
-.qa-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
-  font-size: 13px;
-}
-
-.qa-green { background: #f0faf0; color: #2e7d32; }
-.qa-blue,
-.qa-amber,
-.qa-purple {
-  background: #f4f4f3;
-  color: #555;
-}
-
-.qa-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: #111;
-}
-
-.qa-desc {
-  font-size: 11px;
-  color: #999;
-  margin-top: 2px;
-}
-
-.chart-bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 5px;
-  height: 80px;
-  margin-top: 8px;
-}
-
-.chart-bar-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-}
-
-.chart-bar {
-  width: 100%;
-  border-radius: 4px 4px 0 0;
-  background: #e8e8e6;
-  min-height: 4px;
-}
-
-.chart-bar.today {
-  background: #141414;
-}
-
-.chart-day {
-  font-size: 9px;
-  color: #bbb;
-}
-
-.chart-day-active {
-  color: #111;
-  font-weight: 500;
-}
-
-.stock-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.stock-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #fff8f0;
-  border: 1px solid #ffe0c0;
-}
-
-.stock-item.critical {
-  background: #fff0f0;
-  border-color: #ffcccc;
-}
-
-.stock-name {
-  font-size: 12px;
-  font-weight: 500;
-  color: #111;
-}
-
-.stock-min {
-  font-size: 10px;
-  color: #bbb;
-}
-
-.stock-right {
-  text-align: right;
-}
-
-.stock-qty {
-  font-size: 11px;
-  color: #e57320;
-  font-weight: 600;
-}
-
-.stock-item.critical .stock-qty {
-  color: #e53935;
-}
-
-.stock-badge {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-weight: 500;
-}
-
-.badge-warn {
-  background: #fff3e0;
-  color: #e57320;
-}
-
-.badge-crit {
-  background: #ffebee;
-  color: #e53935;
-}
-
+/* =========================
+   RECENT ACTIVITY
+========================= */
 .activity-list {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .activity-item {
@@ -982,7 +1366,7 @@ export default {
   align-items: flex-start;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #f2f2f0;
+  border-bottom: 1px solid #f1f1ee;
 }
 
 .activity-item:last-child {
@@ -993,66 +1377,69 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 3px;
+  padding-top: 5px;
+  flex-shrink: 0;
 }
 
 .act-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  flex-shrink: 0;
 }
 
-.dot-green { background: #4caf50; }
-.dot-blue { background: #1565c0; }
-.dot-amber { background: #e57320; }
-.dot-purple { background: #7c3aed; }
+.dot-green {
+  background: #2fa36b;
+}
+
+.dot-blue {
+  background: #2d7dd2;
+}
+
+.dot-amber {
+  background: #e8912f;
+}
+
+.dot-purple {
+  background: #7c3aed;
+}
 
 .act-line {
   width: 1px;
-  height: 100%;
-  background: #f0f0ee;
-  margin-top: 4px;
+  min-height: 20px;
   flex: 1;
-  min-height: 16px;
+  margin-top: 5px;
+  background: #eeeeea;
 }
 
 .activity-item:last-child .act-line {
   display: none;
 }
 
+.activity-content {
+  min-width: 0;
+}
+
 .act-text {
-  font-size: 12px;
-  color: #555;
-  line-height: 1.5;
+  font-size: 12.5px;
+  color: #444;
+  line-height: 1.45;
 }
 
 .act-bold {
-  font-weight: 500;
-  color: #111;
+  font-weight: 700;
+  color: #151515;
 }
 
 .act-time {
-  font-size: 11px;
-  color: #bbb;
-  margin-top: 2px;
-}
-
-.job-customer {
-  font-weight: 500;
-  color: #111;
-  font-size: 12px;
-}
-
-.job-plate {
+  margin-top: 3px;
   font-size: 11px;
   color: #999;
 }
 
-.link-btn {
-  text-decoration: none;
-}
-
+/* =========================
+   OLD TABLE COMPATIBILITY
+   Keep this only if any old jobs-table remains.
+========================= */
 .jobs-table {
   width: 100%;
   border-collapse: collapse;
@@ -1061,102 +1448,88 @@ export default {
 
 .jobs-table th {
   text-align: left;
-  padding: 12px 10px;
-  font-size: 11px;
-  font-weight: 700;
+  padding: 10px;
+  font-size: 10.5px;
+  font-weight: 800;
   color: #999;
   text-transform: uppercase;
   border-bottom: 1px solid #eeeeea;
 }
 
 .jobs-table td {
-  padding: 14px 10px;
-  font-size: 13px;
+  padding: 10px;
+  font-size: 12.5px;
   color: #333;
   border-bottom: 1px solid #f3f3f0;
   vertical-align: middle;
 }
 
-.jobs-table th:nth-child(1),
-.jobs-table td:nth-child(1) {
-  width: 30%;
-}
-
-.jobs-table th:nth-child(2),
-.jobs-table td:nth-child(2) {
-  width: 34%;
-}
-
-.jobs-table th:nth-child(3),
-.jobs-table td:nth-child(3) {
-  width: 18%;
-}
-
-.jobs-table th:nth-child(4),
-.jobs-table td:nth-child(4) {
-  width: 18%;
-  text-align: right;
-}
-
-.jobs-table tbody tr:hover {
-  background: #fafaf8;
-}
-
-.today-card {
-  min-height: 300px;
-}
-
-.today-empty {
-  height: 130px;
-  border: 1px dashed #e1e1de;
-  border-radius: 14px;
-  background: #fafafa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-  font-size: 13px;
-  margin-top: 16px;
-}
-
-.staff-focus {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.focus-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  font-size: 13px;
-  border-bottom: 1px solid #f2f2f0;
-}
-
-.focus-row:last-child {
-  border-bottom: none;
-}
-
-.focus-row span {
-  color: #777;
-}
-
-.focus-row b {
+.job-customer {
+  font-weight: 700;
   color: #111;
+  font-size: 12.5px;
 }
 
-.act-muted {
-  color: #999;
+.job-plate {
   font-size: 11px;
+  color: #999;
 }
 
+/* =========================
+   RESPONSIVE
+========================= */
 @media (max-width: 1200px) {
-  .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .dashboard-shell {
+    grid-template-columns: 1fr;
   }
 
-  .content-row,
-  .content-row-3 {
+  .dashboard-right-panel {
+    padding-left: 0;
+    border-left: none;
+    background: transparent;
+  }
+
+  .dashboard-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .today-card,
+  .activity-card,
+  .quick-card,
+  .low-stock-card,
+  .online-card {
+    height: auto;
+    min-height: 190px;
+  }
+
+  .today-scroll,
+  .activity-scroll,
+  .stock-scroll,
+  .online-scroll {
+    max-height: 240px;
+  }
+}
+
+@media (max-width: 700px) {
+  .main {
+    padding: 22px 16px;
+  }
+
+  .dashboard-hero {
+    flex-direction: column;
+  }
+
+  .hero-title {
+    font-size: 24px;
+  }
+
+  .hero-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dashboard-metrics,
+  .quick-actions.compact {
     grid-template-columns: 1fr;
   }
 }

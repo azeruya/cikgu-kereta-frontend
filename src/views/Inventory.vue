@@ -212,216 +212,216 @@
       </div>
 
       <Teleport to="body">
-  <div
-    class="modal"
-    v-if="activePart && !showRestockModal"
-    @click.self="closeDetail"
-  >
-    <div v-if="detailLoading" class="modal-card large">
-      <div class="modal-header">
-        <span>Part Details</span>
-        <button class="mini-btn" @click="closeDetail">✕</button>
-      </div>
-
-      <div class="modal-body modal-detail-body">
-        <div class="detail-section">
-          <div class="skeleton-line title"></div>
-          <div class="skeleton-grid">
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line"></div>
-          </div>
-        </div>
-
-        <div class="detail-section">
-          <div class="skeleton-line wide"></div>
-          <div class="skeleton-line wide"></div>
-        </div>
-      </div>
-    </div>
-
-    <div v-else class="modal-card large">
-      <div class="modal-header">
-        <span>
-          {{ activePart.name }}
-          <span v-if="activePart.variant">— {{ activePart.variant }}</span>
-        </span>
-        <button class="mini-btn" @click="closeDetail">✕</button>
-      </div>
-
-      <div class="modal-body modal-detail-body">
-        <div class="detail-section">
-          <div class="section-title">Part Information</div>
-
-          <div class="info-list">
-            <div class="info-row">
-              <div class="info-item">
-                <span class="info-label">SKU</span>
-                <span class="info-value">{{ activePart.sku || "-" }}</span>
-              </div>
-
-              <div class="info-item">
-                <span class="info-label">Type</span>
-                <span class="info-value">
-                  {{ activePart.is_generic ? "Generic" : "Vehicle Specific" }}
-                </span>
-              </div>
+        <div
+          class="modal"
+          v-if="activePart && !showRestockModal"
+          @click.self="closeDetail"
+        >
+          <div v-if="detailLoading" class="modal-card large">
+            <div class="modal-header">
+              <span>Part Details</span>
+              <button class="mini-btn" @click="closeDetail">✕</button>
             </div>
 
-            <div class="info-row">
-              <div class="info-item">
-                <span class="info-label">Cost Price</span>
-                <span class="info-value">
-                  RM {{ formatMoney(activePart.cost_price) }}
-                </span>
-              </div>
-
-              <div class="info-item">
-                <span class="info-label">Selling Price</span>
-                <span class="info-value">
-                  RM {{ formatMoney(activePart.selling_price) }}
-                </span>
-              </div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-item">
-                <span class="info-label">Stock</span>
-                <span :class="['info-value', stockClass(activePart)]">
-                  {{ activePart.stock }} left
-                </span>
-              </div>
-
-              <div class="info-item">
-                <span class="info-label">Minimum Stock</span>
-                <span class="info-value">
-                  {{ activePart.min_stock_threshold }}
-                </span>
-              </div>
-            </div>
-
-            <div class="info-row last">
-              <div class="info-item full">
-                <span class="info-label">Description</span>
-                <span class="info-value">
-                  {{ activePart.description || "-" }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="detail-section">
-          <div class="section-title">Compatibility</div>
-
-          <div v-if="activePart.is_generic" class="empty-small">
-            This part is generic and can be used for all vehicles.
-          </div>
-
-          <div
-            v-else-if="activePart.compatibilities && activePart.compatibilities.length > 0"
-          >
-            <div
-              v-for="compat in activePart.compatibilities"
-              :key="compat.id"
-              class="detail-list-item"
-            >
-              <div>
-                <div class="item-name">
-                  {{ compat.make || "-" }} {{ compat.model || "" }}
+            <div class="modal-body modal-detail-body">
+              <div class="detail-section">
+                <div class="skeleton-line title"></div>
+                <div class="skeleton-grid">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
                 </div>
-                <small>
-                  Year:
-                  {{
-                    compat.year_from || compat.year_to
-                      ? `${compat.year_from || "-"} to ${compat.year_to || "-"}`
-                      : "All years"
-                  }}
-                </small>
+              </div>
+
+              <div class="detail-section">
+                <div class="skeleton-line wide"></div>
+                <div class="skeleton-line wide"></div>
               </div>
             </div>
           </div>
 
-          <div v-else class="empty-small">
-            No compatibility rows found.
+          <div v-else class="modal-card large">
+            <div class="modal-header">
+              <span>
+                {{ activePart.name }}
+                <span v-if="activePart.variant">— {{ activePart.variant }}</span>
+              </span>
+              <button class="mini-btn" @click="closeDetail">✕</button>
+            </div>
+
+            <div class="modal-body modal-detail-body">
+              <div class="detail-section">
+                <div class="section-title">Part Information</div>
+
+                <div class="info-list">
+                  <div class="info-row">
+                    <div class="info-item">
+                      <span class="info-label">SKU</span>
+                      <span class="info-value">{{ activePart.sku || "-" }}</span>
+                    </div>
+
+                    <div class="info-item">
+                      <span class="info-label">Type</span>
+                      <span class="info-value">
+                        {{ activePart.is_generic ? "Generic" : "Vehicle Specific" }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="info-row">
+                    <div class="info-item">
+                      <span class="info-label">Cost Price</span>
+                      <span class="info-value">
+                        RM {{ formatMoney(activePart.cost_price) }}
+                      </span>
+                    </div>
+
+                    <div class="info-item">
+                      <span class="info-label">Selling Price</span>
+                      <span class="info-value">
+                        RM {{ formatMoney(activePart.selling_price) }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="info-row">
+                    <div class="info-item">
+                      <span class="info-label">Stock</span>
+                      <span :class="['info-value', stockClass(activePart)]">
+                        {{ activePart.stock }} left
+                      </span>
+                    </div>
+
+                    <div class="info-item">
+                      <span class="info-label">Minimum Stock</span>
+                      <span class="info-value">
+                        {{ activePart.min_stock_threshold }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="info-row last">
+                    <div class="info-item full">
+                      <span class="info-label">Description</span>
+                      <span class="info-value">
+                        {{ activePart.description || "-" }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-section">
+                <div class="section-title">Compatibility</div>
+
+                <div v-if="activePart.is_generic" class="empty-small">
+                  This part is generic and can be used for all vehicles.
+                </div>
+
+                <div
+                  v-else-if="activePart.compatibilities && activePart.compatibilities.length > 0"
+                >
+                  <div
+                    v-for="compat in activePart.compatibilities"
+                    :key="compat.id"
+                    class="detail-list-item"
+                  >
+                    <div>
+                      <div class="item-name">
+                        {{ compat.make || "-" }} {{ compat.model || "" }}
+                      </div>
+                      <small>
+                        Year:
+                        {{
+                          compat.year_from || compat.year_to
+                            ? `${compat.year_from || "-"} to ${compat.year_to || "-"}`
+                            : "All years"
+                        }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-else class="empty-small">
+                  No compatibility rows found.
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-actions split">
+              <div class="left-actions">
+                <router-link
+                  :to="`/inventory/${activePart.id}/edit`"
+                  class="modal-action-btn"
+                >
+                  Edit
+                </router-link>
+
+                <button class="primary" @click="openRestockModal">
+                  Restock
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="modal-actions split">
-        <div class="left-actions">
-          <router-link
-            :to="`/inventory/${activePart.id}/edit`"
-            class="modal-action-btn"
-          >
-            Edit
-          </router-link>
-
-          <button class="primary" @click="openRestockModal">
-            Restock
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</Teleport>
+      </Teleport>
 
         <Teleport to="body">
-  <div
-    v-if="showRestockModal"
-    class="stacked-modal"
-    @click.self="closeRestockModal"
-  >
-    <div class="confirm-card restock-card">
-      <div class="confirm-title">
-        Restock part
-      </div>
+          <div
+            v-if="showRestockModal"
+            class="stacked-modal"
+            @click.self="closeRestockModal"
+          >
+            <div class="confirm-card restock-card">
+              <div class="confirm-title">
+                Restock part
+              </div>
 
-      <div class="confirm-message left">
-        Add stock for <strong>{{ activePart?.name || "this part" }}</strong>.
-      </div>
+              <div class="confirm-message left">
+                Add stock for <strong>{{ activePart?.name || "this part" }}</strong>.
+              </div>
 
-      <div class="field">
-        <label>Quantity to add</label>
-        <input
-          v-model.number="restockForm.quantity"
-          type="number"
-          min="1"
-          step="1"
-        />
-      </div>
+              <div class="field">
+                <label>Quantity to add</label>
+                <input
+                  v-model.number="restockForm.quantity"
+                  type="number"
+                  min="1"
+                  step="1"
+                />
+              </div>
 
-      <div v-if="activePart" class="current-stock-box">
-        Current stock: <strong>{{ activePart.stock }}</strong>
-      </div>
+              <div v-if="activePart" class="current-stock-box">
+                Current stock: <strong>{{ activePart.stock }}</strong>
+              </div>
 
-      <div v-if="restockError" class="page-error" style="margin-top: 12px;">
-        {{ restockError }}
-      </div>
+              <div v-if="restockError" class="page-error" style="margin-top: 12px;">
+                {{ restockError }}
+              </div>
 
-      <div class="confirm-actions">
-        <button
-          type="button"
-          class="confirm-cancel"
-          :disabled="restockLoading"
-          @click="closeRestockModal"
-        >
-          Cancel
-        </button>
+              <div class="confirm-actions">
+                <button
+                  type="button"
+                  class="confirm-cancel"
+                  :disabled="restockLoading"
+                  @click="closeRestockModal"
+                >
+                  Cancel
+                </button>
 
-        <button
-          type="button"
-          class="confirm-primary"
-          :disabled="restockLoading"
-          @click="submitRestock"
-        >
-          {{ restockLoading ? "Saving..." : "Confirm" }}
-        </button>
-      </div>
-    </div>
-  </div>
-</Teleport>
+                <button
+                  type="button"
+                  class="confirm-primary"
+                  :disabled="restockLoading"
+                  @click="submitRestock"
+                >
+                  {{ restockLoading ? "Saving..." : "Confirm" }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </Teleport>
 
       <div v-if="error" class="page-error">
         {{ error }}
@@ -926,7 +926,7 @@ nextPage() {
 .section-title {
   font-size: 10px;
   font-weight: 700;
-  color: #777;
+  color: #444;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 10px;
@@ -1115,10 +1115,11 @@ nextPage() {
 }
 
 .confirm-message {
-  font-size: 13px;
+  font-size: 12.5px;
   line-height: 1.5;
-  color: #666;
+  color: #777;
   margin-bottom: 16px;
+  padding: 0 42px 8px;
 }
 
 .confirm-message.left {
@@ -1288,6 +1289,28 @@ nextPage() {
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
+}
+
+.current-stock-box {
+  height: 38px;
+  border-radius: 12px;
+  background: #fafafa;
+  border: 1px solid #eeeeee;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.current-stock-box span {
+  font-size: 12px;
+  color: #777;
+}
+
+.current-stock-box strong {
+  font-size: 13px;
+  color: #222;
 }
 
 .restock-link:hover {

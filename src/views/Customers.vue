@@ -1082,7 +1082,7 @@ async confirmDeleteCustomer() {
 .section-title {
   font-size: 10px;
   font-weight: 700;
-  color: #777;
+  color: #444;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 10px;
@@ -1255,6 +1255,53 @@ async confirmDeleteCustomer() {
   color: #aaa;
   font-style: italic;
   white-space: nowrap;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  padding: 14px 42px 20px;
+  border-top: 1px solid #eeeeee;
+  background: #fff;
+}
+
+.modal-actions button {
+  flex: 1;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-actions button.primary {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #444;
+}
+
+.checkbox-row input {
+  width: 14px;
+  height: 14px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #444;
 }
 
 @media (max-width: 900px) {
