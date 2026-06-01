@@ -45,7 +45,7 @@
 
               <div class="field">
                 <label>Variant</label>
-                <input v-model="form.variant" type="text" placeholder="e.g. Toyota Vios" />
+                <input v-model="form.variant" type="text" placeholder="e.g. Regional" />
               </div>
 
               <div class="field">
