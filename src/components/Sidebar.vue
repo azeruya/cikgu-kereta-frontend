@@ -255,26 +255,20 @@ export default {
    FOOTER USER AREA
 ========================= */
 .sidebar-foot {
-  padding: 16px 14px 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.02),
-    rgba(255, 255, 255, 0.045)
-  );
+  padding: 14px 14px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
 }
 
 .user-row {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 10px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.065);
-  border: 1px solid rgba(255, 255, 255, 0.075);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.045),
-    0 10px 26px rgba(0, 0, 0, 0.22);
+  padding: 9px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  box-shadow: none;
 }
 
 .avatar {
@@ -316,11 +310,11 @@ export default {
 }
 
 .logout-icon-btn {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border: none;
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.045);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
   color: rgba(255, 255, 255, 0.48);
   display: flex;
   align-items: center;
