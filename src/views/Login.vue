@@ -19,37 +19,71 @@
         <div class="brand-content">
           <span class="brand-pill">Internal workspace</span>
 
-          <h2>Manage daily workshop operations securely.</h2>
+          <h2>Run your daily workshop operations securely.</h2>
 
           <p class="brand-desc">
-            Access customer records, inventory, transactions, expenses, reports,
-            and online service requests in one system.
+            Access customers, inventory, transactions, payments, expenses, and reports from one secure workspace.
           </p>
 
           <div class="module-list">
             <div class="module-item">
-              <span class="module-icon">👥</span>
-              <span>Customer & vehicle records</span>
+              <span class="module-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3Z" />
+                  <path d="M8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Z" />
+                  <path d="M16 13c-2.2 0-4 1.12-4 2.5V18h8v-2.5c0-1.38-1.8-2.5-4-2.5Z" />
+                  <path d="M8 13c-2.2 0-4 1.12-4 2.5V18h6v-2.5c0-.8.34-1.54.94-2.14A6.3 6.3 0 0 0 8 13Z" />
+                </svg>
+              </span>
+              <span>Customer &amp; vehicle records</span>
             </div>
 
             <div class="module-item">
-              <span class="module-icon">▣</span>
-              <span>Inventory & stock alerts</span>
+              <span class="module-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M21 8.5 12 3 3 8.5l9 5.5 9-5.5Z" />
+                  <path d="M3 8.5V16l9 5 9-5V8.5" />
+                  <path d="M12 14v7" />
+                </svg>
+              </span>
+              <span>Inventory &amp; stock alerts</span>
             </div>
 
             <div class="module-item">
-              <span class="module-icon">▤</span>
-              <span>Quotation, invoice & receipt</span>
+              <span class="module-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 3h10a2 2 0 0 1 2 2v16l-3-2-2 2-2-2-2 2-2-2-3 2V5a2 2 0 0 1 2-2Z" />
+                  <path d="M9 8h6" />
+                  <path d="M9 12h6" />
+                  <path d="M9 16h3" />
+                </svg>
+              </span>
+              <span>Quotation, invoice &amp; receipt</span>
             </div>
 
             <div class="module-item">
-              <span class="module-icon">▱</span>
-              <span>Payments & expenses</span>
+              <span class="module-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M3 7h18v10H3V7Z" />
+                  <path d="M7 11h4" />
+                  <path d="M17 14h.01" />
+                  <path d="M3 10h18" />
+                </svg>
+              </span>
+              <span>Payments &amp; expenses</span>
             </div>
 
             <div class="module-item">
-              <span class="module-icon">▥</span>
-              <span>Reports & online requests</span>
+              <span class="module-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 19V5" />
+                  <path d="M20 19H4" />
+                  <path d="M8 16v-5" />
+                  <path d="M12 16V8" />
+                  <path d="M16 16v-3" />
+                </svg>
+              </span>
+              <span>Reports &amp; online requests</span>
             </div>
           </div>
         </div>
@@ -169,6 +203,7 @@ export default {
   background: #f9f9f8;
   display: flex;
   align-items: center;
+  padding-bottom: 80px;
   justify-content: center;
   padding: 48px;
   position: relative;
@@ -215,7 +250,7 @@ export default {
   width: min(900px, 100%);
   min-height: 520px;
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-columns: 0.95fr 1fr;
   background: #ffffff;
   border: 1px solid #e5e5e2;
   border-radius: 24px;
@@ -319,12 +354,31 @@ export default {
 }
 
 .module-icon {
-  width: 20px;
-  color: #8a8a8a;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: #242424;
+  border: 1px solid #303030;
+  color: #a8a8a8;
   display: inline-flex;
+  align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 13px;
+}
+
+.module-icon svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.module-item:hover .module-icon {
+  background: #2c2c2c;
+  color: #ffffff;
 }
 
 .brand-foot {
