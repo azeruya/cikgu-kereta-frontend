@@ -583,6 +583,8 @@ export default {
         payment_reference: "",
         payment_date: new Date().toISOString().slice(0, 10),
       };
+
+      this.showPaymentModal = true;
     },
 
     async submitPayment() {
