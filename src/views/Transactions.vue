@@ -565,34 +565,24 @@ export default {
     },
 
     openPaymentModal(trx) {
-    this.paymentFormError = "";
-    this.paymentTransactionId = trx.id;
-    this.paymentTransactionDocNo = trx.document_number || `#${trx.id}`;
-    this.paymentTransactionTotal =
-        Number(trx.total_amount || 0) - Number(trx.discount_amount || 0);
+      this.paymentFormError = "";
+      this.paymentTransactionId = trx.id;
+      this.paymentTransactionDocNo = trx.document_number || `#${trx.id}`;
 
-    this.paymentForm = {
-        amount_paid: this.paymentTransactionTotal,
+      const totalAmount = Number(trx.total_amount || 0);
+      const discountAmount = Number(trx.discount_amount || 0);
+      const totalPaid = Number(trx.total_paid || 0);
+
+      const balanceDue = Math.max(totalAmount - discountAmount - totalPaid, 0);
+
+      this.paymentTransactionTotal = balanceDue;
+
+      this.paymentForm = {
+        amount_paid: balanceDue,
         payment_method: "cash",
         payment_reference: "",
         payment_date: new Date().toISOString().slice(0, 10),
-    };
-
-    this.showPaymentModal = true;
-    },
-
-    closePaymentModal() {
-    this.showPaymentModal = false;
-    this.paymentTransactionId = null;
-    this.paymentTransactionDocNo = "";
-    this.paymentTransactionTotal = 0;
-    this.paymentFormError = "";
-    this.paymentForm = {
-        amount_paid: "",
-        payment_method: "cash",
-        payment_reference: "",
-        payment_date: new Date().toISOString().slice(0, 10),
-    };
+      };
     },
 
     async submitPayment() {
