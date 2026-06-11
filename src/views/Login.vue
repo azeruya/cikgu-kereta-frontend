@@ -18,8 +18,8 @@
           <span class="eyebrow">Internal workspace</span>
           <h2>Vulcan Auto Service Portal</h2>
           <p>
-            Secure access for Admin and Staff users to manage customer records,
-            transactions, inventory, payments, expenses, and reports.
+            Sign in with your assigned Admin or Staff account to manage workshop
+            records, transactions, inventory, payments, expenses, and reports.
           </p>
         </div>
 
@@ -303,7 +303,7 @@ export default {
 }
 
 .intro h2 {
-  font-size: 38px;
+  font-size: 34px;
   line-height: 1.08;
   font-weight: 700;
   letter-spacing: -1.4px;
