@@ -115,7 +115,9 @@
                       </svg>
                     </button>
                   </div>
+                </div>
                 </td>
+                
           
             </tr>
           </tbody>
