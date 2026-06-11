@@ -231,7 +231,8 @@ export default {
 
 .module-section {
   flex: 1;
-  margin-top: 76px;
+  margin-top: 82px;
+  max-width: 360px;
 }
 
 .module-label {
@@ -287,7 +288,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #666;
+  color: #777;
   font-size: 11px;
   margin-top: 28px;
 }
