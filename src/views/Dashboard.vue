@@ -534,10 +534,10 @@ export default {
       return this.todayTransactionsRaw.map((trx) => {
         const firstItem = trx.items?.[0];
         const work =
-          firstItem?.service_name ||
-          firstItem?.part?.name ||
-          firstItem?.item_name ||
-          "Workshop service";
+        firstItem?.service_name ||
+        firstItem?.part?.name ||
+        firstItem?.note ||
+        "Workshop service";
 
         return {
           id: trx.id,
