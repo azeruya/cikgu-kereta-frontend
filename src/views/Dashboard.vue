@@ -708,7 +708,7 @@ export default {
 ========================= */
 .main {
   min-height: 100vh;
-  padding: 36px 42px 44px;
+  padding: 32px 38px 40px;
   background:
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 34%),
     var(--bg);
@@ -795,23 +795,23 @@ export default {
 .dashboard-shell {
   max-width: 1380px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 420px;
-  gap: 30px;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 26px;
   align-items: start;
 }
 
 .dashboard-main-panel {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
   min-width: 0;
 }
 
 .dashboard-right-panel {
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  padding: 0 0 0 24px;
+  gap: 20px;
+  padding: 0 0 0 22px;
   border-left: 1px solid rgba(220, 220, 214, 0.9);
   background: linear-gradient(
     90deg,
@@ -841,23 +841,23 @@ export default {
 
 /* Better card heights */
 .today-card {
-  min-height: 265px;
+  min-height: 245px;
 }
 
 .activity-card {
-  min-height: 335px;
+  min-height: 315px;
 }
 
 .quick-card {
-  min-height: 250px;
+  min-height: 230px;
 }
 
 .low-stock-card {
-  min-height: 300px;
+  min-height: 275px;
 }
 
 .online-card {
-  min-height: 235px;
+  min-height: 220px;
 }
 
 /* =========================
@@ -875,11 +875,11 @@ export default {
 }
 
 .metric-card {
-  min-height: 112px;
+  min-height: 100px;
   background: #fff;
   border: 1px solid #e8e8e3;
-  border-radius: 18px;
-  padding: 18px 20px;
+  border-radius: 17px;
+  padding: 16px 18px;
   box-shadow: 0 16px 38px rgba(0, 0, 0, 0.035);
 }
 
@@ -888,7 +888,7 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 13px;
+  margin-bottom: 10px;
   font-size: 10.5px;
   font-weight: 850;
   color: #777;
@@ -898,7 +898,7 @@ export default {
 }
 
 .metric-value {
-  font-size: 27px;
+  font-size: 25px;
   font-weight: 850;
   color: #111;
   letter-spacing: -0.05em;
@@ -906,8 +906,8 @@ export default {
 }
 
 .metric-sub {
-  margin-top: 10px;
-  font-size: 12.5px;
+  margin-top: 8px;
+  font-size: 12px;
   color: #888;
   line-height: 1.35;
 }
@@ -1079,12 +1079,12 @@ export default {
 .quick-actions.compact {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 11px;
 }
 
 .qa-btn {
-  min-height: 74px;
-  padding: 14px;
+  min-height: 66px;
+  padding: 12px 13px;
   border-radius: 16px;
   border: 1px solid #e8e8e3;
   background: #fbfbfa;
