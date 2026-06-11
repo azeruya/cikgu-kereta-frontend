@@ -15,7 +15,11 @@
         {{ isEditMode ? "Edit Transaction" : "New Transaction" }}
         </div>
         <div class="page-date">
-        {{ isEditMode ? "Update quotation or invoice items" : "Create quotation for customer vehicle service" }}
+          {{
+            isEditMode
+              ? "Update transaction details, items, discount, and notes"
+              : "Create quotation for customer vehicle service"
+          }}
         </div>
         </div>
 
@@ -26,43 +30,50 @@
         </div>
       </div>
 
-      <div class="flow-steps">
-  <div
-    class="flow-step"
-    :class="{
-      active: !form.customer_id || !form.vehicle_id,
-      done: form.customer_id && form.vehicle_id
-    }"
-  >
-    <span class="flow-number">1</span>
-    <span class="flow-text">Select customer</span>
-  </div>
+      <div v-if="!isEditMode" class="flow-steps">
+        <div
+          class="flow-step"
+          :class="{
+            active: !form.customer_id || !form.vehicle_id,
+            done: form.customer_id && form.vehicle_id
+          }"
+        >
+          <span class="flow-number">1</span>
+          <span class="flow-text">Select customer</span>
+        </div>
 
-  <div class="flow-line"></div>
+        <div class="flow-line"></div>
 
-  <div
-    class="flow-step"
-    :class="{
-      active: form.customer_id && form.vehicle_id && form.items.length === 0,
-      done: form.items.length > 0
-    }"
-  >
-    <span class="flow-number">2</span>
-    <span class="flow-text">Add items</span>
-  </div>
+        <div
+          class="flow-step"
+          :class="{
+            active: form.customer_id && form.vehicle_id && form.items.length === 0,
+            done: form.items.length > 0
+          }"
+        >
+          <span class="flow-number">2</span>
+          <span class="flow-text">Add items</span>
+        </div>
 
-  <div class="flow-line"></div>
+        <div class="flow-line"></div>
 
-  <div
-    class="flow-step"
-    :class="{
-      active: form.items.length > 0
-    }"
-  >
-    <span class="flow-number">3</span>
-    <span class="flow-text">Review quotation</span>
-  </div>
-</div>
+        <div
+          class="flow-step"
+          :class="{
+            active: form.items.length > 0
+          }"
+        >
+          <span class="flow-number">3</span>
+          <span class="flow-text">Review quotation</span>
+        </div>
+      </div>
+
+      <div v-else class="edit-context">
+        <span class="edit-pill">Editing transaction</span>
+        <span class="edit-note">
+          Review and update the selected transaction before saving changes.
+        </span>
+      </div>
 
       <div class="create-grid">
         <Card>
@@ -1091,6 +1102,34 @@ label {
   width: 34px;
   height: 1px;
   background: #e4e4df;
+}
+
+.edit-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 16px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid #eeeeea;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.edit-pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.edit-note {
+  font-size: 12px;
+  color: #888888;
+  padding-right: 4px;
 }
 
 
