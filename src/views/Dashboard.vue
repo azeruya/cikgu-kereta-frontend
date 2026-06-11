@@ -708,8 +708,10 @@ export default {
 ========================= */
 .main {
   min-height: 100vh;
-  padding: 34px 40px;
-  background: var(--bg);
+  padding: 32px 38px 40px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 34%),
+    var(--bg);
 }
 
 .right {
@@ -736,12 +738,12 @@ export default {
    HERO / GREETING
 ========================= */
 .dashboard-hero {
-  max-width: 100%;
+  max-width: 1380px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 26px;
+  gap: 24px;
+  margin-bottom: 28px;
 }
 
 .hero-copy {
@@ -756,7 +758,7 @@ export default {
   font-size: 11px;
   font-weight: 800;
   color: #777;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -766,18 +768,18 @@ export default {
 
 .hero-title {
   margin: 0;
-  font-size: 26px;
-  font-weight: 800;
-  color: #121212;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
+  font-size: 30px;
+  font-weight: 850;
+  color: #111;
+  line-height: 1.04;
+  letter-spacing: -0.055em;
 }
 
 .hero-subtitle {
   margin: 8px 0 0;
-  font-size: 13.5px;
-  color: #888;
-  line-height: 1.45;
+  font-size: 14px;
+  color: #8a8a8a;
+  line-height: 1.5;
 }
 
 .hero-actions {
@@ -791,10 +793,10 @@ export default {
    DASHBOARD SPLIT LAYOUT
 ========================= */
 .dashboard-shell {
-  max-width: 100%;
+  max-width: 1380px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 26px;
   align-items: start;
 }
 
@@ -809,9 +811,13 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-left: 0;
-  border-left: none;
-  background: transparent;
+  padding: 0 0 0 22px;
+  border-left: 1px solid rgba(220, 220, 214, 0.9);
+  background: linear-gradient(
+    90deg,
+    rgba(245, 244, 238, 0.65) 0%,
+    rgba(245, 244, 238, 0.2) 100%
+  );
   min-width: 0;
 }
 
@@ -824,24 +830,30 @@ export default {
 .dashboard-fixed-card :deep(.card-header),
 .dashboard-fixed-card :deep(.card-head) {
   flex-shrink: 0;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
-/* Card heights */
+/* Softer dashboard card feeling */
+.dashboard-fixed-card :deep(.card),
+.dashboard-fixed-card {
+  border-radius: 20px;
+}
+
+/* Better card heights */
 .today-card {
   min-height: 245px;
 }
 
 .activity-card {
-  min-height: 310px;
+  min-height: 315px;
 }
 
 .quick-card {
-  min-height: 225px;
+  min-height: 230px;
 }
 
 .low-stock-card {
-  min-height: 265px;
+  min-height: 275px;
 }
 
 .online-card {
@@ -863,46 +875,46 @@ export default {
 }
 
 .metric-card {
-  min-height: 102px;
+  min-height: 100px;
   background: #fff;
-  border: 1px solid #e7e7e2;
-  border-radius: 18px;
+  border: 1px solid #e8e8e3;
+  border-radius: 17px;
   padding: 16px 18px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.035);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.035);
 }
 
 .metric-label {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 10px;
   font-size: 10.5px;
-  font-weight: 800;
+  font-weight: 850;
   color: #777;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.085em;
   text-transform: uppercase;
   line-height: 1.25;
 }
 
 .metric-value {
   font-size: 25px;
-  font-weight: 800;
+  font-weight: 850;
   color: #111;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
+  letter-spacing: -0.05em;
+  line-height: 1;
 }
 
 .metric-sub {
   margin-top: 8px;
   font-size: 12px;
   color: #888;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .metric-icon {
-  width: 31px;
-  height: 31px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -938,31 +950,32 @@ export default {
 
 /* =========================
    SCROLL AREAS
+   Fewer visible scrollbars, more breathing room
 ========================= */
 .card-scroll {
   overflow-y: auto;
   min-height: 0;
-  padding-right: 5px;
+  padding-right: 6px;
 }
 
 .today-scroll {
-  max-height: 175px;
-}
-
-.activity-scroll {
-  max-height: 240px;
-}
-
-.stock-scroll {
   max-height: 195px;
 }
 
+.activity-scroll {
+  max-height: 255px;
+}
+
+.stock-scroll {
+  max-height: 220px;
+}
+
 .online-scroll {
-  max-height: 160px;
+  max-height: 165px;
 }
 
 .card-scroll::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 
 .card-scroll::-webkit-scrollbar-thumb {
@@ -975,7 +988,7 @@ export default {
 }
 
 .dashboard-empty-line {
-  padding: 14px 0 6px;
+  padding: 18px 0 6px;
   font-size: 13px;
   color: #999;
   font-style: italic;
@@ -991,21 +1004,21 @@ export default {
 }
 
 .compact-table th {
-  padding: 10px 12px;
+  padding: 11px 12px;
   font-size: 10.5px;
-  font-weight: 800;
+  font-weight: 850;
   color: #8f8f8f;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.085em;
   border-bottom: 1px solid #eeeeea;
   text-align: left;
 }
 
 .compact-table td {
-  padding: 13px 12px;
+  padding: 14px 12px;
   font-size: 13px;
   color: #2a2a2a;
-  border-bottom: 1px solid #f3f3f0;
+  border-bottom: 1px solid #f2f2ee;
   vertical-align: middle;
 }
 
@@ -1034,7 +1047,7 @@ export default {
 }
 
 .item-name {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 750;
   color: #222;
   line-height: 1.3;
@@ -1072,22 +1085,27 @@ export default {
 .qa-btn {
   min-height: 66px;
   padding: 12px 13px;
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px solid #e8e8e3;
   background: #fbfbfa;
   display: flex;
   align-items: flex-start;
-  gap: 11px;
+  gap: 12px;
   text-align: left;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
 }
 
 .qa-btn:hover {
   background: #fff;
   border-color: #d8d8d2;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.035);
 }
 
 .qa-btn:active {
@@ -1110,9 +1128,9 @@ export default {
 }
 
 .qa-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 9px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1141,17 +1159,17 @@ export default {
 }
 
 .qa-label {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 13.5px;
+  font-weight: 850;
   color: #222;
-  line-height: 1.2;
+  line-height: 1.18;
 }
 
 .qa-desc {
-  margin-top: 4px;
-  font-size: 11.3px;
+  margin-top: 5px;
+  font-size: 11.5px;
   color: #999;
-  line-height: 1.28;
+  line-height: 1.3;
 }
 
 /* =========================
@@ -1160,13 +1178,13 @@ export default {
 .stock-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 11px;
 }
 
 .stock-item {
-  padding: 13px;
+  padding: 14px;
   border: 1px solid #eeeeea;
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fff;
 }
 
@@ -1174,7 +1192,7 @@ export default {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
 }
 
 .stock-info {
@@ -1182,15 +1200,15 @@ export default {
 }
 
 .stock-name {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 13.5px;
+  font-weight: 850;
   color: #222;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .stock-min {
   margin-top: 4px;
-  font-size: 11.5px;
+  font-size: 11.8px;
   color: #888;
   line-height: 1.25;
 }
@@ -1202,8 +1220,8 @@ export default {
 }
 
 .stock-qty {
-  font-size: 12.5px;
-  font-weight: 800;
+  font-size: 12.8px;
+  font-weight: 850;
   color: #d24b4b;
   line-height: 1.2;
 }
@@ -1212,12 +1230,12 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 5px;
-  min-height: 20px;
-  padding: 2px 8px;
+  margin-top: 6px;
+  min-height: 21px;
+  padding: 2px 9px;
   border-radius: 999px;
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 750;
 }
 
 .badge-warn {
@@ -1232,7 +1250,7 @@ export default {
 
 .stock-meter {
   height: 4px;
-  margin-top: 10px;
+  margin-top: 11px;
   border-radius: 999px;
   background: #ededeb;
   overflow: hidden;
@@ -1256,9 +1274,9 @@ export default {
   color: #2e7d32;
   background: #f0faf0;
   border: 1px solid #d8eddc;
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  padding: 9px 11px;
+  border-radius: 12px;
+  margin-bottom: 12px;
 }
 
 .online-request-list {
@@ -1272,9 +1290,9 @@ export default {
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  padding: 13px;
+  padding: 14px;
   border: 1px solid #eeeeea;
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fff;
 }
 
@@ -1283,25 +1301,25 @@ export default {
 }
 
 .or-name {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 13.5px;
+  font-weight: 850;
   color: #222;
   line-height: 1.25;
 }
 
 .or-meta {
   margin-top: 4px;
-  font-size: 11.5px;
+  font-size: 11.8px;
   color: #777;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .or-problem {
-  margin-top: 5px;
-  max-width: 220px;
-  font-size: 11.5px;
+  margin-top: 6px;
+  max-width: 240px;
+  font-size: 11.8px;
   color: #999;
-  line-height: 1.25;
+  line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1311,20 +1329,20 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 7px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .or-status {
-  height: 22px;
-  padding: 0 9px;
+  height: 23px;
+  padding: 0 10px;
   border-radius: 999px;
   background: #f2f2f0;
   color: #777;
   display: inline-flex;
   align-items: center;
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 750;
   text-transform: capitalize;
   white-space: nowrap;
 }
@@ -1334,9 +1352,9 @@ export default {
   background: #111;
   color: #fff;
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 7px 13px;
   font-size: 10.5px;
-  font-weight: 800;
+  font-weight: 850;
   cursor: pointer;
 }
 
@@ -1351,8 +1369,8 @@ export default {
 .activity-item {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
+  gap: 13px;
+  padding: 13px 0;
   border-bottom: 1px solid #f1f1ee;
 }
 
@@ -1392,7 +1410,7 @@ export default {
 
 .act-line {
   width: 1px;
-  min-height: 22px;
+  min-height: 24px;
   flex: 1;
   margin-top: 6px;
   background: #eeeeea;
@@ -1409,7 +1427,7 @@ export default {
 .act-text {
   font-size: 13px;
   color: #444;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .act-bold {
@@ -1466,8 +1484,8 @@ export default {
 ========================= */
 @media (max-width: 1280px) {
   .dashboard-shell {
-    grid-template-columns: minmax(0, 1fr) 360px;
-    gap: 22px;
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 24px;
   }
 
   .main {
@@ -1478,6 +1496,12 @@ export default {
 @media (max-width: 1200px) {
   .dashboard-shell {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard-right-panel {
+    padding-left: 0;
+    border-left: none;
+    background: transparent;
   }
 
   .dashboard-metrics {
@@ -1497,7 +1521,7 @@ export default {
   .activity-scroll,
   .stock-scroll,
   .online-scroll {
-    max-height: 250px;
+    max-height: 260px;
   }
 }
 
@@ -1508,12 +1532,12 @@ export default {
 
   .dashboard-hero {
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
     margin-bottom: 22px;
   }
 
   .hero-title {
-    font-size: 24px;
+    font-size: 26px;
   }
 
   .hero-subtitle {
@@ -1537,7 +1561,7 @@ export default {
   }
 
   .metric-card {
-    min-height: 100px;
+    min-height: 105px;
   }
 }
 </style>
