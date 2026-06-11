@@ -757,7 +757,7 @@ export default {
         import.meta.env.VITE_API_BASE_URL?.replace("/api", "") ||
         "http://127.0.0.1:8000";
 
-      window.open(`${baseUrl}/storage/${file}`, "_blank");
+      window.open(`${baseUrl}/storage/${encodeURI(file)}`, "_blank");
     },
 
     async submitExpense() {
