@@ -274,6 +274,7 @@ export default {
   align-items: center;
   max-width: 1260px;
   margin: 0 auto;
+  transform: translateY(-20px);
 }
 
 /* LEFT FORM SIDE */
@@ -321,7 +322,7 @@ export default {
 
 /* LOGIN CARD */
 .card {
-  width: min(420px, 100%);
+  width: min(400px, 100%);
   background: #fff;
   border: 1px solid #e7e7e2;
   border-radius: 22px;
@@ -488,8 +489,8 @@ button:disabled {
 /* RIGHT IMAGE SIDE */
 .preview-side {
   position: relative;
-  height: min(72vh, 680px);
-  min-height: 520px;
+  height: min(68vh, 620px);
+  min-height: 500px;
   border-radius: 28px;
   overflow: hidden;
   border: 1px solid #e4e4df;
