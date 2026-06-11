@@ -587,6 +587,23 @@ export default {
       this.showPaymentModal = true;
     },
 
+    closePaymentModal() {
+      if (this.actionLoadingId === this.paymentTransactionId) return;
+
+      this.showPaymentModal = false;
+      this.paymentFormError = "";
+      this.paymentTransactionId = null;
+      this.paymentTransactionDocNo = "";
+      this.paymentTransactionTotal = 0;
+
+      this.paymentForm = {
+        amount_paid: "",
+        payment_method: "cash",
+        payment_reference: "",
+        payment_date: new Date().toISOString().slice(0, 10),
+      };
+    },
+
     async submitPayment() {
     if (!this.paymentTransactionId) return;
 
