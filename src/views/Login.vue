@@ -493,7 +493,7 @@ button:disabled {
 }
 
 /* RIGHT IMAGE SIDE */
-.image-side {
+.preview-side {
   position: relative;
   height: min(72vh, 680px);
   min-height: 520px;
@@ -502,42 +502,6 @@ button:disabled {
   border: 1px solid #e4e4df;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.1);
   background: #e9e6df;
-}
-
-.hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* optional dark overlay at bottom */
-.image-overlay {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 24px;
-  padding: 18px;
-  border-radius: 18px;
-  background: rgba(17, 17, 17, 0.72);
-  backdrop-filter: blur(10px);
-  color: #fff;
-}
-
-.overlay-label {
-  display: block;
-  font-size: 11px;
-  color: #bdbdbd;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.image-overlay p {
-  font-size: 14px;
-  line-height: 1.55;
-  color: #f1f1f1;
 }
 
 /* right side preview */
