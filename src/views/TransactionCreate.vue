@@ -26,21 +26,23 @@
         </div>
       </div>
 
-      <div class="flow-steps">
-        <div class="flow-step active">
-          <span>1</span>
-          <p>Select customer</p>
-        </div>
-        <div class="flow-line"></div>
-        <div class="flow-step">
-          <span>2</span>
-          <p>Add items</p>
-        </div>
-        <div class="flow-line"></div>
-        <div class="flow-step">
-          <span>3</span>
-          <p>Review quotation</p>
-        </div>
+      <div class="flow-step" :class="{ active: form.customer_id && form.vehicle_id, done: form.customer_id && form.vehicle_id }">
+        <span>1</span>
+        <p>Select customer</p>
+      </div>
+
+      <div class="flow-line"></div>
+
+      <div class="flow-step" :class="{ active: form.customer_id && form.vehicle_id, done: form.items.length > 0 }">
+        <span>2</span>
+        <p>Add items</p>
+      </div>
+
+      <div class="flow-line"></div>
+
+      <div class="flow-step" :class="{ active: form.items.length > 0 }">
+        <span>3</span>
+        <p>Review quotation</p>
       </div>
 
       <div class="create-grid">
@@ -96,6 +98,12 @@
               <div class="empty-icon">▣</div>
               <strong>Select a vehicle first</strong>
               <p>Compatible parts will appear here based on vehicle make, model, and year.</p>
+          </div>
+
+          <div v-else-if="compatibleParts.length === 0" class="empty-box">
+            <div class="empty-icon">▣</div>
+            <strong>No compatible parts found</strong>
+            <p>Add a service manually, or update inventory compatibility for this vehicle.</p>
           </div>
 
           <div v-else class="parts-list">
@@ -700,6 +708,12 @@ Created from online request #${requestId}`;
   margin-top: 16px;
 }
 
+.bottom-grid > :last-child {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -777,7 +791,7 @@ Created from online request #${requestId}`;
 .item-card {
   border: 1px solid #ececea;
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   background: #fafaf9;
 }
 
@@ -839,20 +853,13 @@ Created from online request #${requestId}`;
 }
 
 .empty-box {
-  font-size: 12px;
-  color: #999;
-  padding: 14px;
-  border: 1px dashed #ddd;
-  border-radius: 10px;
-  background: #fafaf9;
-}
-
-.empty-box {
   border: 1px dashed #ddddda;
   border-radius: 12px;
   padding: 18px;
   text-align: center;
   background: #fbfbfa;
+  font-size: 12px;
+  color: #999;
 }
 
 .empty-icon {
@@ -936,8 +943,8 @@ Created from online request #${requestId}`;
 }
 
 .item-total {
-  margin-top: 14px;
-  padding-top: 12px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid #eee;
   display: flex;
   justify-content: space-between;
@@ -983,7 +990,7 @@ label {
 }
 
 .service-item-layout .field input {
-  height: 38px;
+  height: 36px;
 }
 
 /* flow steps */
@@ -1031,6 +1038,16 @@ label {
   width: 34px;
   height: 1px;
   background: #e4e4df;
+}
+
+.flow-step.done span {
+  background: #2f9e44;
+  border-color: #2f9e44;
+  color: #fff;
+}
+
+.flow-step.done {
+  color: #2f6b1f;
 }
 
 
