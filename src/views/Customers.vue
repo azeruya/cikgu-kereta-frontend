@@ -33,7 +33,14 @@
             v-model.trim="searchQuery"
             placeholder="Search customer..."
         />
-        <button class="pill-btn" type="button">Export</button>
+        <button
+          class="pill-btn"
+          type="button"
+          :disabled="exporting"
+          @click="exportCustomers"
+        >
+          {{ exporting ? "Exporting..." : "Export" }}
+        </button>
         <button class="pill-btn primary" type="button" @click="openFormModal()">
             + Add Customer
         </button>
@@ -428,6 +435,7 @@ export default {
       page: 1,
       totalPages: 1,
       activeCustomer: null,
+      exporting: false,
       searchQuery: "",
       showFormModal: false,
       editingCustomerId: null,
@@ -563,6 +571,45 @@ export default {
             sessionStorage.clear();
             this.$router.push("/login");
         }
+    },
+
+    async exportCustomers() {
+      this.exporting = true;
+      this.error = "";
+
+      try {
+        const params = {
+          search: this.searchQuery || undefined,
+          status: this.activeTab || "all",
+        };
+
+        const response = await api.get("/customers/export/csv", {
+          params,
+          responseType: "blob",
+        });
+
+        const blob = new Blob([response.data], {
+          type: "text/csv;charset=utf-8;",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", `customers-${new Date().toISOString().slice(0, 10)}.csv`);
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Error exporting customers:", error);
+        this.error =
+          error.response?.data?.message || "Failed to export customers.";
+      } finally {
+        this.exporting = false;
+      }
     },
 
     async openDetail(customer) {

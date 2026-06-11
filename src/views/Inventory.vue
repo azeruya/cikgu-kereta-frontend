@@ -35,7 +35,14 @@
             v-model.trim="searchQuery"
             placeholder="Search part / SKU / variant..."
         />
-        <button class="pill-btn" type="button">Export</button>
+        <button
+          class="pill-btn"
+          type="button"
+          :disabled="exporting"
+          @click="exportInventory"
+        >
+          {{ exporting ? "Exporting..." : "Export" }}
+        </button>
         <router-link to="/inventory/new" class="pill-btn primary link-btn">
             + Add Part
         </router-link>
@@ -463,6 +470,7 @@ export default {
       perPage: 5,
       totalRecords: 0,
       activePart: null,
+      exporting: false,
       showRestockModal: false,
       restockLoading: false,
       restockError: "",
@@ -626,6 +634,45 @@ export default {
             sessionStorage.clear();
             this.$router.push("/login");
         }
+    },
+
+    async exportInventory() {
+      this.exporting = true;
+      this.error = "";
+
+      try {
+        const params = {
+          search: this.searchQuery || undefined,
+          type: this.activeTab || "all",
+        };
+
+        const response = await api.get("/parts/export/csv", {
+          params,
+          responseType: "blob",
+        });
+
+        const blob = new Blob([response.data], {
+          type: "text/csv;charset=utf-8;",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", `inventory-${new Date().toISOString().slice(0, 10)}.csv`);
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Error exporting inventory:", error);
+        this.error =
+          error.response?.data?.message || "Failed to export inventory.";
+      } finally {
+        this.exporting = false;
+      }
     },
 
     async openDetail(part) {
@@ -1119,7 +1166,6 @@ nextPage() {
   line-height: 1.5;
   color: #777;
   margin-bottom: 16px;
-  padding: 0 42px 8px;
 }
 
 .confirm-message.left {

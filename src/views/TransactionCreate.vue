@@ -71,7 +71,7 @@
       <div v-else class="edit-context">
         <span class="edit-pill">Editing transaction</span>
         <span class="edit-note">
-          Review and update the selected transaction before saving changes.
+          Update details, items, discount, or notes before saving.
         </span>
       </div>
 
@@ -1110,7 +1110,7 @@ label {
   gap: 10px;
   margin-top: 14px;
   margin-bottom: 16px;
-  padding: 8px 10px;
+  padding: 7px 10px;
   background: #ffffff;
   border: 1px solid #eeeeea;
   border-radius: 999px;
@@ -1122,7 +1122,7 @@ label {
   border-radius: 999px;
   background: #111111;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
 }
 
