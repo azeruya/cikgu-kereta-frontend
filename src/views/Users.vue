@@ -512,7 +512,7 @@ export default {
 
 .action-icon-group {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 7px;
 }
@@ -801,6 +801,10 @@ export default {
   padding: 12px 5px;
 }
 
+.users-table th:last-child {
+  text-align: center;
+}
+
 .user-cell {
   display: flex;
   align-items: center;
@@ -808,8 +812,8 @@ export default {
 }
 
 .user-avatar {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
   border: 1px solid #e5e5e2;
   background: #f2f2f0;
@@ -817,7 +821,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -878,10 +882,6 @@ export default {
 
 .right {
   text-align: right;
-}
-
-.action-icon-group {
-  justify-content: flex-start;
 }
 
 @media (max-width: 900px) {
