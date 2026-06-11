@@ -16,10 +16,10 @@
       <section class="login-side">
         <div class="intro">
           <span class="eyebrow">Internal workspace</span>
-          <h2>Run your workshop operations securely.</h2>
+          <h2>Vulcan Auto Service Portal</h2>
           <p>
-            Access customer records, inventory, transactions, payments, expenses,
-            reports, and online service requests from one workspace.
+            Secure access for Admin and Staff users to manage customer records,
+            transactions, inventory, payments, expenses, and reports.
           </p>
         </div>
 
@@ -69,13 +69,6 @@
           <p v-if="error" class="error">{{ error }}</p>
         </div>
 
-        <div class="module-chips">
-          <span>Customers</span>
-          <span>Inventory</span>
-          <span>Invoices</span>
-          <span>Expenses</span>
-          <span>Reports</span>
-        </div>
       </section>
 
       <section class="preview-side">
@@ -292,8 +285,8 @@ export default {
 
 .intro {
   text-align: center;
-  margin-bottom: 28px;
-  max-width: 520px;
+  margin-bottom: 24px;
+  max-width: 420px;
 }
 
 .eyebrow {
@@ -310,16 +303,16 @@ export default {
 }
 
 .intro h2 {
-  font-size: 48px;
-  line-height: 1.02;
+  font-size: 38px;
+  line-height: 1.08;
   font-weight: 700;
-  letter-spacing: -2px;
+  letter-spacing: -1.4px;
   color: #111;
   margin-bottom: 16px;
 }
 
 .intro p {
-  font-size: 15px;
+  font-size: 14px;
   color: #666;
   line-height: 1.65;
   max-width: 470px;
@@ -726,7 +719,7 @@ button:disabled {
     font-size: 38px;
   }
 
-  .image-side {
+  .preview-side {
     display: none;
   }
 }
