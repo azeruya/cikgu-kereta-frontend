@@ -985,6 +985,152 @@ export default {
   margin-top: 2px;
 }
 
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(17, 17, 17, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-card {
+  width: min(460px, 100%);
+  max-height: calc(100vh - 48px);
+  background: #ffffff;
+  border: 1px solid #eeeeea;
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+
+.modal-card.large {
+  width: min(520px, 100%);
+  padding: 0;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid #f0f0ed;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.modal-body {
+  padding: 18px 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666666;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #deded9;
+  border-radius: 10px;
+  padding: 0 12px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 13px;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #111111;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 20px 20px;
+  border-top: 1px solid #f0f0ed;
+  background: #ffffff;
+}
+
+.modal-actions button {
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid #deded9;
+  background: #ffffff;
+  color: #333333;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-actions button.primary {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+}
+
+.modal-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.mini-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #deded9;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #555555;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.mini-btn:hover {
+  background: #f5f5f2;
+}
+
+@media (max-width: 640px) {
+  .modal {
+    padding: 16px;
+    align-items: flex-end;
+  }
+
+  .modal-card.large {
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1100px) {
   .detail-grid,
   .summary-grid {
