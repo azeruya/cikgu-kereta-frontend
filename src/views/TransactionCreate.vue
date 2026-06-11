@@ -26,6 +26,23 @@
         </div>
       </div>
 
+      <div class="flow-steps">
+        <div class="flow-step active">
+          <span>1</span>
+          <p>Select customer</p>
+        </div>
+        <div class="flow-line"></div>
+        <div class="flow-step">
+          <span>2</span>
+          <p>Add items</p>
+        </div>
+        <div class="flow-line"></div>
+        <div class="flow-step">
+          <span>3</span>
+          <p>Review quotation</p>
+        </div>
+      </div>
+
       <div class="create-grid">
         <Card>
           <template #header>
@@ -76,7 +93,9 @@
           </template>
 
           <div v-if="!form.vehicle_id" class="empty-box">
-            Select a vehicle first to load compatible parts.
+              <div class="empty-icon">▣</div>
+              <strong>Select a vehicle first</strong>
+              <p>Compatible parts will appear here based on vehicle make, model, and year.</p>
           </div>
 
           <div v-else class="parts-list">
@@ -828,6 +847,39 @@ Created from online request #${requestId}`;
   background: #fafaf9;
 }
 
+.empty-box {
+  border: 1px dashed #ddddda;
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  background: #fbfbfa;
+}
+
+.empty-icon {
+  width: 34px;
+  height: 34px;
+  margin: 0 auto 10px;
+  border-radius: 10px;
+  background: #f1f1ee;
+  color: #777;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-box strong {
+  display: block;
+  font-size: 13px;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.empty-box p {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.45;
+}
+
 .error-text {
   margin-top: 12px;
   font-size: 12px;
@@ -933,6 +985,54 @@ label {
 .service-item-layout .field input {
   height: 38px;
 }
+
+/* flow steps */
+.flow-steps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #999;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.flow-step span {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #f0f0ed;
+  border: 1px solid #e4e4df;
+  color: #777;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.flow-step.active span {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+}
+
+.flow-step.active {
+  color: #111;
+}
+
+.flow-line {
+  width: 34px;
+  height: 1px;
+  background: #e4e4df;
+}
+
 
 @media (max-width: 1000px) {
   .compact-inputs {
