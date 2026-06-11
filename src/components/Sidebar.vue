@@ -115,27 +115,39 @@ export default {
 
 <style scoped>
 .sidebar {
+  width: 240px;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: linear-gradient(180deg, #101010 0%, #070707 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 28%),
+    linear-gradient(180deg, #111 0%, #070707 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  transition: width 0.2s ease;
 }
 
+.sidebar.collapsed {
+  width: 74px;
+}
+
+/* =========================
+   BRAND
+========================= */
 .brand-row {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 0 5px;
-  min-height: 70px;
+  padding: 18px 0 14px;
+  min-height: 86px;
 }
 
 .brand-logo-only {
-  width: 60px;
-  height: 60px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
-  opacity: 0.96;
+  opacity: 0.98;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
 }
 
 .collapse-edge-btn {
@@ -143,12 +155,12 @@ export default {
   right: -12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.13);
   background: #1b1b1b;
-  color: rgba(255,255,255,0.72);
+  color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
   font-size: 17px;
   line-height: 1;
@@ -156,86 +168,127 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 5;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .collapse-edge-btn:hover {
   color: #fff;
   background: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .nav-divider {
   height: 1px;
-  background: rgba(255,255,255,0.20);
-  margin: 0 16px 12px;
+  background: rgba(255, 255, 255, 0.14);
+  margin: 0 20px 16px;
 }
 
+/* =========================
+   NAVIGATION
+========================= */
 .sidebar-nav {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 0 10px;
+  gap: 6px;
+  padding: 0 16px;
   overflow-y: auto;
 }
 
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+
 .nav-item {
-  height: 40px;
-  border-radius: 11px;
-  padding: 0 12px;
+  height: 46px;
+  border-radius: 13px;
+  padding: 0 15px;
   display: flex;
   align-items: center;
-  gap: 11px;
-  color: rgba(255,255,255,0.56);
+  gap: 13px;
+  color: rgba(255, 255, 255, 0.56);
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 550;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 
 .nav-item:hover {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.07);
   color: #fff;
+}
+
+.nav-item:active {
+  transform: scale(0.985);
 }
 
 .router-link-active {
-  background: rgba(255,255,255,0.13);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.17),
+    rgba(255, 255, 255, 0.11)
+  );
   color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.22);
 }
 
 .nav-icon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
+  opacity: 0.9;
 }
 
 .nav-text {
   white-space: nowrap;
 }
 
+/* =========================
+   FOOTER USER AREA
+========================= */
 .sidebar-foot {
-  padding: 12px 10px 14px;
-  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 16px 14px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.045)
+  );
 }
 
 .user-row {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 8px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.045);
+  gap: 11px;
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.065);
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 10px 26px rgba(0, 0, 0, 0.22);
 }
 
 .avatar {
-  width: 31px;
-  height: 31px;
-  border-radius: 9px;
-  background: rgba(255,255,255,0.12);
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.1));
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   flex-shrink: 0;
 }
 
@@ -245,36 +298,45 @@ export default {
 }
 
 .user-name {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.9);
+  font-size: 12.5px;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.92);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .user-role {
-  margin-top: 2px;
-  font-size: 10px;
-  color: rgba(255,255,255,0.38);
+  margin-top: 3px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.42);
+  line-height: 1.2;
 }
 
 .logout-icon-btn {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border: none;
-  border-radius: 8px;
-  background: transparent;
-  color: rgba(255,255,255,0.38);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.48);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 
 .logout-icon-btn:hover {
-  background: rgba(239,68,68,0.15);
+  background: rgba(239, 68, 68, 0.16);
   color: #f87171;
+}
+
+.logout-icon-btn:active {
+  transform: scale(0.94);
 }
 
 .logout-icon {
@@ -282,48 +344,67 @@ export default {
   height: 15px;
 }
 
-/* collapsed */
+/* =========================
+   COLLAPSED STATE
+========================= */
 .sidebar.collapsed .brand-row {
-  padding: 10px 0 10px;
-  min-height: 62px;
+  padding: 14px 0 12px;
+  min-height: 74px;
 }
 
 .sidebar.collapsed .brand-logo-only {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
 }
 
 .sidebar.collapsed .nav-divider {
-  margin: 0 14px 10px;
+  margin: 0 14px 14px;
 }
 
 .sidebar.collapsed .sidebar-nav {
   align-items: center;
-  padding: 0 6px;
-  gap: 7px;
+  padding: 0 8px;
+  gap: 8px;
 }
 
 .sidebar.collapsed .nav-item {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   justify-content: center;
+  border-radius: 14px;
+}
+
+.sidebar.collapsed .nav-icon {
+  width: 17px;
+  height: 17px;
 }
 
 .sidebar.collapsed .sidebar-foot {
-  padding: 10px 6px 12px;
+  padding: 14px 8px 16px;
 }
 
 .sidebar.collapsed .user-row {
   flex-direction: column;
-  gap: 8px;
-  padding: 0;
+  gap: 10px;
+  padding: 8px 0;
   background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .sidebar.collapsed .avatar,
 .sidebar.collapsed .logout-icon-btn {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
+  border-radius: 13px;
+}
+
+.sidebar.collapsed .avatar {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.sidebar.collapsed .logout-icon-btn {
+  background: rgba(255, 255, 255, 0.055);
 }
 </style>
