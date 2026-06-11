@@ -26,24 +26,43 @@
         </div>
       </div>
 
-      <div class="flow-step" :class="{ active: form.customer_id && form.vehicle_id, done: form.customer_id && form.vehicle_id }">
-        <span>1</span>
-        <p>Select customer</p>
-      </div>
+      <div class="flow-steps">
+  <div
+    class="flow-step"
+    :class="{
+      active: !form.customer_id || !form.vehicle_id,
+      done: form.customer_id && form.vehicle_id
+    }"
+  >
+    <span class="flow-number">1</span>
+    <span class="flow-text">Select customer</span>
+  </div>
 
-      <div class="flow-line"></div>
+  <div class="flow-line"></div>
 
-      <div class="flow-step" :class="{ active: form.customer_id && form.vehicle_id, done: form.items.length > 0 }">
-        <span>2</span>
-        <p>Add items</p>
-      </div>
+  <div
+    class="flow-step"
+    :class="{
+      active: form.customer_id && form.vehicle_id && form.items.length === 0,
+      done: form.items.length > 0
+    }"
+  >
+    <span class="flow-number">2</span>
+    <span class="flow-text">Add items</span>
+  </div>
 
-      <div class="flow-line"></div>
+  <div class="flow-line"></div>
 
-      <div class="flow-step" :class="{ active: form.items.length > 0 }">
-        <span>3</span>
-        <p>Review quotation</p>
-      </div>
+  <div
+    class="flow-step"
+    :class="{
+      active: form.items.length > 0
+    }"
+  >
+    <span class="flow-number">3</span>
+    <span class="flow-text">Review quotation</span>
+  </div>
+</div>
 
       <div class="create-grid">
         <Card>
@@ -995,28 +1014,35 @@ label {
 
 /* flow steps */
 .flow-steps {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   margin-top: 14px;
+  margin-bottom: 14px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid #eeeeea;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 .flow-step {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #999;
+  color: #aaa;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.flow-step span {
+.flow-number {
   width: 24px;
   height: 24px;
   border-radius: 999px;
-  background: #f0f0ed;
-  border: 1px solid #e4e4df;
-  color: #777;
+  background: #f2f2ef;
+  border: 1px solid #e3e3df;
+  color: #888;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1024,30 +1050,47 @@ label {
   font-weight: 800;
 }
 
-.flow-step.active span {
-  background: #111;
-  border-color: #111;
-  color: #fff;
+.flow-text {
+  padding-right: 2px;
 }
 
 .flow-step.active {
   color: #111;
 }
 
-.flow-line {
-  width: 34px;
-  height: 1px;
-  background: #e4e4df;
-}
-
-.flow-step.done span {
-  background: #2f9e44;
-  border-color: #2f9e44;
+.flow-step.active .flow-number {
+  background: #111;
+  border-color: #111;
   color: #fff;
 }
 
 .flow-step.done {
-  color: #2f6b1f;
+  color: #444;
+}
+
+.flow-step.done .flow-number {
+  background: #eef7e9;
+  border-color: #cfe8c5;
+  color: #2f7d32;
+}
+
+.flow-step.done .flow-number::before {
+  content: "✓";
+}
+
+.flow-step.done .flow-number {
+  font-size: 0;
+}
+
+.flow-step.done .flow-number::before {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.flow-line {
+  width: 34px;
+  height: 1px;
+  background: #e4e4df;
 }
 
 
