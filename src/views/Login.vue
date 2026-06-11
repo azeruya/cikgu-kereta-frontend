@@ -179,9 +179,10 @@ export default {
 .login-panel {
   position: relative;
   z-index: 1;
-  width: min(900px, 100%);
+  width: min(880px, 100%);
+  min-height: 470px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 430px 450px;
   background: #ffffff;
   border: 1px solid #e2e2de;
   border-radius: 20px;
@@ -189,11 +190,10 @@ export default {
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.09);
 }
 
-/* ── LEFT PANEL ── */
 .brand-panel {
   background: #161616;
   color: #ffffff;
-  padding: 32px;
+  padding: 34px;
   display: flex;
   flex-direction: column;
 }
@@ -204,10 +204,34 @@ export default {
   gap: 12px;
 }
 
-/* Creates a cleaner gap between logo and modules */
+.brand-panel .brand-logo {
+  width: 44px !important;
+  height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px #2d2d2d, 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.brand-top h1 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.brand-top p {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
 .module-section {
   flex: 1;
-  margin-top: 58px;
+  margin-top: 76px;
 }
 
 .module-label {
@@ -216,7 +240,7 @@ export default {
   text-transform: uppercase;
   letter-spacing: 0.11em;
   font-weight: 700;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .module-list {
@@ -229,21 +253,16 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #252525;
   color: #b8b8b8;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 400;
-  transition: color 0.15s;
-}
-
-.module-item span:last-child {
-  line-height: 1.35;
 }
 
 .module-icon {
-  width: 22px;
-  height: 22px;
+  width: 21px;
+  height: 21px;
   border-radius: 6px;
   background: #222;
   border: 1px solid #2e2e2e;
@@ -252,12 +271,11 @@ export default {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: color 0.15s, background 0.15s;
 }
 
 .module-icon svg {
-  width: 12px;
-  height: 12px;
+  width: 11.5px;
+  height: 11.5px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -265,22 +283,20 @@ export default {
   stroke-linejoin: round;
 }
 
-.module-item:hover {
-  color: #e0e0e0;
-}
-
-.module-item:hover .module-icon {
-  background: #2a2a2a;
-  color: #ccc;
-}
-
 .brand-foot {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #6d6d6d;
+  color: #666;
   font-size: 11px;
   margin-top: 28px;
+}
+
+.form-panel {
+  padding: 48px 54px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .secure-dot {
