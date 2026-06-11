@@ -2,116 +2,99 @@
   <div class="login-page">
     <div class="dot-bg"></div>
 
-    <div class="login-panel">
-      <!-- LEFT BRAND PANEL -->
-      <section class="brand-panel">
-        <div class="brand-top">
-          <img src="../assets/vulcan_bg.png" class="brand-logo" alt="Vulcan Auto Service" />
-          <div>
-            <h1>Vulcan Auto Service</h1>
-            <p>Workshop Management</p>
-          </div>
+    <header class="topbar">
+      <div class="brand">
+        <img src="../assets/vulcan_bg.png" class="brand-logo" />
+        <div>
+          <h1>Vulcan Auto Service</h1>
+          <p>Workshop Management</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="login-layout">
+      <section class="login-side">
+        <div class="intro">
+          <span class="eyebrow">Internal workspace</span>
+          <h2>Run your workshop operations securely.</h2>
+          <p>
+            Access customer records, inventory, transactions, payments, expenses,
+            reports, and online service requests from one workspace.
+          </p>
         </div>
 
-        <div class="module-section">
-          <div class="module-label">Workspace modules</div>
-
-          <div class="module-list">
-          <div class="module-item">
-            <span class="module-icon">
-              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3Z" /><path d="M8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Z" /><path d="M16 13c-2.2 0-4 1.12-4 2.5V18h8v-2.5c0-1.38-1.8-2.5-4-2.5Z" /><path d="M8 13c-2.2 0-4 1.12-4 2.5V18h6v-2.5c0-.8.34-1.54.94-2.14A6.3 6.3 0 0 0 8 13Z" /></svg>
-            </span>
-            <span>Customer &amp; vehicle records</span>
+        <div class="card">
+          <div class="status-bar">
+            <span class="status-dot"></span>
+            <span>All systems operational</span>
           </div>
-          <div class="module-item">
-            <span class="module-icon">
-              <svg viewBox="0 0 24 24"><path d="M21 8.5 12 3 3 8.5l9 5.5 9-5.5Z" /><path d="M3 8.5V16l9 5 9-5V8.5" /><path d="M12 14v7" /></svg>
-            </span>
-            <span>Inventory &amp; stock alerts</span>
-          </div>
-          <div class="module-item">
-            <span class="module-icon">
-              <svg viewBox="0 0 24 24"><path d="M7 3h10a2 2 0 0 1 2 2v16l-3-2-2 2-2-2-2 2-2-2-3 2V5a2 2 0 0 1 2-2Z" /><path d="M9 8h6" /><path d="M9 12h6" /><path d="M9 16h3" /></svg>
-            </span>
-            <span>Quotation, invoice &amp; receipt</span>
-          </div>
-          <div class="module-item">
-            <span class="module-icon">
-              <svg viewBox="0 0 24 24"><path d="M3 7h18v10H3V7Z" /><path d="M7 11h4" /><path d="M17 14h.01" /><path d="M3 10h18" /></svg>
-            </span>
-            <span>Payments &amp; expenses</span>
-          </div>
-          <div class="module-item">
-            <span class="module-icon">
-              <svg viewBox="0 0 24 24"><path d="M4 19V5" /><path d="M20 19H4" /><path d="M8 16v-5" /><path d="M12 16V8" /><path d="M16 16v-3" /></svg>
-            </span>
-            <span>Reports &amp; online requests</span>
-          </div>
-        </div>
-        </div>
 
-
-        <div class="brand-foot">
-          <div class="secure-dot"></div>
-          <span>Role-based access for Admin and Staff accounts</span>
-        </div>
-      </section>
-
-      <!-- RIGHT LOGIN FORM -->
-      <section class="form-panel">
-        <div class="status-bar">
-          <span class="status-dot"></span>
-          <span>All systems operational</span>
-        </div>
-
-        <div class="form-heading">
-          <h2>Sign in</h2>
-          <p>Use your assigned staff account</p>
-        </div>
-
-        <form @submit.prevent="login">
-          <div class="field">
-            <label>Email address</label>
-            <input
-              v-model.trim="email"
-              type="email"
-              placeholder="name@workshop.com"
-              autocomplete="email"
-            />
-          </div>
-          <div class="field">
-            <div class="field-row">
-              <label>Password</label>
-              <router-link to="/forgot-password" class="forgot">Forgot password?</router-link>
+          <form @submit.prevent="login">
+            <div class="field">
+              <label>Email address</label>
+              <input
+                v-model.trim="email"
+                type="email"
+                placeholder="name@workshop.com"
+                autocomplete="email"
+              />
             </div>
-            <input
-              v-model="password"
-              type="password"
-              placeholder="Enter your password"
-              autocomplete="current-password"
-            />
-          </div>
 
-          <transition name="fade">
-            <p v-if="error" class="error">{{ error }}</p>
-          </transition>
+            <div class="field">
+              <div class="field-row">
+                <label>Password</label>
+                <router-link to="/forgot-password" class="forgot">
+                  Forgot password?
+                </router-link>
+              </div>
 
-          <button type="submit" :disabled="loading">
-            <span v-if="loading" class="spinner"></span>
-            {{ loading ? "Signing in…" : "Sign in" }}
-          </button>
-        </form>
+              <input
+                v-model="password"
+                type="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+              />
+            </div>
 
-        <p class="form-foot">
-          No account? <router-link to="/register">Request access</router-link>
-        </p>
+            <button type="submit" :disabled="loading">
+              {{ loading ? "Signing in..." : "Sign in" }}
+            </button>
+          </form>
+
+          <p class="card-foot">
+            No account?
+            <router-link to="/register">Request access</router-link>
+          </p>
+
+          <p v-if="error" class="error">{{ error }}</p>
+        </div>
+
+        <div class="module-chips">
+          <span>Customers</span>
+          <span>Inventory</span>
+          <span>Invoices</span>
+          <span>Expenses</span>
+          <span>Reports</span>
+        </div>
       </section>
-    </div>
+
+      <section class="image-side">
+        <img src="../assets/cg_pic.jpg" class="hero-image" alt="Workshop preview" />
+
+        <div class="image-overlay">
+          <div>
+            <span class="overlay-label">Vulcan Auto Service</span>
+            <p>Workshop operations, documents, and records in one system.</p>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 </template>
 
 <script>
 import api from "../services/api";
+
 export default {
   data() {
     return {
@@ -125,13 +108,16 @@ export default {
     async login() {
       this.error = "";
       this.loading = true;
+
       try {
         const res = await api.post("/login", {
           email: this.email,
           password: this.password,
         });
+
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
+
         this.$router.push("/dashboard");
       } catch (err) {
         this.error =
@@ -157,225 +143,163 @@ export default {
 .login-page {
   min-height: 100vh;
   font-family: "Inter", sans-serif;
-  background: #f4f4f2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px;
+  background: #fafaf8;
   position: relative;
   overflow: hidden;
+  padding: 38px 56px;
 }
 
 .dot-bg {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, #c8c8c5 1px, transparent 1px);
+  background-image: radial-gradient(circle, #d7d7d2 1px, transparent 1px);
   background-size: 22px 22px;
-  opacity: 0.4;
+  opacity: 0.35;
   pointer-events: none;
 }
 
-/* MAIN SPLIT CARD */
-.login-panel {
+/* TOP LOGO */
+.topbar {
   position: relative;
   z-index: 1;
-  width: min(980px, 100%);
-  min-height: 520px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  transform: translateY(-10px);
-  background: #ffffff;
-  border: 1px solid #e2e2de;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.09);
-}
-
-.brand-panel {
-  background: #161616;
-  color: #ffffff;
-  padding: 40px 38px;
+  height: 58px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
 }
 
-.brand-top {
+.brand {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.brand-panel .brand-logo {
-  width: 44px !important;
-  height: 44px !important;
-  max-width: 44px !important;
-  max-height: 44px !important;
+.brand-logo {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   object-fit: cover;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 2px #2d2d2d, 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 2px #e5e5e0;
 }
 
-.brand-top h1 {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-  line-height: 1.2;
-  color: #fff;
+.brand h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.4px;
+  line-height: 1.15;
 }
 
-.brand-top p {
+.brand p {
   font-size: 12px;
-  color: #666;
+  color: #888;
   margin-top: 2px;
 }
 
-.module-section {
-  flex: 1;
-  margin-top: 82px;
-  max-width: 360px;
+/* MAIN LAYOUT */
+.login-layout {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 120px);
+  display: grid;
+  grid-template-columns: minmax(360px, 520px) minmax(420px, 1fr);
+  gap: 64px;
+  align-items: center;
+  max-width: 1260px;
+  margin: 0 auto;
 }
 
-.module-label {
-  font-size: 10px;
-  color: #5f5f5f;
-  text-transform: uppercase;
-  letter-spacing: 0.11em;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.module-list {
+/* LEFT FORM SIDE */
+.login-side {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid #252525;
-}
-
-.module-item {
-  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid #252525;
-  color: #b8b8b8;
-  font-size: 12px;
-  font-weight: 400;
 }
 
-.module-icon {
-  width: 21px;
-  height: 21px;
-  border-radius: 6px;
-  background: #222;
-  border: 1px solid #2e2e2e;
-  color: #888;
+.intro {
+  text-align: center;
+  margin-bottom: 28px;
+  max-width: 520px;
+}
+
+.eyebrow {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.module-icon svg {
-  width: 11.5px;
-  height: 11.5px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.brand-foot {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  padding: 6px 12px;
+  background: #eeeeeb;
   color: #777;
-  font-size: 11px;
-  margin-top: 28px;
-}
-
-.form-panel {
-  padding: 56px 58px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.secure-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4caf50;
-  flex-shrink: 0;
-}
-
-/* ── RIGHT PANEL ── */
-.form-panel {
-  padding: 48px 42px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0;
-}
-
-.status-bar {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  width: fit-content;
-  padding: 5px 10px;
-  background: #eef5e9;
-  border: 1px solid #d4e8cc;
   border-radius: 999px;
-  color: #2e6b1e;
-  font-size: 11.5px;
-  font-weight: 500;
-  margin-bottom: 28px;
-}
-
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4caf50;
-}
-
-.form-heading {
-  margin-bottom: 28px;
-}
-
-.form-heading h2 {
-  font-size: 24px;
+  font-size: 10px;
   font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.intro h2 {
+  font-size: 48px;
+  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: -2px;
   color: #111;
-  letter-spacing: -0.6px;
-  margin-bottom: 4px;
-}
-
-.form-heading p {
-  font-size: 13.5px;
-  color: #888;
-}
-
-/* ── FIELDS ── */
-.field {
   margin-bottom: 16px;
 }
 
-.field label,
-.field-row label {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #444;
-  margin-bottom: 6px;
+.intro p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.65;
+  max-width: 470px;
+  margin: 0 auto;
+}
+
+/* LOGIN CARD */
+.card {
+  width: min(420px, 100%);
+  background: #fff;
+  border: 1px solid #e7e7e2;
+  border-radius: 22px;
+  padding: 30px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.08);
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 12px;
+  background: #eef7e9;
+  border: 1px solid #d8ebcd;
+  color: #2f6b1f;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background: #4caf50;
+  border-radius: 50%;
+}
+
+.field {
+  margin-bottom: 16px;
 }
 
 .field-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
+}
+
+.field label,
+.field-row label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
 }
 
 .field-row label {
@@ -384,176 +308,206 @@ export default {
 
 .forgot {
   font-size: 12px;
-  color: #999;
+  color: #777;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.15s;
 }
 
 .forgot:hover {
   color: #111;
+  text-decoration: underline;
 }
 
 .field input {
   width: 100%;
-  height: 40px;
+  height: 44px;
   background: #fafaf9;
-  border: 1px solid #e0e0dc;
-  border-radius: 8px;
-  padding: 0 12px;
+  border: 1px solid #dededa;
+  border-radius: 10px;
+  padding: 0 13px;
   font-family: "Inter", sans-serif;
-  font-size: 13.5px;
+  font-size: 14px;
   color: #111;
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: all 0.15s ease;
 }
 
 .field input:focus {
-  border-color: #333;
+  border-color: #111;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
 }
 
 .field input::placeholder {
-  color: #c0c0bc;
+  color: #bfbfbc;
 }
 
-/* ── BUTTON ── */
-button[type="submit"] {
+button {
   width: 100%;
-  height: 42px;
+  height: 46px;
   background: #111;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-family: "Inter", sans-serif;
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: #fff;
   cursor: pointer;
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: background 0.15s, opacity 0.15s;
+  margin-top: 4px;
+  transition: all 0.15s ease;
 }
 
-button[type="submit"]:hover:not(:disabled) {
+button:hover {
   background: #222;
+  transform: translateY(-1px);
 }
 
-button[type="submit"]:disabled {
-  opacity: 0.55;
+button:disabled {
+  opacity: 0.65;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* Loading spinner */
-.spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  flex-shrink: 0;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ── ERROR ── */
-.error {
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: #c0392b;
-  background: #fdf3f2;
-  border: 1px solid #f5c6c2;
-  border-radius: 8px;
-  padding: 9px 12px;
-  margin-bottom: 4px;
-}
-
-/* Error fade transition */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s, transform 0.2s;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-/* ── FOOTER ── */
-.form-foot {
-  margin-top: 16px;
+.card-foot {
+  margin-top: 17px;
   text-align: center;
-  font-size: 12.5px;
-  color: #999;
+  font-size: 13px;
+  color: #888;
 }
 
-.form-foot a {
+.card-foot a {
   color: #111;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
 }
 
-.form-foot a:hover {
+.card-foot a:hover {
   text-decoration: underline;
 }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 860px) {
+.error {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #e53935;
+  background: #fff1f1;
+  border: 1px solid #ffd6d6;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+/* MODULE CHIPS */
+.module-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+  max-width: 420px;
+}
+
+.module-chips span {
+  padding: 7px 11px;
+  background: #fff;
+  border: 1px solid #e6e6e2;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #555;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* RIGHT IMAGE SIDE */
+.image-side {
+  position: relative;
+  height: min(72vh, 680px);
+  min-height: 520px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid #e4e4df;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.1);
+  background: #e9e6df;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* optional dark overlay at bottom */
+.image-overlay {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(17, 17, 17, 0.72);
+  backdrop-filter: blur(10px);
+  color: #fff;
+}
+
+.overlay-label {
+  display: block;
+  font-size: 11px;
+  color: #bdbdbd;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.image-overlay p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #f1f1f1;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1050px) {
   .login-page {
-    padding: 24px;
-    align-items: flex-start;
+    padding: 28px;
   }
 
-  .login-panel {
+  .login-layout {
     grid-template-columns: 1fr;
-    max-width: 420px;
-    margin: auto;
+    gap: 32px;
+    max-width: 520px;
   }
 
-  .brand-panel {
-    gap: 20px;
-    padding: 24px;
+  .intro h2 {
+    font-size: 38px;
   }
 
-  .module-list {
+  .image-side {
     display: none;
-  }
-
-  .brand-foot {
-    display: none;
-  }
-
-  .form-panel {
-    padding: 32px 28px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .login-page {
-    padding: 0;
-    background: #fff;
+    padding: 22px 16px;
   }
 
-  .login-panel {
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-    max-width: 100%;
-    min-height: 100vh;
+  .topbar {
+    height: auto;
+    margin-bottom: 32px;
   }
 
-  .brand-panel {
-    padding: 20px 24px;
+  .intro h2 {
+    font-size: 32px;
+    letter-spacing: -1.2px;
   }
 
-  .form-panel {
-    padding: 28px 24px;
+  .intro p {
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 24px;
+    border-radius: 18px;
   }
 }
 </style>
