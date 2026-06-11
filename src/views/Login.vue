@@ -13,15 +13,10 @@
           </div>
         </div>
 
-        <div class="portal-card">
-          <div>
-            <span class="portal-label">Staff portal</span>
-            <p>Role-based access for workshop operations.</p>
-          </div>
-          <span class="portal-badge">Secure</span>
-        </div>
+        <div class="module-section">
+          <div class="module-label">Workspace modules</div>
 
-        <div class="module-list">
+          <div class="module-list">
           <div class="module-item">
             <span class="module-icon">
               <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3Z" /><path d="M8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Z" /><path d="M16 13c-2.2 0-4 1.12-4 2.5V18h8v-2.5c0-1.38-1.8-2.5-4-2.5Z" /><path d="M8 13c-2.2 0-4 1.12-4 2.5V18h6v-2.5c0-.8.34-1.54.94-2.14A6.3 6.3 0 0 0 8 13Z" /></svg>
@@ -53,6 +48,8 @@
             <span>Reports &amp; online requests</span>
           </div>
         </div>
+        </div>
+
 
         <div class="brand-foot">
           <div class="secure-dot"></div>
@@ -182,7 +179,7 @@ export default {
 .login-panel {
   position: relative;
   z-index: 1;
-  width: min(860px, 100%);
+  width: min(900px, 100%);
   display: grid;
   grid-template-columns: 1fr 1fr;
   background: #ffffff;
@@ -199,7 +196,6 @@ export default {
   padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
 }
 
 .brand-top {
@@ -208,46 +204,35 @@ export default {
   gap: 12px;
 }
 
-.brand-logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 2px #2d2d2d, 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-
-.brand-top h1 {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-  line-height: 1.2;
-  color: #fff;
-}
-
-.brand-top p {
-  font-size: 12px;
-  color: #666;
-  margin-top: 2px;
-}
-
-/* Module list pushed down with flex gap */
-.module-list {
+/* Creates a cleaner gap between logo and modules */
+.module-section {
   flex: 1;
+  margin-top: 58px;
+}
+
+.module-label {
+  font-size: 10px;
+  color: #5f5f5f;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.module-list {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   border-top: 1px solid #252525;
 }
 
 .module-item {
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 10px 0;
+  gap: 10px;
+  padding: 9px 0;
   border-bottom: 1px solid #252525;
-  color: #bdbdbd;
-  font-size: 13px;
+  color: #b8b8b8;
+  font-size: 12.5px;
   font-weight: 400;
   transition: color 0.15s;
 }
@@ -256,13 +241,9 @@ export default {
   line-height: 1.35;
 }
 
-.module-item:hover {
-  color: #e0e0e0;
-}
-
 .module-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 6px;
   background: #222;
   border: 1px solid #2e2e2e;
@@ -274,14 +255,9 @@ export default {
   transition: color 0.15s, background 0.15s;
 }
 
-.module-item:hover .module-icon {
-  background: #2a2a2a;
-  color: #ccc;
-}
-
 .module-icon svg {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -289,12 +265,22 @@ export default {
   stroke-linejoin: round;
 }
 
+.module-item:hover {
+  color: #e0e0e0;
+}
+
+.module-item:hover .module-icon {
+  background: #2a2a2a;
+  color: #ccc;
+}
+
 .brand-foot {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #555;
+  color: #6d6d6d;
   font-size: 11px;
+  margin-top: 28px;
 }
 
 .secure-dot {
@@ -351,44 +337,6 @@ export default {
 .form-heading p {
   font-size: 13.5px;
   color: #888;
-}
-
-/* portal card */
-.portal-card {
-  padding: 14px;
-  background: linear-gradient(180deg, #202020, #1a1a1a);
-  border: 1px solid #2b2b2b;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.portal-label {
-  display: block;
-  font-size: 10px;
-  color: #777;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.portal-card p {
-  font-size: 12px;
-  color: #c8c8c8;
-  line-height: 1.45;
-}
-
-.portal-badge {
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: rgba(76, 175, 80, 0.12);
-  color: #72c577;
-  border: 1px solid rgba(76, 175, 80, 0.22);
-  font-size: 10px;
-  font-weight: 700;
 }
 
 /* ── FIELDS ── */
