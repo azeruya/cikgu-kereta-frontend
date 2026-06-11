@@ -707,8 +707,11 @@ export default {
    PAGE BASE
 ========================= */
 .main {
-  padding: 28px;
-  background: var(--bg);
+  min-height: 100vh;
+  padding: 36px 42px 44px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 34%),
+    var(--bg);
 }
 
 .right {
@@ -735,12 +738,12 @@ export default {
    HERO / GREETING
 ========================= */
 .dashboard-hero {
-  max-width: 1320px;
+  max-width: 1380px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 20px;
+  gap: 24px;
+  margin-bottom: 28px;
 }
 
 .hero-copy {
@@ -751,11 +754,11 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 3px;
+  margin-bottom: 6px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   color: #777;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -765,23 +768,24 @@ export default {
 
 .hero-title {
   margin: 0;
-  font-size: 30px;
-  font-weight: 800;
-  color: #121212;
-  line-height: 1;
-  letter-spacing: -0.045em;
+  font-size: 34px;
+  font-weight: 850;
+  color: #111;
+  line-height: 1.04;
+  letter-spacing: -0.055em;
 }
 
 .hero-subtitle {
-  margin: 6px 0 0;
-  font-size: 13px;
+  margin: 8px 0 0;
+  font-size: 14px;
   color: #8a8a8a;
+  line-height: 1.5;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
@@ -789,30 +793,30 @@ export default {
    DASHBOARD SPLIT LAYOUT
 ========================= */
 .dashboard-shell {
-  max-width: 1320px;
+  max-width: 1380px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 390px;
-  gap: 18px;
-  align-items: stretch;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 30px;
+  align-items: start;
 }
 
 .dashboard-main-panel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
   min-width: 0;
 }
 
 .dashboard-right-panel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 0 0 0 20px;
-  border-left: 1px solid #e3e3dc;
+  gap: 22px;
+  padding: 0 0 0 24px;
+  border-left: 1px solid rgba(220, 220, 214, 0.9);
   background: linear-gradient(
     90deg,
-    rgba(245, 244, 238, 0.85) 0%,
-    rgba(245, 244, 238, 0.35) 100%
+    rgba(245, 244, 238, 0.65) 0%,
+    rgba(245, 244, 238, 0.2) 100%
   );
   min-width: 0;
 }
@@ -826,96 +830,92 @@ export default {
 .dashboard-fixed-card :deep(.card-header),
 .dashboard-fixed-card :deep(.card-head) {
   flex-shrink: 0;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-/* Card heights */
+/* Softer dashboard card feeling */
+.dashboard-fixed-card :deep(.card),
+.dashboard-fixed-card {
+  border-radius: 20px;
+}
+
+/* Better card heights */
 .today-card {
-  height: 190px;
+  min-height: 265px;
 }
 
 .activity-card {
-  height: 330px;
+  min-height: 335px;
 }
 
 .quick-card {
-  height: 235px;
+  min-height: 250px;
 }
 
 .low-stock-card {
-  height: 285px;
+  min-height: 300px;
 }
 
 .online-card {
-  height: 255px;
+  min-height: 235px;
 }
 
 /* =========================
    KPI CARDS
 ========================= */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
+.metrics-grid,
 .dashboard-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: 16px;
 }
 
-/* Staff only has 3 metrics, so stretch them evenly */
 .dashboard-metrics.staff-metrics {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.dashboard-metrics.staff-metrics .metric-card {
-  min-height: 104px;
-}
-
 .metric-card {
-  min-height: 92px;
+  min-height: 112px;
   background: #fff;
-  border: 1px solid #e7e7e2;
-  border-radius: 15px;
-  padding: 14px 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.035);
+  border: 1px solid #e8e8e3;
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.035);
 }
 
 .metric-label {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 9px;
-  font-size: 10px;
-  font-weight: 800;
+  gap: 12px;
+  margin-bottom: 13px;
+  font-size: 10.5px;
+  font-weight: 850;
   color: #777;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.085em;
   text-transform: uppercase;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .metric-value {
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 27px;
+  font-weight: 850;
   color: #111;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   line-height: 1;
 }
 
 .metric-sub {
-  margin-top: 8px;
-  font-size: 11.8px;
+  margin-top: 10px;
+  font-size: 12.5px;
   color: #888;
-  line-height: 1.25;
+  line-height: 1.35;
 }
 
 .metric-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -950,15 +950,16 @@ export default {
 
 /* =========================
    SCROLL AREAS
+   Fewer visible scrollbars, more breathing room
 ========================= */
 .card-scroll {
   overflow-y: auto;
   min-height: 0;
-  padding-right: 4px;
+  padding-right: 6px;
 }
 
 .today-scroll {
-  max-height: 120px;
+  max-height: 195px;
 }
 
 .activity-scroll {
@@ -966,19 +967,19 @@ export default {
 }
 
 .stock-scroll {
-  max-height: 215px;
+  max-height: 220px;
 }
 
 .online-scroll {
-  max-height: 185px;
+  max-height: 165px;
 }
 
 .card-scroll::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 
 .card-scroll::-webkit-scrollbar-thumb {
-  background: #eeeeea;
+  background: #e5e5df;
   border-radius: 999px;
 }
 
@@ -987,8 +988,8 @@ export default {
 }
 
 .dashboard-empty-line {
-  padding: 10px 0 4px;
-  font-size: 12.5px;
+  padding: 18px 0 6px;
+  font-size: 13px;
   color: #999;
   font-style: italic;
 }
@@ -1003,32 +1004,32 @@ export default {
 }
 
 .compact-table th {
-  padding: 8px 10px;
+  padding: 11px 12px;
   font-size: 10.5px;
-  font-weight: 800;
+  font-weight: 850;
   color: #8f8f8f;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.085em;
   border-bottom: 1px solid #eeeeea;
   text-align: left;
 }
 
 .compact-table td {
-  padding: 10px 10px;
-  font-size: 12.5px;
+  padding: 14px 12px;
+  font-size: 13px;
   color: #2a2a2a;
-  border-bottom: 1px solid #f3f3f0;
+  border-bottom: 1px solid #f2f2ee;
   vertical-align: middle;
 }
 
 .compact-table th:nth-child(1),
 .compact-table td:nth-child(1) {
-  width: 30%;
+  width: 31%;
 }
 
 .compact-table th:nth-child(2),
 .compact-table td:nth-child(2) {
-  width: 34%;
+  width: 33%;
 }
 
 .compact-table th:nth-child(3),
@@ -1046,25 +1047,24 @@ export default {
 }
 
 .item-name {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 13.5px;
+  font-weight: 750;
   color: #222;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .item-sub {
-  margin-top: 3px;
-  font-size: 11px;
+  margin-top: 4px;
+  font-size: 11.5px;
   color: #999;
   line-height: 1.25;
 }
 
-/* If status-pill is global, this just tightens it inside dashboard */
 .today-card .status-pill {
-  height: 22px;
-  padding: 0 9px;
+  height: 23px;
+  padding: 0 10px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 750;
 }
 
 /* =========================
@@ -1079,32 +1079,37 @@ export default {
 .quick-actions.compact {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 .qa-btn {
-  min-height: 64px;
-  padding: 10px 12px;
-  border-radius: 14px;
+  min-height: 74px;
+  padding: 14px;
+  border-radius: 16px;
   border: 1px solid #e8e8e3;
   background: #fbfbfa;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   text-align: left;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
 }
 
 .qa-btn:hover {
   background: #fff;
   border-color: #d8d8d2;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.035);
 }
 
 .qa-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
 
 .qa-btn:disabled {
@@ -1117,20 +1122,20 @@ export default {
   height: 15px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.6;
+  stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .qa-icon {
-  width: 27px;
-  height: 27px;
-  border-radius: 9px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .qa-green {
@@ -1154,17 +1159,17 @@ export default {
 }
 
 .qa-label {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 13.5px;
+  font-weight: 850;
   color: #222;
-  line-height: 1.15;
+  line-height: 1.18;
 }
 
 .qa-desc {
-  margin-top: 4px;
-  font-size: 11.2px;
+  margin-top: 5px;
+  font-size: 11.5px;
   color: #999;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 /* =========================
@@ -1173,13 +1178,13 @@ export default {
 .stock-list {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 11px;
 }
 
 .stock-item {
-  padding: 12px 13px;
+  padding: 14px;
   border: 1px solid #eeeeea;
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fff;
 }
 
@@ -1187,7 +1192,7 @@ export default {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
 }
 
 .stock-info {
@@ -1195,17 +1200,17 @@ export default {
 }
 
 .stock-name {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 13.5px;
+  font-weight: 850;
   color: #222;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .stock-min {
-  margin-top: 3px;
-  font-size: 11.5px;
+  margin-top: 4px;
+  font-size: 11.8px;
   color: #888;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .stock-right {
@@ -1215,8 +1220,8 @@ export default {
 }
 
 .stock-qty {
-  font-size: 12.5px;
-  font-weight: 800;
+  font-size: 12.8px;
+  font-weight: 850;
   color: #d24b4b;
   line-height: 1.2;
 }
@@ -1225,12 +1230,12 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 5px;
-  min-height: 20px;
-  padding: 2px 8px;
+  margin-top: 6px;
+  min-height: 21px;
+  padding: 2px 9px;
   border-radius: 999px;
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 750;
 }
 
 .badge-warn {
@@ -1244,8 +1249,8 @@ export default {
 }
 
 .stock-meter {
-  height: 3px;
-  margin-top: 9px;
+  height: 4px;
+  margin-top: 11px;
   border-radius: 999px;
   background: #ededeb;
   overflow: hidden;
@@ -1269,15 +1274,15 @@ export default {
   color: #2e7d32;
   background: #f0faf0;
   border: 1px solid #d8eddc;
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  padding: 9px 11px;
+  border-radius: 12px;
+  margin-bottom: 12px;
 }
 
 .online-request-list {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 10px;
 }
 
 .online-request-item {
@@ -1285,9 +1290,9 @@ export default {
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  padding: 12px;
+  padding: 14px;
   border: 1px solid #eeeeea;
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fff;
 }
 
@@ -1296,25 +1301,25 @@ export default {
 }
 
 .or-name {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 13.5px;
+  font-weight: 850;
   color: #222;
   line-height: 1.25;
 }
 
 .or-meta {
-  margin-top: 3px;
-  font-size: 11.5px;
+  margin-top: 4px;
+  font-size: 11.8px;
   color: #777;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .or-problem {
-  margin-top: 5px;
-  max-width: 230px;
-  font-size: 11.5px;
+  margin-top: 6px;
+  max-width: 240px;
+  font-size: 11.8px;
   color: #999;
-  line-height: 1.25;
+  line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1324,20 +1329,20 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 7px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .or-status {
-  height: 22px;
-  padding: 0 9px;
+  height: 23px;
+  padding: 0 10px;
   border-radius: 999px;
   background: #f2f2f0;
   color: #777;
   display: inline-flex;
   align-items: center;
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 750;
   text-transform: capitalize;
   white-space: nowrap;
 }
@@ -1347,9 +1352,9 @@ export default {
   background: #111;
   color: #fff;
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 7px 13px;
   font-size: 10.5px;
-  font-weight: 800;
+  font-weight: 850;
   cursor: pointer;
 }
 
@@ -1364,8 +1369,8 @@ export default {
 .activity-item {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 10px 0;
+  gap: 13px;
+  padding: 13px 0;
   border-bottom: 1px solid #f1f1ee;
 }
 
@@ -1377,7 +1382,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 5px;
+  padding-top: 6px;
   flex-shrink: 0;
 }
 
@@ -1405,9 +1410,9 @@ export default {
 
 .act-line {
   width: 1px;
-  min-height: 20px;
+  min-height: 24px;
   flex: 1;
-  margin-top: 5px;
+  margin-top: 6px;
   background: #eeeeea;
 }
 
@@ -1420,25 +1425,24 @@ export default {
 }
 
 .act-text {
-  font-size: 12.5px;
+  font-size: 13px;
   color: #444;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .act-bold {
-  font-weight: 700;
+  font-weight: 750;
   color: #151515;
 }
 
 .act-time {
-  margin-top: 3px;
-  font-size: 11px;
+  margin-top: 4px;
+  font-size: 11.5px;
   color: #999;
 }
 
 /* =========================
    OLD TABLE COMPATIBILITY
-   Keep this only if any old jobs-table remains.
 ========================= */
 .jobs-table {
   width: 100%;
@@ -1478,6 +1482,17 @@ export default {
 /* =========================
    RESPONSIVE
 ========================= */
+@media (max-width: 1280px) {
+  .dashboard-shell {
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 24px;
+  }
+
+  .main {
+    padding: 32px;
+  }
+}
+
 @media (max-width: 1200px) {
   .dashboard-shell {
     grid-template-columns: 1fr;
@@ -1499,28 +1514,34 @@ export default {
   .low-stock-card,
   .online-card {
     height: auto;
-    min-height: 190px;
+    min-height: 220px;
   }
 
   .today-scroll,
   .activity-scroll,
   .stock-scroll,
   .online-scroll {
-    max-height: 240px;
+    max-height: 260px;
   }
 }
 
 @media (max-width: 700px) {
   .main {
-    padding: 22px 16px;
+    padding: 24px 16px;
   }
 
   .dashboard-hero {
     flex-direction: column;
+    gap: 18px;
+    margin-bottom: 22px;
   }
 
   .hero-title {
-    font-size: 24px;
+    font-size: 26px;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
   }
 
   .hero-actions {
@@ -1528,9 +1549,19 @@ export default {
     justify-content: space-between;
   }
 
+  .dashboard-main-panel,
+  .dashboard-right-panel {
+    gap: 18px;
+  }
+
   .dashboard-metrics,
+  .dashboard-metrics.staff-metrics,
   .quick-actions.compact {
     grid-template-columns: 1fr;
+  }
+
+  .metric-card {
+    min-height: 105px;
   }
 }
 </style>
