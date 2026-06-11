@@ -244,12 +244,16 @@ export default {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 11px 0;
+  padding: 10px 0;
   border-bottom: 1px solid #252525;
-  color: #b0b0b0;
+  color: #bdbdbd;
   font-size: 13px;
   font-weight: 400;
   transition: color 0.15s;
+}
+
+.module-item span:last-child {
+  line-height: 1.35;
 }
 
 .module-item:hover {
