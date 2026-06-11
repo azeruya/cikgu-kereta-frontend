@@ -13,6 +13,14 @@
           </div>
         </div>
 
+        <div class="portal-card">
+          <div>
+            <span class="portal-label">Staff portal</span>
+            <p>Role-based access for workshop operations.</p>
+          </div>
+          <span class="portal-badge">Secure</span>
+        </div>
+
         <div class="module-list">
           <div class="module-item">
             <span class="module-icon">
@@ -191,7 +199,7 @@ export default {
   padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
 }
 
 .brand-top {
@@ -228,7 +236,7 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   border-top: 1px solid #252525;
 }
 
@@ -339,6 +347,44 @@ export default {
 .form-heading p {
   font-size: 13.5px;
   color: #888;
+}
+
+/* portal card */
+.portal-card {
+  padding: 14px;
+  background: linear-gradient(180deg, #202020, #1a1a1a);
+  border: 1px solid #2b2b2b;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.portal-label {
+  display: block;
+  font-size: 10px;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.portal-card p {
+  font-size: 12px;
+  color: #c8c8c8;
+  line-height: 1.45;
+}
+
+.portal-badge {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(76, 175, 80, 0.12);
+  color: #72c577;
+  border: 1px solid rgba(76, 175, 80, 0.22);
+  font-size: 10px;
+  font-weight: 700;
 }
 
 /* ── FIELDS ── */
