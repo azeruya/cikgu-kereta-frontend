@@ -274,7 +274,7 @@ export default {
   align-items: center;
   max-width: 1260px;
   margin: 0 auto;
-  transform: translateY(-20px);
+  transform: translateY(-15px);
 }
 
 /* LEFT FORM SIDE */

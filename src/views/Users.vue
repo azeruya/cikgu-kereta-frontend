@@ -13,12 +13,21 @@
         <div class="page-intro">
           <div class="page-title-row">
             <div class="page-title">Users</div>
-            <span class="page-chip">{{ users.length }} users</span>
+            <span class="page-chip">{{ filteredUsers.length }} users</span>
           </div>
           <div class="page-date">Manage staff and admin accounts for this branch</div>
         </div>
 
-        <button class="pill-btn primary" @click="openModal()">+ Add User</button>
+        <div class="page-actions">
+          <input
+            v-model.trim="search"
+            class="search-input"
+            type="text"
+            placeholder="Search user..."
+          />
+
+          <button class="pill-btn primary" @click="openModal()">+ Add User</button>
+        </div>
       </div>
 
       <Card>
@@ -28,7 +37,11 @@
 
         <div v-if="loading" class="empty-state">Loading users...</div>
 
-        <table v-else class="table">
+        <div v-else-if="filteredUsers.length === 0" class="empty-state">
+          No users found.
+        </div>
+
+        <table v-else class="table users-table">
           <thead>
             <tr>
               <th>Name</th>
@@ -40,17 +53,41 @@
           </thead>
 
           <tbody>
-            <tr v-for="user in users" :key="user.id">
-              <td>{{ user.name }}</td>
-              <td>{{ user.email }}</td>
+            <tr v-for="user in filteredUsers" :key="user.id">
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar" :class="user.role === 'admin' ? 'avatar-admin' : 'avatar-staff'">
+                    {{ getInitials(user.name) }}
+                  </div>
+
+                  <div class="user-main">
+                    <div class="user-name">
+                      {{ user.name }}
+                      <span v-if="user.id === currentUser?.id" class="self-badge">You</span>
+                    </div>
+                    <div class="user-sub">
+                      {{ user.role === "admin" ? "Administrator account" : "Staff account" }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <div class="email-text">{{ user.email }}</div>
+              </td>
+
               <td>
                 <span class="status-pill" :class="user.role === 'admin' ? 'sp-blue' : 'sp-gray'">
-                  {{ user.role }}
+                  {{ formatRole(user.role) }}
                 </span>
               </td>
-              <td>{{ formatDate(user.created_at) }}</td>
-              
-                <td class="right">
+
+              <td>
+                <span class="muted-date">{{ formatDate(user.created_at) }}</span>
+              </td>
+
+              <td class="right">
+                <div class="action-icon-group" @click.stop>
                   <div class="action-icon-group" @click.stop>
                     <button
                       class="icon-action"
@@ -214,6 +251,7 @@ export default {
       showDeleteModal: false,
       userToDelete: null,
       deletingUser: false,
+      search: "",
       form: {
         name: "",
         email: "",
@@ -230,6 +268,20 @@ export default {
       } catch {
         return null;
       }
+    },
+
+    filteredUsers() {
+      const q = this.search.toLowerCase().trim();
+
+      if (!q) return this.users;
+
+      return this.users.filter((user) => {
+        return (
+          user.name?.toLowerCase().includes(q) ||
+          user.email?.toLowerCase().includes(q) ||
+          user.role?.toLowerCase().includes(q)
+        );
+      });
     },
 
     menu() {
@@ -425,6 +477,22 @@ export default {
         sessionStorage.clear();
         this.$router.push("/login");
       }
+    },
+
+    getInitials(name) {
+    if (!name) return "U";
+
+      return name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join("");
+    },
+
+    formatRole(role) {
+      if (!role) return "-";
+      return role.charAt(0).toUpperCase() + role.slice(1);
     },
 
     formatDate(value) {
@@ -698,5 +766,139 @@ export default {
   border-radius: 999px;
   font-size: 11.5px;
   font-weight: 700;
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-input {
+  width: 280px;
+  height: 38px;
+  border: 1px solid #e5e5e2;
+  border-radius: 13px;
+  background: #fff;
+  padding: 0 14px;
+  font-size: 13px;
+  color: #222;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.search-input:focus {
+  border-color: #111;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.users-table td {
+  padding: 12px 5px;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid #e5e5e2;
+  background: #f2f2f0;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.user-avatar.avatar-admin {
+  background: #eef4ff;
+  border-color: #d8e7ff;
+  color: #2563eb;
+}
+
+.user-avatar.avatar-staff {
+  background: #f2f2f0;
+  border-color: #e4e4e0;
+  color: #666;
+}
+
+.user-main {
+  min-width: 0;
+}
+
+.user-name {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+  line-height: 1.2;
+}
+
+.user-sub {
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #999;
+}
+
+.self-badge {
+  height: 19px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #eef7e9;
+  color: #2f6b1f;
+  font-size: 10.5px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+}
+
+.email-text {
+  font-size: 13px;
+  color: #333;
+}
+
+.muted-date {
+  color: #555;
+  font-size: 13px;
+}
+
+.right {
+  text-align: right;
+}
+
+.action-icon-group {
+  justify-content: flex-start;
+}
+
+@media (max-width: 900px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .page-actions {
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .users-table {
+    min-width: 760px;
+  }
 }
 </style>
