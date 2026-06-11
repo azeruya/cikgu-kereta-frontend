@@ -179,10 +179,11 @@ export default {
 .login-panel {
   position: relative;
   z-index: 1;
-  width: min(880px, 100%);
-  min-height: 470px;
+  width: min(980px, 100%);
+  min-height: 520px;
   display: grid;
-  grid-template-columns: 430px 450px;
+  grid-template-columns: 1fr 1fr;
+  transform: translateY(-10px);
   background: #ffffff;
   border: 1px solid #e2e2de;
   border-radius: 20px;
@@ -193,7 +194,7 @@ export default {
 .brand-panel {
   background: #161616;
   color: #ffffff;
-  padding: 34px;
+  padding: 40px 38px;
   display: flex;
   flex-direction: column;
 }
@@ -294,7 +295,7 @@ export default {
 }
 
 .form-panel {
-  padding: 48px 54px;
+  padding: 56px 58px;
   display: flex;
   flex-direction: column;
   justify-content: center;
