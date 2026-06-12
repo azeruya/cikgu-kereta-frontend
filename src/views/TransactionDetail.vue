@@ -286,8 +286,11 @@
         </div>
 
         <div class="pdf-actions">
-          <button class="mini-btn" @click="closePdfPreview">Close</button>
-          <button class="pill-btn primary" @click="downloadDocument(currentDocType)">
+          <button class="pdf-close-btn" type="button" @click="closePdfPreview">
+            Close
+          </button>
+
+          <button class="pill-btn primary" type="button" @click="downloadDocument(currentDocType)">
             Download
           </button>
         </div>
@@ -927,6 +930,7 @@ export default {
   background: #f5f5f5;
 }
 
+/*
 .pdf-topbar {
   display: flex;
   align-items: center;
@@ -949,6 +953,55 @@ export default {
   margin-top: 12px;
   border-top: 1px solid #eeeeea;
   padding-top: 10px;
+}
+  */
+
+.pdf-topbar {
+  height: 58px;
+  padding: 0 16px 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #eeeeea;
+  background: #fff;
+}
+
+.pdf-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #111;
+}
+
+.pdf-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.pdf-close-btn {
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid #deded9;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #444;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.pdf-close-btn:hover {
+  background: #f5f5f2;
+  border-color: #d2d2cc;
+}
+
+.pdf-close-btn:active {
+  transform: scale(0.97);
 }
 
 .payment-title {
