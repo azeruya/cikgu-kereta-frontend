@@ -100,7 +100,7 @@
                   </span>
                 </td>
                 <td>
-                  <span :class="['empty-inline', customerStatusClass(cust)]">
+                  <span :class="['status-pill', customerStatusClass(cust)]">
                     {{ customerStatusLabel(cust) }}
                   </span>
                 </td>
