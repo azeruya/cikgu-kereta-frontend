@@ -44,9 +44,14 @@
               <div class="field-row">
                 <label>Password</label>
 
-                <button type="button" class="forgot fake-link" @click="forgotNotice = true">
+                <button
+                  type="button"
+                  class="forgot fake-link"
+                  @click="forgotNotice = true; accessNotice = false"
+                >
                   Forgot password?
                 </button>
+
               </div>
 
               <input
@@ -66,10 +71,20 @@
             </button>
           </form>
 
-          <p class="card-foot">
+          <div class="card-foot">
             No account?
             <!--<router-link to="/register">Request access</router-link>-->
-            <span class="request-note">Please contact the workshop admin.</span>
+            <button
+              type="button"
+              class="request-link fake-link"
+              @click="accessNotice = true; forgotNotice = false"
+            >
+              Request access
+            </button>
+          </div>
+
+          <p v-if="accessNotice" class="helper-notice access-notice">
+            Please contact the workshop admin to request an account.
           </p>
 
           <p v-if="error" class="error">{{ error }}</p>
@@ -177,6 +192,7 @@ export default {
       error: "",
       loading: false,
       forgotNotice: false,
+      accessNotice: false,
     };
   },
   methods: {
@@ -711,27 +727,72 @@ button:disabled {
   font-weight: 600;
 }
 
-.request-note {
-  font-weight: 700;
+.fake-link {
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  font: inherit;
+  cursor: pointer;
+  transform: none;
+}
+
+.fake-link:hover {
+  background: transparent;
+  transform: none;
+  text-decoration: underline;
+}
+
+.forgot {
+  font-size: 12px;
+  color: #777;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot:hover {
   color: #111;
 }
 
-.fake-link {
-  border: none;
-  background: transparent;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
+.card-foot {
+  margin-top: 17px;
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.request-link {
+  color: #111;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.request-link:hover {
+  color: #111;
 }
 
 .helper-notice {
-  margin: 8px 0 0;
-  padding: 9px 11px;
-  border-radius: 10px;
+  margin: 9px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
   background: #f5f5f2;
+  border: 1px solid #e8e8e3;
   color: #666;
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.access-notice {
+  text-align: center;
 }
 
 /* RESPONSIVE */
