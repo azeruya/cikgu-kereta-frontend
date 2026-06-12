@@ -43,9 +43,10 @@
             <div class="field">
               <div class="field-row">
                 <label>Password</label>
-                <router-link to="/forgot-password" class="forgot">
+
+                <button type="button" class="forgot fake-link" @click="forgotNotice = true">
                   Forgot password?
-                </router-link>
+                </button>
               </div>
 
               <input
@@ -54,6 +55,10 @@
                 placeholder="Enter your password"
                 autocomplete="current-password"
               />
+
+              <p v-if="forgotNotice" class="helper-notice">
+                Please contact the workshop admin to reset your password.
+              </p>
             </div>
 
             <button type="submit" :disabled="loading">
@@ -63,7 +68,8 @@
 
           <p class="card-foot">
             No account?
-            <router-link to="/register">Request access</router-link>
+            <!--<router-link to="/register">Request access</router-link>-->
+            <span class="request-note">Please contact the workshop admin.</span>
           </p>
 
           <p v-if="error" class="error">{{ error }}</p>
@@ -170,6 +176,7 @@ export default {
       password: "",
       error: "",
       loading: false,
+      forgotNotice: false,
     };
   },
   methods: {
@@ -702,6 +709,29 @@ button:disabled {
   font-size: 11px;
   color: #666;
   font-weight: 600;
+}
+
+.request-note {
+  font-weight: 700;
+  color: #111;
+}
+
+.fake-link {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.helper-notice {
+  margin: 8px 0 0;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: #f5f5f2;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 /* RESPONSIVE */
