@@ -984,7 +984,7 @@ export default {
   height: 38px;
   padding: 0 18px;
   border: 1px solid #deded9;
-  border-radius: 999px;
+  border-radius: 12px;
   background: #ffffff;
   color: #444;
   font-size: 13px;
