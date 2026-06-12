@@ -529,6 +529,32 @@ export default {
       }
     },
 
+    formatWhatsappNumber(phone) {
+      if (!phone) return "";
+
+      let cleaned = String(phone).trim();
+
+      // Remove spaces, dashes, brackets, plus
+      cleaned = cleaned.replace(/[\s\-()+]/g, "");
+
+      // 0060193804822 -> 60193804822
+      if (/^00601\d{8,9}$/.test(cleaned)) {
+        cleaned = cleaned.slice(2);
+      }
+
+      // Local Malaysia: 0193804822 -> 60193804822
+      if (/^01\d{8,9}$/.test(cleaned)) {
+        cleaned = "6" + cleaned;
+      }
+
+      // Excel removed leading 0: 193804822 -> 60193804822
+      if (/^1\d{8,9}$/.test(cleaned)) {
+        cleaned = "60" + cleaned;
+      }
+
+      return cleaned;
+    },
+
     openWhatsApp(trx) {
       const customerName = trx.customer?.name || "Customer";
       const plate = trx.vehicle?.license_plate || "-";
@@ -546,7 +572,7 @@ export default {
         `Hi ${customerName}, here is your ${docLabel} for vehicle ${plate}. ` +
         `Document No: ${docNo}. Total: RM ${amount}.`;
 
-      const phone = (trx.customer?.phone || "").replace(/[^\d]/g, "");
+      const phone = this.formatWhatsappNumber(trx.customer?.phone);
       if (!phone) {
         alert("Customer phone number not available.");
         return;

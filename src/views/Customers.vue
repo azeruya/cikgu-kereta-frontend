@@ -644,11 +644,37 @@ export default {
       }
     },
 
+    formatWhatsappNumber(phone) {
+      if (!phone) return "";
+
+      let cleaned = String(phone).trim();
+
+      cleaned = cleaned.replace(/[\s\-()+]/g, "");
+
+      // Local Malaysia number: 0193804822 -> 60193804822
+      if (cleaned.startsWith("0")) {
+        cleaned = "6" + cleaned;
+      }
+
+      // Excel removed leading 0: 193804822 -> 60193804822
+      if (/^1\d{8,9}$/.test(cleaned)) {
+        cleaned = "60" + cleaned;
+      }
+
+      // 0060193804822 -> 60193804822
+      if (/^00601\d{8,9}$/.test(cleaned)) {
+        cleaned = cleaned.slice(2);
+      }
+
+      return cleaned;
+    },
+
     openWhatsApp(customer) {
       const plate = customer.vehicles?.[0]?.license_plate || "-";
       const msg = `Hi ${customer.name}, regarding your vehicle (${plate}), feel free to contact us for updates.`;
 
-      const phone = (customer.phone || "").replace(/[^\d]/g, "");
+      const phone = this.formatWhatsappNumber(customer.phone);
+
       if (!phone) {
         alert("Customer phone number not available.");
         return;
