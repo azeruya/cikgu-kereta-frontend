@@ -770,6 +770,7 @@ export default {
 
         this.closeFormModal();
 
+        this.clearCustomersCache();
         await this.fetchCustomers(this.page);
 
         if (customerId) {
@@ -819,6 +820,8 @@ async confirmDeleteCustomer() {
     this.customerToDelete = null;
 
     this.closeDetail();
+
+    this.clearCustomersCache();
     await this.fetchCustomers(this.page);
   } catch (error) {
     console.error("Failed to delete customer:", error);
@@ -833,6 +836,14 @@ async confirmDeleteCustomer() {
     this.closeDetail();
     this.$router.push(`/transactions?customer_id=${customer.id}`);
     },
+  },
+
+  clearCustomersCache() {
+    Object.keys(sessionStorage).forEach((key) => {
+      if (key.startsWith("customers-")) {
+        sessionStorage.removeItem(key);
+      }
+    });
   },
 
   watch: {
