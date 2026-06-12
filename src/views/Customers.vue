@@ -455,6 +455,7 @@ export default {
       showDeleteModal: false,
       customerToDelete: null,
       deletingCustomer: false,
+      searchTimer: null,
     };
   },
 
@@ -487,24 +488,7 @@ export default {
     },
     
     filteredCustomers() {
-      let list = this.customers || [];
-
-      if (this.activeTab === "active") {
-        list = list.filter((c) => c.latest_transaction?.status === "invoice");
-      } else if (this.activeTab === "inactive") {
-        list = list.filter((c) => c.latest_transaction?.status !== "invoice");
-      }
-
-      if (this.searchQuery) {
-        const q = this.searchQuery.toLowerCase();
-        list = list.filter((c) =>
-          (c.name || "").toLowerCase().includes(q) ||
-          (c.phone || "").toLowerCase().includes(q) ||
-          (c.email || "").toLowerCase().includes(q)
-        );
-      }
-
-      return list;
+      return this.customers || [];
     }
   },
 
@@ -514,7 +498,7 @@ export default {
 
   methods: {
     getCacheKey(page = 1) {
-      return `customers-${this.activeTab}-page-${page}`;
+      return `customers-${this.activeTab}-${this.searchQuery || "all"}-page-${page}`;
     },
 
     async fetchCustomers(page = 1) {
@@ -533,7 +517,13 @@ export default {
       }
 
       try {
-        const res = await api.get(`/customers?page=${page}`);
+        const res = await api.get("/customers", {
+          params: {
+            page,
+            status: this.activeTab,
+            search: this.searchQuery || undefined,
+          },
+        });
 
         this.customers = res.data.data || [];
         this.page = res.data.current_page || 1;
@@ -839,9 +829,20 @@ async confirmDeleteCustomer() {
   }
 },
 
-    viewCustomerTransactions(customer) {
+  viewCustomerTransactions(customer) {
     this.closeDetail();
     this.$router.push(`/transactions?customer_id=${customer.id}`);
+    },
+  },
+
+  watch: {
+    searchQuery() {
+      clearTimeout(this.searchTimer);
+
+      this.searchTimer = setTimeout(() => {
+        this.page = 1;
+        this.fetchCustomers(1);
+      }, 350);
     },
   }
 };
