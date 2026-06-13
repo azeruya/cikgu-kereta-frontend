@@ -422,6 +422,22 @@ export default {
   align-items: center;
   padding: 0 8px;
   gap: 8px;
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar.collapsed .sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-foot {
+  padding: 14px 8px 16px;
+  border-top: none;
+}
+
+.sidebar.collapsed .branch-card {
+  display: none;
 }
 
 .sidebar.collapsed .nav-item {
@@ -435,11 +451,6 @@ export default {
 .sidebar.collapsed .nav-icon {
   width: 17px;
   height: 17px;
-}
-
-.sidebar.collapsed .sidebar-foot {
-  padding: 14px 8px 16px;
-  border-top: none;
 }
 
 .sidebar.collapsed .user-row {
@@ -460,10 +471,6 @@ export default {
 
 .sidebar.collapsed .avatar {
   background: rgba(255, 255, 255, 0.12);
-}
-
-.sidebar.collapsed .branch-card {
-  display: none;
 }
 
 .sidebar.collapsed .logout-icon-btn {
