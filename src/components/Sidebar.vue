@@ -439,6 +439,7 @@ export default {
 
 .sidebar.collapsed .sidebar-foot {
   padding: 14px 8px 16px;
+  border-top: none;
 }
 
 .sidebar.collapsed .user-row {
