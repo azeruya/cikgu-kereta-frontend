@@ -350,6 +350,7 @@ export default {
   height: 15px;
 }
 
+/* =========================
 .branch-card {
   margin-bottom: 10px;
   padding: 10px 11px;
@@ -374,6 +375,30 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+========================= */
+
+.branch-card {
+  margin-bottom: 10px;
+  padding: 11px 12px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.branch-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.38);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 5px;
+}
+
+.branch-name {
+  font-size: 12.5px;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* =========================
