@@ -119,12 +119,7 @@ export default {
     },
 
     branchName() {
-      return (
-        this.user?.branch?.name ||
-        this.user?.branch_name ||
-        this.user?.branch?.location ||
-        "Main Workshop"
-      );
+      return this.user?.branch?.name || "Main Workshop";
     },
   },
 };
