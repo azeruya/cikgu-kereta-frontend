@@ -54,6 +54,14 @@
     </div>
 
     <div class="sidebar-foot">
+
+      <div v-if="!collapsed" class="branch-card">
+        <div class="branch-label">Current branch</div>
+        <div class="branch-name">
+          {{ branchName }}
+        </div>
+      </div>
+
       <div class="user-row">
         <div class="avatar">{{ initials }}</div>
 
@@ -108,6 +116,15 @@ export default {
       return this.menu.filter(item => {
         return !["/reports", "/users"].includes(item.path);
       });
+    },
+
+    branchName() {
+      return (
+        this.user?.branch?.name ||
+        this.user?.branch_name ||
+        this.user?.branch?.location ||
+        "Main Workshop"
+      );
     },
   },
 };
@@ -338,6 +355,32 @@ export default {
   height: 15px;
 }
 
+.branch-card {
+  margin-bottom: 10px;
+  padding: 10px 11px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.branch-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.36);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.branch-name {
+  font-size: 12px;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.86);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* =========================
    COLLAPSED STATE
 ========================= */
@@ -396,6 +439,10 @@ export default {
 
 .sidebar.collapsed .avatar {
   background: rgba(255, 255, 255, 0.12);
+}
+
+.sidebar.collapsed .branch-card {
+  display: none;
 }
 
 .sidebar.collapsed .logout-icon-btn {
