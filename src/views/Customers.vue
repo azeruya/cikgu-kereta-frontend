@@ -918,12 +918,6 @@ async confirmDeleteCustomer() {
   line-height: 1.2;
 }
 
-/* Customer modal-specific only */
-.customer-info-list {
-  display: flex;
-  flex-direction: column;
-}
-
 /* Skeleton loading */
 .skeleton-line {
   height: 14px;

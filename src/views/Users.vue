@@ -88,7 +88,7 @@
 
               <td class="right">
                 <div class="icon-btn-group" @click.stop>
-                  <div class="icon-btn-group" @click.stop>
+                 
                     <button
                       class="icon-btn"
                       title="Edit user"
@@ -114,7 +114,7 @@
                         <path d="M14 11v6" />
                       </svg>
                     </button>
-                  </div>
+      
                 </div>
                 </td>
                 
@@ -508,24 +508,6 @@ export default {
 </script>
 
 <style scoped>
-.right {
-  text-align: right;
-}
-
-/* modal */
-.form-section {
-  border: 1px solid #eeeeee;
-  border-radius: 15px;
-  padding: 16px;
-  background: #fff;
-}
-
-.page-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .users-table td {
   padding: 12px 5px;
 }
@@ -590,15 +572,6 @@ export default {
 .email-text {
   font-size: 13px;
   color: #333;
-}
-
-.muted-date {
-  color: #555;
-  font-size: 13px;
-}
-
-.right {
-  text-align: right;
 }
 
 @media (max-width: 900px) {
