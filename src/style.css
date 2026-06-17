@@ -1035,21 +1035,18 @@ textarea {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.form-field,
-.field {
+.form-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-width: 0;
 }
 
-.form-field.full,
-.field.full {
+.form-field.full {
   grid-column: 1 / -1;
 }
 
-.form-field label,
-.field label {
+.form-field label {
   font-size: 11px;
   font-weight: 700;
   color: #777;
@@ -1057,10 +1054,7 @@ textarea {
 
 .form-field input,
 .form-field select,
-.form-field textarea,
-.field input,
-.field select,
-.field textarea {
+.form-field textarea {
   width: 100%;
   border: 1px solid #e5e5e2;
   border-radius: 12px;
@@ -1073,15 +1067,12 @@ textarea {
 }
 
 .form-field input,
-.form-field select,
-.field input,
-.field select {
+.form-field select {
   height: 40px;
   padding: 0 13px;
 }
 
-.form-field textarea,
-.field textarea {
+.form-field textarea {
   min-height: 88px;
   padding: 11px 13px;
   resize: vertical;
@@ -1089,18 +1080,13 @@ textarea {
 }
 
 .form-field input::placeholder,
-.form-field textarea::placeholder,
-.field input::placeholder,
-.field textarea::placeholder {
+.form-field textarea::placeholder {
   color: #999;
 }
 
 .form-field input:focus,
 .form-field select:focus,
-.form-field textarea:focus,
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
+.form-field textarea:focus {
   border-color: #cfcfca;
   background: #fff;
 }
@@ -1128,16 +1114,14 @@ textarea {
 ================================ */
 
 .form-section,
-.form-subsection,
-.vehicle-form-box {
+.form-subsection {
   border: 1px solid #eeeeee;
   border-radius: 15px;
   padding: 16px;
   background: #ffffff;
 }
 
-.form-subsection,
-.vehicle-form-box {
+.form-subsection {
   margin-top: 18px;
   padding-top: 16px;
   border-top: 1px solid #eeeeee;
@@ -1165,7 +1149,6 @@ textarea {
 
 .form-actions,
 .action-row,
-.page-form-actions,
 .page-bottom-actions {
   display: flex;
   justify-content: flex-end;
@@ -1173,8 +1156,7 @@ textarea {
   gap: 10px;
 }
 
-.page-bottom-actions,
-.page-form-actions {
+.page-bottom-actions {
   margin-top: 22px;
 }
 
@@ -1195,8 +1177,7 @@ textarea {
    FILE UPLOAD
 ================================ */
 
-.file-upload,
-.upload-field {
+.file-upload {
   height: 40px;
   border: 1px solid #e5e5e2;
   border-radius: 12px;
@@ -1207,13 +1188,11 @@ textarea {
   cursor: pointer;
 }
 
-.file-upload input,
-.upload-field input {
+.file-upload input {
   display: none;
 }
 
-.file-upload-button,
-.upload-button {
+.file-upload-button {
   height: 100%;
   padding: 0 14px;
   border-right: 1px solid #e5e5e2;
@@ -1225,8 +1204,7 @@ textarea {
   background: #fafafa;
 }
 
-.file-upload-name,
-.upload-name {
+.file-upload-name {
   flex: 1;
   min-width: 0;
   padding: 0 12px;
@@ -1259,8 +1237,7 @@ textarea {
   accent-color: #111;
 }
 
-.toggle-card,
-.generic-toggle-card {
+.toggle-card {
   width: 100%;
   min-height: 58px;
   padding: 12px 14px;
@@ -1274,8 +1251,7 @@ textarea {
   cursor: pointer;
 }
 
-.toggle-content,
-.toggle-left {
+.toggle-content {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1294,8 +1270,7 @@ textarea {
   line-height: 1.35;
 }
 
-.toggle-badge,
-.toggle-status {
+.toggle-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;

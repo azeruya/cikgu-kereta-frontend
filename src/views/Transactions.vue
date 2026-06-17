@@ -673,12 +673,6 @@ export default {
   margin-top: 14px;
 }
 
-.section-title {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 8px;
-}
-
 .job-item {
   display: flex;
   justify-content: space-between;
@@ -852,15 +846,6 @@ export default {
   background: #fff;
 }
 
-.section-title {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #444;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 12px;
-}
-
 .payment-summary-box {
   display: flex;
   justify-content: space-between;
@@ -882,43 +867,6 @@ export default {
   font-size: 14px;
   font-weight: 800;
   color: #222;
-}
-
-.payment-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 18px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.field label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #777;
-}
-
-.field input,
-.field select {
-  width: 100%;
-  height: 40px;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  background: #fff;
-  font-size: 13px;
-  color: #222;
-  outline: none;
-  padding: 0 13px;
-  box-sizing: border-box;
-}
-
-.field input:focus,
-.field select:focus {
-  border-color: #111;
 }
 
 .modal-actions.form-actions {

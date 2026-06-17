@@ -332,7 +332,7 @@
             </div>
           </div>
 
-          <div class="action-row">
+          <div class="form-actions">
             <button class="btn btn-secondary btn-pill" type="button" @click="resetForm">
               Reset
             </button>
@@ -1005,7 +1005,7 @@ label {
   padding-bottom: 12px;
 }
 
-.service-item-layout .field input {
+.service-item-layout .form-field input {
   height: 36px;
 }
 

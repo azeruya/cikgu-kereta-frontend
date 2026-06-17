@@ -1630,31 +1630,6 @@ export default {
   white-space: nowrap;
 }
 
-.field input[type="file"] {
-  padding: 8px 10px;
-  height: 38px;
-  font-size: 12px;
-  color: #666;
-}
-
-.field input[type="file"]::file-selector-button {
-  height: 24px;
-  margin-right: 10px;
-  border: 1px solid #dedede;
-  border-radius: 8px;
-  background: #f8f8f7;
-  color: #333;
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.field-hint {
-  font-size: 11.5px;
-  color: #888;
-  margin-top: 2px;
-}
-
 .receipt-chip {
   grid-column: 1 / -1;
   margin-top: 2px;

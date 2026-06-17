@@ -170,7 +170,7 @@
         </Card>
         </div>
 
-        <div class="page-bottom-actions form-actions">
+        <div class="form-actions">
           <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
             Cancel
           </router-link>
@@ -454,8 +454,7 @@ export default {
 }
 
 /* Page-specific layout only */
-.form-page-grid,
-.part-form-grid {
+.form-page-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 18px;
@@ -467,14 +466,6 @@ export default {
   width: 100%;
   max-width: 1180px;
   margin-top: 18px;
-}
-
-.page-bottom-actions,
-.page-form-actions {
-  width: 100%;
-  max-width: 1180px;
-  margin-top: 16px;
-  padding: 16px 0 0;
 }
 
 /* Compatibility empty state */

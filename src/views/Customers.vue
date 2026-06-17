@@ -340,7 +340,7 @@
             </div>
           </div>
 
-          <div v-if="!editingCustomerId" class="vehicle-form-box">
+          <div v-if="!editingCustomerId" class="form-subsection">
             <div class="section-title">Vehicle Information</div>
 
             <label class="checkbox-row">
@@ -923,13 +923,6 @@ async confirmDeleteCustomer() {
   margin-top: 14px;
 }
 
-
-.vehicle-form-box {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #ecece8;
-}
-
 .checkbox-row {
   display: flex;
   align-items: center;
@@ -1374,12 +1367,6 @@ async confirmDeleteCustomer() {
 .checkbox-row input {
   width: 14px;
   height: 14px;
-}
-
-.field label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #444;
 }
 
 @media (max-width: 900px) {
