@@ -332,7 +332,7 @@
             </div>
           </div>
 
-          <div class="page-bottom actions">
+          <div class="page-bottom-actions form-actions">
             <button class="btn btn-secondary btn-pill" type="button" @click="resetForm">
               Reset
             </button>
