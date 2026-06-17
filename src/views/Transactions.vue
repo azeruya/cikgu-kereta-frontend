@@ -172,7 +172,7 @@
           <div class="modal-card large form-modal-card">
             <div class="modal-header">
               <span>Record Payment</span>
-              <button type="button" class="mini-btn" @click="closePaymentModal">✕</button>
+              <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closePaymentModal">✕</button>
             </div>
 
             <div class="modal-body form-modal-body">
@@ -232,7 +232,7 @@
               <button type="button" @click="closePaymentModal">Cancel</button>
               <button
                 type="button"
-                class="primary"
+                class="primary btn-primary"
                 :disabled="actionLoadingId === paymentTransactionId"
                 @click="submitPayment"
               >

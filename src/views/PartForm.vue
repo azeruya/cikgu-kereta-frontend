@@ -139,7 +139,7 @@
             >
               <div class="compatibility-top">
                 <div class="item-name">Compatibility {{ index + 1 }}</div>
-                <button class="mini-btn" type="button" @click="removeCompatibility(index)">
+                <button class="mini-btn btn btn-sm btn-ghost" type="button" @click="removeCompatibility(index)">
                   Remove
                 </button>
               </div>
@@ -176,7 +176,7 @@
   </router-link>
 
   <button
-    class="pill-btn primary"
+    class="pill-btn primary btn btn-primary btn-pill"
     type="button"
     :disabled="saving || !canSubmit"
     @click="submitForm"

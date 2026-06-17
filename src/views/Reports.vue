@@ -59,11 +59,11 @@
             <option value="partial">Partial</option>
           </select>
 
-          <button class="filter-btn primary" type="button" @click="applyFilters">
+          <button class="filter-btn primary btn btn-primary" type="button" @click="applyFilters">
             Apply
           </button>
 
-          <button class="filter-btn" type="button" @click="clearFilters">
+          <button class="filter-btn btn btn-secondary" type="button" @click="clearFilters">
             Reset
           </button>
         </div>

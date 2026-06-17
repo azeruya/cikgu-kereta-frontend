@@ -30,7 +30,7 @@
           <button class="pill-btn" type="button" @click="exportCsv">
             Export CSV
           </button>
-          <button class="pill-btn primary" type="button" @click="openFormModal()">
+          <button class="pill-btn primary btn btn-primary btn-pill" type="button" @click="openFormModal()">
             + Add Expense
           </button>
         </div>
@@ -169,7 +169,7 @@
             <div v-else class="empty-state">
               No expenses found.
               <div style="margin-top:10px;">
-                <button class="pill-btn primary" @click="openFormModal()">+ Add Expense</button>
+                <button class="pill-btn primary btn btn-primary btn-pill" @click="openFormModal()">+ Add Expense</button>
               </div>
             </div>
 
@@ -270,7 +270,7 @@
         <div v-if="detailLoading" class="modal-card large">
           <div class="modal-header">
             <span>Expense Detail</span>
-            <button class="mini-btn" @click="closeDetail">✕</button>
+            <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
           </div>
 
           <div class="modal-body modal-detail-body">
@@ -289,7 +289,7 @@
       <div v-else class="modal-card large">
       <div class="modal-header">
         <span>{{ activeExpense.category || "Expense Detail" }}</span>
-        <button class="mini-btn" @click="closeDetail">✕</button>
+        <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
       </div>
 
       <div class="modal-body modal-detail-body">
@@ -337,7 +337,7 @@
         <div class="left-actions">
           <button @click="openFormModal(activeExpense)">Edit</button>
           <button
-            class="primary"
+            class="primary btn-primary"
             :disabled="!activeExpense.receipt_file"
             @click="viewReceipt(activeExpense)"
           >
@@ -345,7 +345,7 @@
           </button>
         </div>
 
-        <button class="danger-light" @click="openDeleteModal(activeExpense)">
+        <button class="danger-light btn btn-danger-light" @click="openDeleteModal(activeExpense)">
           Delete
         </button>
       </div>
@@ -398,7 +398,7 @@
             <div class="modal-card large form-modal-card">
               <div class="modal-header">
                 <span>{{ editingExpenseId ? "Edit Expense" : "Add Expense" }}</span>
-                <button type="button" class="mini-btn" @click="closeFormModal">✕</button>
+                <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
               </div>
 
               <div class="modal-body form-modal-body">
@@ -496,7 +496,7 @@
                 <button type="button" @click="closeFormModal">Cancel</button>
                 <button
                   type="button"
-                  class="primary"
+                  class="primary btn-primary"
                   :disabled="savingForm"
                   @click="submitExpense"
                 >

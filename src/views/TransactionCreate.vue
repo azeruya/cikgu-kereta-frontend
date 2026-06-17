@@ -192,7 +192,7 @@
           </div>
         </div>
 
-        <button type="button" class="mini-btn" @click="removeItem(index)">
+        <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="removeItem(index)">
           Remove
         </button>
       </div>
@@ -338,7 +338,7 @@
             </button>
 
             <button
-              class="pill-btn primary"
+              class="pill-btn primary btn btn-primary btn-pill"
               type="button"
               :disabled="saving || !canSubmit"
               @click="submitTransaction"

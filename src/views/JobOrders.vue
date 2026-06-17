@@ -59,8 +59,8 @@
 
               <td>
                 <div class="action-group">
-                  <button class="mini-btn" @click="openDetail(job)">View</button>
-                  <button class="mini-btn" @click="openWhatsApp(job)">WhatsApp</button>
+                  <button class="mini-btn btn btn-sm btn-ghost" @click="openDetail(job)">View</button>
+                  <button class="mini-btn btn btn-sm btn-ghost" @click="openWhatsApp(job)">WhatsApp</button>
                   <button class="mini-btn success" @click="markPaid(job.id)">
                     Add Payment
                   </button>
@@ -133,7 +133,7 @@
 
           <div class="modal-actions">
             <button @click="openWhatsApp(activeJob)">WhatsApp</button>
-            <button class="primary" @click="markPaid(activeJob.id)">
+            <button class="primary btn-primary" @click="markPaid(activeJob.id)">
               Add Payment
             </button>
           </div>

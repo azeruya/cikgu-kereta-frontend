@@ -26,7 +26,7 @@
 
           <button
             v-if="transaction?.status === 'quotation'"
-            class="pill-btn primary"
+            class="pill-btn primary btn btn-primary btn-pill"
             :disabled="actionLoading"
             @click="confirmQuotation"
           >
@@ -35,7 +35,7 @@
 
           <button
             v-if="transaction?.status === 'invoice' && balanceDue > 0"
-            class="pill-btn primary"
+            class="pill-btn primary btn btn-primary btn-pill"
             :disabled="actionLoading"
             @click="openPaymentModal"
           >
@@ -158,7 +158,7 @@
 
               <button
                 v-if="transaction.status === 'quotation'"
-                class="pill-btn primary"
+                class="pill-btn primary btn btn-primary btn-pill"
                 :disabled="actionLoading"
                 @click="confirmQuotation"
               >
@@ -167,7 +167,7 @@
 
               <button
                 v-if="transaction.status === 'invoice'"
-                class="pill-btn primary"
+                class="pill-btn primary btn btn-primary btn-pill"
                 :disabled="actionLoading"
                 @click="openPaymentModal"
               >
@@ -290,7 +290,7 @@
             Close
           </button>
 
-          <button class="pill-btn primary" type="button" @click="downloadDocument(currentDocType)">
+          <button class="pill-btn primary btn btn-primary btn-pill" type="button" @click="downloadDocument(currentDocType)">
             Download
           </button>
         </div>
@@ -306,7 +306,7 @@
           <div class="modal-card large">
             <div class="modal-header">
               <span>Record Payment</span>
-              <button type="button" class="mini-btn" @click="closePaymentModal">✕</button>
+              <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closePaymentModal">✕</button>
             </div>
 
             <div class="modal-body">
@@ -358,7 +358,7 @@
               <button type="button" @click="closePaymentModal">Cancel</button>
               <button
                 type="button"
-                class="primary"
+                class="primary btn-primary"
                 :disabled="actionLoading"
                 @click="submitPayment"
               >

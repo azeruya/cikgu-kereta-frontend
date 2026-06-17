@@ -41,7 +41,7 @@
         >
           {{ exporting ? "Exporting..." : "Export" }}
         </button>
-        <button class="pill-btn primary" type="button" @click="openFormModal()">
+        <button class="pill-btn primary btn btn-primary btn-pill" type="button" @click="openFormModal()">
             + Add Customer
         </button>
         </div>
@@ -125,7 +125,7 @@
         <div v-if="detailLoading" class="modal-card large">
   <div class="modal-header">
     <span>Customer Details</span>
-    <button class="mini-btn" @click="closeDetail">✕</button>
+    <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
   </div>
 
   <div class="modal-body">
@@ -144,7 +144,7 @@
         <div v-else class="modal-card large">
           <div class="modal-header">
             <span>{{ activeCustomer.name }}</span>
-            <button class="mini-btn" @click="closeDetail">✕</button>
+            <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
           </div>
 
           <div class="modal-body modal-detail-body">
@@ -244,12 +244,12 @@
             <div class="left-actions">
               <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
               <button @click="openFormModal(activeCustomer)">Edit</button>
-              <button class="primary" @click="viewCustomerTransactions(activeCustomer)">
+              <button class="primary btn-primary" @click="viewCustomerTransactions(activeCustomer)">
                 View Transactions
               </button>
             </div>
 
-          <button class="danger-light" @click="openDeleteModal(activeCustomer)">
+          <button class="danger-light btn btn-danger-light" @click="openDeleteModal(activeCustomer)">
             Delete
           </button>
           </div>
@@ -310,7 +310,7 @@
     <div class="modal-card large">
       <div class="modal-header">
         <span>{{ editingCustomerId ? "Edit Customer" : "Add Customer" }}</span>
-        <button type="button" class="mini-btn" @click="closeFormModal">✕</button>
+        <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
       </div>
 
       <div class="modal-body">
@@ -398,7 +398,7 @@
         <button type="button" @click="closeFormModal">Cancel</button>
         <button
           type="button"
-          class="primary"
+          class="primary btn-primary"
           :disabled="savingForm"
           @click="submitCustomer"
         >
