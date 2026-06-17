@@ -87,7 +87,7 @@
                   <td>{{ formatDate(expense.expense_date) }}</td>
 
                   <td>
-                    <span class="badge" :class="categoryClass(expense.category)">
+                    <span class="badge" :class="categoryBadgeClass(expense.category)">
                       {{ expense.category || "-" }}
                     </span>
                   </td>
@@ -254,10 +254,11 @@
                 class="category-row"
               >
               <div class="category-name-wrap">
-                <span class="dot-indicator" :class="categoryDotClass(row.category)"></span>
-                <span class="item-name">{{ row.category }}</span>
+                  <span class="dot-indicator" :class="categoryDotClass(row.category)"></span>
+                  <span class="item-name">{{ row.category }}</span>
+                </div>
+                <div class="job-price">RM {{ formatMoney(row.total) }}</div>
               </div>
-              <div class="job-price">RM {{ formatMoney(row.total) }}</div>
             </div>
           </Card>
         </div>
