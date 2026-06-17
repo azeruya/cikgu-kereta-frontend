@@ -509,8 +509,8 @@ export default {
 
 <style scoped>
 .users-table td {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .users-table th:last-child {
@@ -520,21 +520,21 @@ export default {
 .user-cell {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
 }
 
 .user-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: #f3f4f6;
   color: #4b5563;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 10.5px;
+  font-weight: 850;
   flex-shrink: 0;
 }
 
@@ -558,20 +558,20 @@ export default {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 13.5px;
-  font-weight: 750;
+  font-size: 12.8px;
+  font-weight: 780;
   color: var(--text);
   line-height: 1.2;
 }
 
 .user-sub {
-  margin-top: 4px;
-  font-size: 12px;
+  margin-top: 3px;
+  font-size: 11.3px;
   color: var(--text-muted);
 }
 
 .email-text {
-  font-size: 13.5px;
+  font-size: 12.8px;
   color: var(--text-soft);
 }
 
