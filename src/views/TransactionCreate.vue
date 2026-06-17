@@ -313,7 +313,7 @@
           <div class="summary-box">
             <div class="summary-box-row">
               <span>Subtotal</span>
-              <span>RM {{ formatMoney(subtotal) }}</span>
+              <strong>RM {{ formatMoney(subtotal) }}</strong>
             </div>
 
             <div class="form-field">
@@ -328,7 +328,7 @@
 
             <div class="summary-box-row summary-box-total">
               <span>Total</span>
-              <span>RM {{ formatMoney(totalAfterDiscount) }}</span>
+              <strong>RM {{ formatMoney(totalAfterDiscount) }}</strong>
             </div>
           </div>
 
@@ -744,17 +744,6 @@ export default {
   align-self: start;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.item-grid {
-  margin-top: 10px;
-  gap: 10px;
-}
-
 .vehicle-summary {
   margin-top: 14px;
   padding: 12px;
@@ -795,7 +784,7 @@ export default {
 
 .part-name {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 700;
   color: #111;
 }
 
@@ -807,7 +796,7 @@ export default {
 
 .part-price {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: #111;
   white-space: nowrap;
 }
@@ -835,7 +824,7 @@ export default {
 
 .item-title {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: #111;
 }
 
@@ -874,12 +863,6 @@ export default {
   line-height: 1.45;
 }
 
-.error-text {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #e53935;
-}
-
 .clean-item-top {
   margin-bottom: 10px;
 }
@@ -892,82 +875,12 @@ export default {
   margin-top: 8px;
 }
 
-.compact-inputs {
-  display: grid;
-  grid-template-columns: 90px 140px 1fr 130px;
-  gap: 12px;
-  align-items: end;
-}
-
-.compact-field input,
-.compact-note input {
-  height: 38px;
-}
-
-.compact-total {
-  height: 38px;
-  border-left: 1px solid #e9e9e6;
-  padding-left: 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-}
-
-.compact-total span {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.compact-total strong {
-  font-size: 16px;
-  font-weight: 600;
-}
-
 .service-item-layout {
   margin-top: 6px;
 }
 
-.item-total {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.item-total span {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #777;
-}
-
-.item-total strong {
-  font-size: 15px;
-  font-weight: 600;
-  color: #111;
-}
-
-.item-sub {
-  font-size: 11px;
-  color: #888;
-  margin-top: 2px;
-}
-
-label {
-  font-size: 11px;
-  color: #999;
-}
-
 .part-card {
   background: #fcfcfb;
-}
-
-.compact-inputs {
-  grid-template-columns: 90px 140px minmax(220px, 1fr) 150px;
 }
 
 .service-card {
@@ -980,7 +893,6 @@ label {
   height: 36px;
 }
 
-/* flow steps */
 .flow-steps {
   display: inline-flex;
   align-items: center;
@@ -1018,10 +930,6 @@ label {
   font-weight: 800;
 }
 
-.flow-text {
-  padding-right: 2px;
-}
-
 .flow-step.active {
   color: #111;
 }
@@ -1040,17 +948,11 @@ label {
   background: #eef7e9;
   border-color: #cfe8c5;
   color: #2f7d32;
-}
-
-.flow-step.done .flow-number::before {
-  content: "✓";
-}
-
-.flow-step.done .flow-number {
   font-size: 0;
 }
 
 .flow-step.done .flow-number::before {
+  content: "✓";
   font-size: 12px;
   font-weight: 900;
 }
@@ -1089,31 +991,14 @@ label {
   padding-right: 4px;
 }
 
-
-@media (max-width: 1000px) {
-  .compact-inputs {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .compact-note {
-    grid-column: 1 / -1;
-  }
-
-  .compact-total {
-    grid-column: 1 / -1;
-    border-left: none;
-    border-top: 1px solid #e9e9e6;
-    padding-left: 0;
-    padding-top: 12px;
-    align-items: flex-start;
-  }
-}
-
 @media (max-width: 1100px) {
   .create-grid,
-  .bottom-grid,
-  .form-grid {
+  .bottom-grid {
     grid-template-columns: 1fr;
+  }
+
+  .bottom-grid > :last-child {
+    position: static;
   }
 }
 </style>
