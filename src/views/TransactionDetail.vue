@@ -20,7 +20,7 @@
         </div>
 
         <div class="top-right">
-          <router-link to="/transactions" class="pill-btn link-btn">
+          <router-link to="/transactions" class="pill-btn btn btn-secondary btn-pill link-btn">
             Back
           </router-link>
 

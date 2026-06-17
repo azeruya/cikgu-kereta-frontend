@@ -20,7 +20,7 @@
         </div>
 
         <div class="top-right">
-          <router-link to="/inventory" class="pill-btn link-btn">
+          <router-link to="/inventory" class="pill-btn btn btn-secondary btn-pill link-btn">
             Back
           </router-link>
         </div>
@@ -171,7 +171,7 @@
         </div>
 
         <div class="page-form-actions">
-  <router-link to="/inventory" class="pill-btn link-btn">
+  <router-link to="/inventory" class="pill-btn btn btn-secondary btn-pill link-btn">
     Cancel
   </router-link>
 
