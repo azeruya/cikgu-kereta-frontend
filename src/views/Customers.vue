@@ -149,40 +149,40 @@
             </div>
 
             <div class="modal-body modal-detail-body">
-            <!-- CUSTOMER INFO -->
-            <div class="detail-section customer-info-section">
-            <div class="section-title">Customer Information</div>
+              <!-- CUSTOMER INFO -->
+              <div class="detail-section customer-info-section">
+              <div class="section-title">Customer Information</div>
 
-            <div class="customer-info-list">
-              <div class="info-row">
-                <div class="info-item">
-                  <span class="info-label">Phone</span>
-                  <span class="info-value">{{ activeCustomer.phone || "-" }}</span>
-                </div>
+              <div class="customer-info-list">
+                <div class="info-row">
+                  <div class="info-item">
+                    <span class="info-label">Phone</span>
+                    <span class="info-value">{{ activeCustomer.phone || "-" }}</span>
+                  </div>
 
-                <div class="info-item">
-                  <span class="info-label">Email</span>
-                  <span class="info-value">{{ activeCustomer.email || "-" }}</span>
-                </div>
-            
-                <div class="info-item">
-                  <span class="info-label">Address</span>
-                  <span class="info-value">{{ activeCustomer.address || "-" }}</span>
-                </div>
+                  <div class="info-item">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">{{ activeCustomer.email || "-" }}</span>
+                  </div>
+              
+                  <div class="info-item">
+                    <span class="info-label">Address</span>
+                    <span class="info-value">{{ activeCustomer.address || "-" }}</span>
+                  </div>
 
-                <div class="info-item">
-                  <span class="info-label">Total Visits</span>
-                  <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
-                </div>
+                  <div class="info-item">
+                    <span class="info-label">Total Visits</span>
+                    <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
+                  </div>
 
-                <div class="info-item">
-                  <span class="info-label">Total Spent</span>
-                  <span class="info-value">
-                    RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
-                  </span>
+                  <div class="info-item">
+                    <span class="info-label">Total Spent</span>
+                    <span class="info-value">
+                      RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
           </div>
 
             <!-- VEHICLES -->
@@ -239,20 +239,20 @@
                 No recent transactions
               </div>
             </div>
-    </div>  
+            </div>  
 
-            <div class="modal-actions split">
+            <div class="modal-footer split">
               <div class="left-actions">
-                <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
-                <button @click="openFormModal(activeCustomer)">Edit</button>
-                <button class="btn-primary" @click="viewCustomerTransactions(activeCustomer)">
+                <button @click="openWhatsApp(activeCustomer)" class="btn btn-secondary btn-pill">WhatsApp</button>
+                <button @click="openFormModal(activeCustomer)" class="btn btn-secondary btn-pill">Edit</button>
+                <button class="btn btn-primary btn-pill" @click="viewCustomerTransactions(activeCustomer)">
                   View Transactions
                 </button>
               </div>
 
-            <button class="btn btn-danger-light" @click="openDeleteModal(activeCustomer)">
-              Delete
-            </button>
+              <button class="btn btn-danger-light btn-pill" @click="openDeleteModal(activeCustomer)">
+                Delete
+              </button>
             </div>
           </div>
         </div>
@@ -1218,92 +1218,6 @@ async confirmDeleteCustomer() {
   font-size: 12.5px;
   font-weight: 700;
   white-space: nowrap;
-}
-
-/* delete modal */
-.delete-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  background: rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(1.5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.delete-modal-card {
-  width: min(360px, calc(100vw - 32px));
-  background: #fff;
-  border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
-  text-align: center;
-}
-
-.delete-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  background: #fff1f0;
-  color: #b42318;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 12px;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.delete-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #171717;
-  margin-bottom: 8px;
-}
-
-.delete-message {
-  font-size: 13px;
-  line-height: 1.5;
-  color: #666;
-  margin-bottom: 20px;
-}
-
-.delete-message strong {
-  color: #222;
-  font-weight: 700;
-}
-
-.delete-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.delete-actions button {
-  flex: 1;
-  height: 38px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.delete-cancel {
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  color: #333;
-}
-
-.delete-confirm {
-  border: 1px solid #b42318;
-  background: #b42318;
-  color: #fff;
-}
-
-.delete-actions button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
 }
 
 .empty-inline {
