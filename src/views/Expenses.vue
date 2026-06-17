@@ -345,7 +345,7 @@
           </button>
         </div>
 
-        <button class="danger-light btn btn-danger-light" @click="openDeleteModal(activeExpense)">
+        <button class="btn btn-danger-light" @click="openDeleteModal(activeExpense)">
           Delete
         </button>
       </div>
@@ -1273,10 +1273,7 @@ export default {
   border-top: 1px solid #eeeeee;
 }
 
-.modal-actions .danger-light {
-  min-width: 96px;
-  max-width: 110px;
-}
+
 
 .left-actions {
   display: flex;
@@ -1301,13 +1298,6 @@ export default {
   background: #111;
   color: #fff;
   border-color: #111;
-}
-
-.modal-actions button.danger-light {
-  min-width: 82px;
-  color: #b42318;
-  border-color: #f1b8b2;
-  background: #fff;
 }
 
 /* category card */

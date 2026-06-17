@@ -59,11 +59,11 @@
             <option value="partial">Partial</option>
           </select>
 
-          <button class="filter-btn primary btn btn-primary" type="button" @click="applyFilters">
+          <button class="btn btn-primary" type="button" @click="applyFilters">
             Apply
           </button>
 
-          <button class="filter-btn btn btn-secondary" type="button" @click="clearFilters">
+          <button class="btn btn-secondary" type="button" @click="clearFilters">
             Reset
           </button>
         </div>
@@ -915,32 +915,6 @@ export default {
 .report-filters input:focus,
 .report-filters select:focus {
   border-color: #111;
-}
-
-.filter-btn {
-  height: 35px;
-  padding: 0 14px;
-  border-radius: 11px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  color: #333;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.filter-btn.primary {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-
-.filter-btn:hover {
-  background: #f8f8f7;
-}
-
-.filter-btn.primary:hover {
-  background: #000;
 }
 
 /* Main report layout */

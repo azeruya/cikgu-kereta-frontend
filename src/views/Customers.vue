@@ -249,7 +249,7 @@
               </button>
             </div>
 
-          <button class="danger-light btn btn-danger-light" @click="openDeleteModal(activeCustomer)">
+          <button class="btn btn-danger-light" @click="openDeleteModal(activeCustomer)">
             Delete
           </button>
           </div>
@@ -1096,13 +1096,6 @@ async confirmDeleteCustomer() {
   background: #111;
   color: #fff;
   border-color: #111;
-}
-
-.modal-actions button.danger-light {
-  min-width: 92px;
-  color: #b42318;
-  border-color: #f1b8b2;
-  background: #fff;
 }
 
 .modal-overlay {
