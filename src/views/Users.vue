@@ -134,7 +134,7 @@
             </div>
 
             <div class="modal-body form-modal-body">
-              <div class="form-section">
+              <div class="form-panel">
                 <div class="section-title">User Information</div>
 
                 <div class="form-grid">
