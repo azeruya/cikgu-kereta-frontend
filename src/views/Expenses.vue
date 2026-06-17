@@ -16,9 +16,11 @@
             <span class="page-chip">{{ expenses.length }} records</span>
           </div>
 
+          <!-- 
           <div class="page-subtitle">
             Track operating expenses and bookkeeping records
           </div>
+          -->
         </div>
 
         <div class="page-actions">

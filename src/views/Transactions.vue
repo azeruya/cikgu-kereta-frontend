@@ -22,9 +22,11 @@
               </span>
           </div>
 
+          <!-- 
           <div class="page-subtitle">
             Track customer billing and service progress
           </div>
+          -->
         </div>
 
         <div class="page-actions">

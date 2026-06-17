@@ -113,7 +113,7 @@ a {
   flex: 1;
   height: 100vh;
   overflow-y: auto;
-  padding: 34px 38px 46px;
+  padding: 30px 38px 46px;
   background:
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 34%),
     var(--bg);
@@ -660,14 +660,14 @@ th.center {
 }
 
 .icon-btn-danger {
-  color: #b42318;
-  border-color: #f0d4cf;
+  color: #8b95a1;
+  border-color: #dfe4ea;
 }
 
 .icon-btn-danger:hover {
   background: #fff1f0;
   border-color: #e6aaa3;
-  color: #981b12;
+  color: #b42318;
 }
 
 .icon-btn-success {

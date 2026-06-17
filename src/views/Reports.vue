@@ -16,9 +16,11 @@
             <span class="page-chip">{{ periodChartRaw.length || 0 }} period records</span>
           </div>
 
+          <!-- 
           <div class="page-subtitle">
             Financial overview and business analytics
           </div>
+          -->
         </div>
 
         <div class="page-actions">

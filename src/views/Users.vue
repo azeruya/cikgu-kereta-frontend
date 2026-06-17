@@ -516,6 +516,16 @@ export default {
   padding-bottom: 12px;
 }
 
+.users-table th:first-child,
+.users-table td:first-child {
+  padding-left: 18px;
+}
+
+.users-table th:last-child,
+.users-table td:last-child {
+  padding-right: 18px;
+}
+
 .users-table th:last-child {
   text-align: right;
 }

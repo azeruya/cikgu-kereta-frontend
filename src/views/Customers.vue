@@ -22,9 +22,11 @@
                 </span>
             </div>
 
+            <!-- 
             <div class="page-subtitle">
                 View customer records, vehicles, and recent workshop activity
             </div>
+            -->
           </div>
 
           <div class="page-actions">

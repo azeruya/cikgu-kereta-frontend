@@ -1,7 +1,15 @@
 <template>
   <div class="sidebar" :class="{ collapsed }">
     <div class="brand-row">
-      <img :src="vulcanLogo" alt="Vulcan Auto Service" class="brand-logo-only" />
+      <div class="brand-lockup"> 
+        <img :src="vulcanLogo" alt="Vulcan Auto Service" class="brand-logo-only" />
+
+        <div v-if="!collapsed" class="brand-text">
+          <div class="brand-name">Vulcan Auto</div>
+          <div class="brand-sub">Workshop System</div>
+        </div>
+
+      </div>
 
       <button class="collapse-edge-btn" @click="$emit('toggle')" type="button">
         <span>{{ collapsed ? "›" : "‹" }}</span>
@@ -148,18 +156,45 @@ export default {
 .brand-row {
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding: 18px 0 14px;
+  padding: 18px 18px 14px;
   min-height: 84px;
 }
 
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
 .brand-logo-only {
-  width: 56px;
-  height: 56px;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
   object-fit: contain;
   opacity: 0.98;
   filter: drop-shadow(0 8px 16px rgba(16, 24, 40, 0.12));
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: 14px;
+  font-weight: 850;
+  color: #111827;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.brand-sub {
+  margin-top: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #8b95a1;
 }
 
 .collapse-edge-btn {
@@ -390,13 +425,18 @@ export default {
 ========================= */
 
 .sidebar.collapsed .brand-row {
-  padding: 14px 0 12px;
+  padding: 16px 0 12px;
   min-height: 74px;
+  justify-content: center;
 }
 
 .sidebar.collapsed .brand-logo-only {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
+}
+
+.sidebar.collapsed .brand-text {
+  display: none;
 }
 
 .sidebar.collapsed .nav-divider {

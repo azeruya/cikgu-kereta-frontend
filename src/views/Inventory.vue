@@ -24,9 +24,11 @@
               </span>
             </div>
 
+            <!-- 
             <div class="page-subtitle">
                 Review parts, compatibility coverage, and stock movement
             </div>
+            -->
           </div>
 
           <div class="page-actions">
