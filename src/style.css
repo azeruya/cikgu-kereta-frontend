@@ -2639,3 +2639,11 @@ th.center {
 .form-field textarea {
   padding: 10px;
 }
+
+.payment-panel-content {
+  padding: 16px;
+}
+
+.payment-panel-content .summary-highlight {
+  margin-bottom: 13px;
+}

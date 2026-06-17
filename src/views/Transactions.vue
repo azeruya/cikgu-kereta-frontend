@@ -181,60 +181,59 @@
             </div>
 
             <div class="modal-body form-modal-body">
-              <div class="form-section">
-                <div class="section-title">
-                  {{ paymentTransactionDocNo }}
-                </div>
+  <div class="form-data-panel">
+    <div class="form-data-header">
+      <span>{{ paymentTransactionDocNo }}</span>
+    </div>
 
-              <div class="form-data-body">
-                <div class="summary-highlight">
-                  <span>Amount due</span>
-                  <strong>RM {{ formatMoney(paymentTransactionTotal) }}</strong>
-                </div>
+    <div class="payment-panel-content">
+      <div class="summary-highlight">
+        <span>Amount due</span>
+        <strong>RM {{ formatMoney(paymentTransactionTotal) }}</strong>
+      </div>
 
-                <div class="form-grid form-grid-compact">
-                  <div class="form-field">
-                    <label>Amount Paid</label>
-                    <input
-                      v-model.number="paymentForm.amount_paid"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
+      <div class="form-grid form-grid-compact">
+        <div class="form-field">
+          <label>Amount Paid</label>
+          <input
+            v-model.number="paymentForm.amount_paid"
+            type="number"
+            min="0"
+            step="0.01"
+          />
+        </div>
 
-                  <div class="form-field">
-                    <label>Payment Method</label>
-                    <select v-model="paymentForm.payment_method">
-                      <option value="cash">Cash</option>
-                      <option value="bank_transfer">Bank Transfer</option>
-                      <option value="card">Card</option>
-                      <option value="ewallet">E-wallet</option>
-                    </select>
-                  </div>
+        <div class="form-field">
+          <label>Payment Method</label>
+          <select v-model="paymentForm.payment_method">
+            <option value="cash">Cash</option>
+            <option value="bank_transfer">Bank Transfer</option>
+            <option value="card">Card</option>
+            <option value="ewallet">E-wallet</option>
+          </select>
+        </div>
 
-                  <div class="form-field">
-                    <label>Payment Reference</label>
-                    <input
-                      v-model="paymentForm.payment_reference"
-                      type="text"
-                      placeholder="Optional reference"
-                    />
-                  </div>
+        <div class="form-field">
+          <label>Payment Reference</label>
+          <input
+            v-model="paymentForm.payment_reference"
+            type="text"
+            placeholder="Optional reference"
+          />
+        </div>
 
-                  <div class="form-field">
-                    <label>Payment Date</label>
-                    <input v-model="paymentForm.payment_date" type="date" />
-                  </div>
-                </div>
-              </div>
-              
-            </div>
+        <div class="form-field">
+          <label>Payment Date</label>
+          <input v-model="paymentForm.payment_date" type="date" />
+        </div>
+      </div>
+    </div>
+  </div>
 
-              <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
-                {{ paymentFormError }}
-              </div>
-            </div>
+  <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
+    {{ paymentFormError }}
+  </div>
+</div>
 
             <div class="modal-footer form-actions">
               <button type="button" class="btn btn-secondary btn-pill" @click="closePaymentModal">Cancel</button>
