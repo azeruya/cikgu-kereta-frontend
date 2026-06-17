@@ -187,16 +187,16 @@
               <span class="card-title">Overview</span>
             </template>
 
-            <div class="summary-stack">
-              <div class="summary-line">
+            <div class="summary-list">
+              <div class="summary-row">
                 <span>Total Records</span>
                 <b>{{ summary.total_records }}</b>
               </div>
-              <div class="summary-line">
+              <div class="summary-row">
                 <span>Total Expenses</span>
                 <b>RM {{ formatMoney(summary.total_expenses) }}</b>
               </div>
-              <div class="summary-line">
+              <div class="summary-row">
                 <span>This Month</span>
                 <b>RM {{ formatMoney(summary.this_month) }}</b>
               </div>
@@ -1159,15 +1159,6 @@ export default {
   border-radius: 14px;
   padding: 12px 14px;
   background: #fff;
-}
-
-.section-title {
-  font-size: 10px;
-  font-weight: 700;
-  color: #444;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 10px;
 }
 
 .info-list {

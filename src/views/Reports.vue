@@ -248,13 +248,13 @@
               />
             </div>
 
-            <div class="summary-stack compact">
-              <div class="summary-line">
+            <div class="summary-list compact">
+              <div class="summary-row">
                 <span>Paid</span>
                 <b>RM {{ formatMoney(paidVsUnpaid.paid) }}</b>
               </div>
 
-              <div class="summary-line">
+              <div class="summary-row">
                 <span>Unpaid</span>
                 <b>RM {{ formatMoney(paidVsUnpaid.unpaid) }}</b>
               </div>
@@ -266,28 +266,28 @@
               <span class="card-title">Quick Overview</span>
             </template>
 
-            <div class="mini-stat-list">
-              <div class="mini-stat-row">
+            <div class="summary-list">
+              <div class="summary-row">
                 <span>Total Transactions</span>
                 <b>{{ summary.total_transactions }}</b>
               </div>
 
-              <div class="mini-stat-row">
+              <div class="summary-row">
                 <span>Total Paid</span>
                 <b>RM {{ formatMoney(summary.total_paid) }}</b>
               </div>
 
-              <div class="mini-stat-row">
+              <div class="summary-row">
                 <span>Total Unpaid</span>
                 <b>RM {{ formatMoney(summary.total_unpaid) }}</b>
               </div>
 
-              <div class="mini-stat-row">
+              <div class="summary-row">
                 <span>Gross Sales</span>
                 <b>RM {{ formatMoney(summary.gross_sales) }}</b>
               </div>
 
-              <div class="mini-stat-row">
+              <div class="summary-row">
                 <span>Discounts</span>
                 <b>RM {{ formatMoney(summary.total_discount) }}</b>
               </div>

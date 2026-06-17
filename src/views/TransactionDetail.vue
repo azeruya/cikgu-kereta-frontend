@@ -176,51 +176,51 @@
             </div>
 
             <div class="summary-box">
-              <div class="summary-row">
+              <div class="summary-box-row">
                 <span>Subtotal</span>
                 <span>RM {{ formatMoney(transaction.total_amount) }}</span>
               </div>
 
-              <div class="summary-row">
+              <div class="summary-box-row">
                 <span>Discount</span>
                 <span>RM {{ formatMoney(transaction.discount_amount || 0) }}</span>
               </div>
 
-              <div class="summary-row">
-    <span>Total Paid</span>
-    <span>RM {{ formatMoney(totalPaid) }}</span>
-  </div>
+              <div class="summary-box-row">
+                <span>Total Paid</span>
+                <span>RM {{ formatMoney(totalPaid) }}</span>
+              </div>
 
-  <div class="summary-row">
-    <span>Balance Due</span>
-    <span>RM {{ formatMoney(balanceDue) }}</span>
-  </div>
+              <div class="summary-box-row">
+                <span>Balance Due</span>
+                <span>RM {{ formatMoney(balanceDue) }}</span>
+              </div>
 
-  <div
-    v-if="transaction.payments && transaction.payments.length"
-    class="payment-history"
-  >
-    <div class="payment-title">Payment History</div>
+              <div
+                v-if="transaction.payments && transaction.payments.length"
+                class="payment-history"
+              >
+                <div class="payment-title">Payment History</div>
 
-    <div
-      v-for="payment in transaction.payments"
-      :key="payment.id"
-      class="payment-row"
-    >
-      <div>
-        <div class="payment-method">{{ payment.payment_method || "-" }}</div>
-        <div class="payment-meta">
-          {{ formatDateTime(payment.payment_date) }}
-          <span v-if="payment.payment_reference">
-            · Ref: {{ payment.payment_reference }}
-          </span>
-        </div>
-      </div>
+                <div
+                  v-for="payment in transaction.payments"
+                  :key="payment.id"
+                  class="payment-row"
+                >
+                  <div>
+                    <div class="payment-method">{{ payment.payment_method || "-" }}</div>
+                    <div class="payment-meta">
+                      {{ formatDateTime(payment.payment_date) }}
+                      <span v-if="payment.payment_reference">
+                        · Ref: {{ payment.payment_reference }}
+                      </span>
+                    </div>
+                  </div>
 
-      <strong>RM {{ formatMoney(payment.amount_paid) }}</strong>
-    </div>
-  </div>
-</div>
+                  <strong>RM {{ formatMoney(payment.amount_paid) }}</strong>
+                </div>
+              </div>
+            </div>
           </Card>
         </div>
 
@@ -803,33 +803,6 @@ export default {
   margin-bottom: 14px;
 }
 
-.summary-box {
-  margin-top: 8px;
-  padding: 12px;
-  background: #fafafa;
-  border-radius: 10px;
-  border: 1px solid #ececec;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-.summary-row:last-child {
-  margin-bottom: 0;
-}
-
-.summary-row.total {
-  padding-top: 8px;
-  border-top: 1px solid #ececec;
-  color: #111;
-  font-weight: 600;
-}
-
 .items-list {
   display: flex;
   flex-direction: column;
@@ -1087,37 +1060,6 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.field label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #666666;
-}
-
-.field input,
-.field select {
-  width: 100%;
-  min-height: 42px;
-  border: 1px solid #deded9;
-  border-radius: 10px;
-  padding: 0 12px;
-  background: #ffffff;
-  color: #111111;
-  font-size: 13px;
-  outline: none;
-}
-
-.field input:focus,
-.field select:focus {
-  border-color: #111111;
-  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
 }
 
 .modal-actions {

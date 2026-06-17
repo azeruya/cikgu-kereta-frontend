@@ -18,7 +18,7 @@
         </div>
       </div>
 
-      <div class="summary-row">
+      <div class="summary-box-row">
         <div class="summary-card">
           <div class="summary-label">Active Jobs</div>
           <div class="summary-value">{{ jobs.length }}</div>

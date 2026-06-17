@@ -181,7 +181,7 @@
                   {{ paymentTransactionDocNo }}
                 </div>
 
-                <div class="payment-summary-box">
+                <div class="summary-highlight">
                   <span>Amount due</span>
                   <strong>RM {{ formatMoney(paymentTransactionTotal) }}</strong>
                 </div>
@@ -692,32 +692,6 @@ export default {
   white-space: nowrap;
 }
 
-.summary-box {
-  margin-top: 14px;
-  padding: 12px;
-  background: #fafafa;
-  border-radius: 8px;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #555;
-  margin-bottom: 6px;
-}
-
-.summary-row:last-child {
-  margin-bottom: 0;
-}
-
-.summary-row.total {
-  padding-top: 8px;
-  border-top: 1px solid #ececec;
-  color: #111;
-  font-weight: 600;
-}
-
 .detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -844,29 +818,6 @@ export default {
   border-radius: 15px;
   padding: 16px;
   background: #fff;
-}
-
-.payment-summary-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  margin-bottom: 14px;
-  border-radius: 13px;
-  background: #fafafa;
-  border: 1px solid #eeeeee;
-}
-
-.payment-summary-box span {
-  font-size: 12.5px;
-  color: #777;
-}
-
-.payment-summary-box strong {
-  font-size: 14px;
-  font-weight: 800;
-  color: #222;
 }
 
 .modal-actions.form-actions {

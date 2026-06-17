@@ -1325,6 +1325,145 @@ textarea {
   grid-template-columns: 1.3fr 0.7fr 0.7fr;
 }
 
+/* ================================
+   SUMMARY BOXES
+   Used for transaction totals / payment due / stock info
+================================ */
+
+.summary-box {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: #fafafa;
+  border: 1px solid #eeeeee;
+  border-radius: 13px;
+}
+
+.summary-box-row,
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  color: #555;
+  padding: 6px 0;
+}
+
+.summary-box-row:first-child,
+.summary-row:first-child {
+  padding-top: 0;
+}
+
+.summary-box-row:last-child,
+.summary-row:last-child {
+  padding-bottom: 0;
+}
+
+.summary-box-row strong,
+.summary-row strong,
+.summary-box-row b,
+.summary-row b {
+  color: #222;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.summary-box-row.total,
+.summary-row.total,
+.summary-box-total {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid #eeeeee;
+  color: #111;
+  font-weight: 800;
+}
+
+/* One-line highlighted summary */
+.summary-highlight,
+.payment-summary-box,
+.current-stock-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 14px;
+  border-radius: 13px;
+  background: #fafafa;
+  border: 1px solid #eeeeee;
+}
+
+.payment-summary-box {
+  margin-bottom: 14px;
+}
+
+.summary-highlight span,
+.payment-summary-box span,
+.current-stock-box span {
+  font-size: 12.5px;
+  color: #777;
+}
+
+.summary-highlight strong,
+.payment-summary-box strong,
+.current-stock-box strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: #222;
+}
+
+/* ================================
+   SUMMARY LISTS
+   Used for Overview / Quick Overview / side rail cards
+================================ */
+
+.summary-list,
+.summary-stack,
+.mini-stat-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-list.compact,
+.summary-stack.compact {
+  margin-top: 4px;
+}
+
+.summary-row,
+.summary-line,
+.mini-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f1ef;
+  font-size: 12.5px;
+  color: #666;
+}
+
+.summary-row:last-child,
+.summary-line:last-child,
+.mini-stat-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row b,
+.summary-line b,
+.mini-stat-row b {
+  color: #222;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.summary-row span,
+.summary-line span,
+.mini-stat-row span {
+  min-width: 0;
+}
+
 /* =========================
   FILTER
 ========================= */

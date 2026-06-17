@@ -310,8 +310,8 @@
             <span class="card-title">Summary</span>
           </template>
 
-          <div class="summary-list">
-            <div class="summary-row">
+          <div class="summary-box">
+            <div class="summary-box-row">
               <span>Subtotal</span>
               <span>RM {{ formatMoney(subtotal) }}</span>
             </div>
@@ -326,7 +326,7 @@
               />
             </div>
 
-            <div class="summary-row total">
+            <div class="summary-box-row summary-box-total">
               <span>Total</span>
               <span>RM {{ formatMoney(totalAfterDiscount) }}</span>
             </div>
@@ -835,25 +835,6 @@ export default {
 
 .item-title {
   font-size: 13px;
-  font-weight: 600;
-  color: #111;
-}
-
-.summary-list {
-  display: grid;
-  gap: 12px;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #555;
-}
-
-.summary-row.total {
-  padding-top: 10px;
-  border-top: 1px solid #ececea;
   font-weight: 600;
   color: #111;
 }

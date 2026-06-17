@@ -151,20 +151,20 @@
               <span class="card-title">Overview</span>
             </template>
 
-            <div class="summary-stack">
-              <div class="summary-line">
+            <div class="summary-list">
+              <div class="summary-row">
                 <span>Total parts</span>
                 <b>{{ parts.length }}</b>
               </div>
-              <div class="summary-line">
+              <div class="summary-row">
                 <span>Generic parts</span>
                 <b>{{ genericCount }}</b>
               </div>
-              <div class="summary-line">
+              <div class="summary-row">
                 <span>Vehicle-specific parts</span>
                 <b>{{ specificCount }}</b>
               </div>
-              <div class="summary-line">
+              <div class="summary-row">
                 <span>Low stock</span>
                 <b>{{ lowStockCount }}</b>
               </div>
@@ -399,7 +399,7 @@
                 />
               </div>
 
-              <div v-if="activePart" class="current-stock-box">
+              <div v-if="activePart" class="summary-highlight">
                 Current stock: <strong>{{ activePart.stock }}</strong>
               </div>
 
@@ -970,15 +970,6 @@ nextPage() {
   background: #fff;
 }
 
-.section-title {
-  font-size: 10px;
-  font-weight: 700;
-  color: #444;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 10px;
-}
-
 .info-list {
   display: flex;
   flex-direction: column;
@@ -1172,16 +1163,6 @@ nextPage() {
   text-align: left;
 }
 
-.current-stock-box {
-  margin-top: 10px;
-  font-size: 12px;
-  color: #666;
-  background: #fafafa;
-  border: 1px solid #eeeeee;
-  border-radius: 12px;
-  padding: 10px 12px;
-}
-
 .confirm-actions {
   display: flex;
   gap: 10px;
@@ -1315,28 +1296,6 @@ nextPage() {
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
-}
-
-.current-stock-box {
-  height: 38px;
-  border-radius: 12px;
-  background: #fafafa;
-  border: 1px solid #eeeeee;
-  padding: 0 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-.current-stock-box span {
-  font-size: 12px;
-  color: #777;
-}
-
-.current-stock-box strong {
-  font-size: 13px;
-  color: #222;
 }
 
 .restock-link:hover {
