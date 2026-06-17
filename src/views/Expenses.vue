@@ -463,7 +463,7 @@
                     </div>
 
                      <div v-if="editingExpenseId && form.existing_receipt" class="receipt-chip">
-                    <div class="receipt-chip-left">
+                      <div class="receipt-chip-left">
                       <svg class="receipt-chip-icon" viewBox="0 0 16 16">
                         <path d="M5 2h5l3 3v9H5z" />
                         <path d="M10 2v3h3" />
@@ -477,13 +477,13 @@
                       </div>
                     </div>
 
-                  <button
-                    type="button"
-                    class="receipt-chip-action"
-                    @click="viewReceipt({ receipt_file: form.existing_receipt })"
-                  >
-                    View
-                  </button>
+                    <button
+                      type="button"
+                      class="receipt-chip-action"
+                      @click="viewReceipt({ receipt_file: form.existing_receipt })"
+                    >
+                      View
+                    </button>                 
                   </div>
                     </div>
                   </div>
@@ -1047,178 +1047,6 @@ export default {
   gap: 14px;
 }
 
-.stack-col .card {
-  border-radius: 18px;
-  border: 1px solid #eeeeee;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.04);
-}
-
-.stack-col .card-header {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-.stack-col .card-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #222;
-}
-
-.filters-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 14px;
-  align-items: center;
-}
-
-.filters-bar input,
-.filters-bar select {
-  height: 36px;
-  padding: 0 10px;
-  border-radius: 10px;
-  border: 1px solid #e5e5e5;
-  font-size: 12px;
-  background: #fff;
-}
-
-.category-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.category-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 0;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-.category-row:last-child {
-  border-bottom: none;
-}
-
-.category-row .item-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: #222;
-}
-
-.category-row .job-price {
-  font-size: 12px;
-  font-weight: 500;
-  color: #222;
-  white-space: nowrap;
-}
-
-.category-name-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.expense-detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 16px;
-  font-size: 12px;
-  color: #555;
-}
-
-.expense-detail-grid .full {
-  grid-column: 1 / -1;
-}
-
-/* modal */
-.detail-section {
-  border: 1px solid #eeeeee;
-  border-radius: 14px;
-  padding: 12px 14px;
-  background: #fff;
-}
-
-.info-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.info-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  padding: 8px 0;
-}
-
-.info-row.last {
-  padding-bottom: 0;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.info-item.full {
-  grid-column: 1 / -1;
-}
-
-.info-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: #8a8a8a;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.info-value {
-  font-size: 12px;
-  font-weight: 600;
-  color: #222;
-  line-height: 1.25;
-  word-break: break-word;
-}
-
-/* buttons */
-.modal-actions.split {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 42px 18px;
-  border-top: 1px solid #eeeeee;
-}
-
-
-
-.left-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.modal-actions button {
-  height: 34px;
-  min-width: 82px;
-  padding: 0 12px;
-  border-radius: 11px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  color: #333;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.modal-actions button.primary {
-  min-width: 106px;
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-
-/* category card */
 .category-list {
   display: flex;
   flex-direction: column;
@@ -1237,13 +1065,25 @@ export default {
   border-bottom: none;
 }
 
-.job-price {
-  font-size: 13px;
-  font-weight: 400;
-  color: #222;
+.category-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* trend single card */
+.description-cell {
+  max-width: 220px;
+  color: #333;
+  font-size: 12.5px;
+  line-height: 1.35;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Single month trend card */
 .single-trend-card {
   min-height: 96px;
   border: 1px solid #eeeeee;
@@ -1274,116 +1114,7 @@ export default {
   color: #999;
 }
 
-@media (max-width: 1100px) {
-  .expense-grid,
-  .expense-detail-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .filters-bar {
-    flex-wrap: wrap;
-  }
-}
-
-.modal-actions.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 42px 18px;
-  border-top: 1px solid #eeeeee;
-}
-
-.icon-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.icon-btn:hover {
-  background: #fafafa;
-  border-color: #d8d8d8;
-}
-
-.receipt-btn {
-  color: #444;
-}
-
-.muted-dash {
-  color: #aaa;
-}
-
-.ghost-btn {
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  color: #444;
-}
-
-.description-cell {
-  max-width: 220px;
-  color: #444;
-  line-height: 1.35;
-  font-size: 12.5px;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.muted-dash {
-  color: #aaa;
-}
-
-.center {
-  text-align: center;
-}
-
-.right {
-  text-align: right;
-}
-
-.description-cell {
-  max-width: 220px;
-  color: #333;
-  font-size: 12.5px;
-  line-height: 1.35;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.description-cell.empty {
-  color: #8a8a8a;
-  font-style: italic;
-  font-weight: 400;
-}
-
-.money-cell {
-  white-space: nowrap;
-  font-size: 12.8px;
-  font-weight: 400;
-  color: #222;
-  font-variant-numeric: tabular-nums;
-}
-
-.empty-inline {
-  font-size: 11.5px;
-  color: #aaa;
-  font-style: italic;
-  white-space: nowrap;
-}
-
-/* trend cards */
+/* Monthly trend list */
 .trend-list {
   display: flex;
   flex-direction: column;
@@ -1420,6 +1151,7 @@ export default {
   white-space: nowrap;
 }
 
+/* Existing receipt chip in edit form */
 .receipt-chip {
   grid-column: 1 / -1;
   margin-top: 2px;
@@ -1482,4 +1214,13 @@ export default {
   background: #f7f7f6;
 }
 
+@media (max-width: 1100px) {
+  .expense-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-bar {
+    flex-wrap: wrap;
+  }
+}
 </style> 
