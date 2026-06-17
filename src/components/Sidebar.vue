@@ -234,7 +234,8 @@ export default {
   margin: 0 16px 14px;
 }
 
-/* Nav */
+/* transition */
+
 .sidebar-nav {
   flex: 1;
   display: flex;
@@ -244,16 +245,8 @@ export default {
   overflow-y: auto;
 }
 
-.sidebar-nav::-webkit-scrollbar {
-  width: 4px;
-}
-
-.sidebar-nav::-webkit-scrollbar-thumb {
-  background: #d8dde5;
-  border-radius: 999px;
-}
-
 .nav-item {
+  position: relative;
   height: 40px;
   border-radius: 10px;
   padding: 0 12px;
@@ -264,7 +257,14 @@ export default {
   text-decoration: none;
   font-size: 13px;
   font-weight: 760;
-  transition: all 0.15s ease;
+  background: transparent;
+  box-shadow: none;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.12s ease;
 }
 
 .nav-item:hover {
@@ -276,17 +276,41 @@ export default {
   transform: scale(0.985);
 }
 
-.router-link-active {
-  background: #111827;
+/* active route */
+.nav-item.router-link-active,
+.nav-item.router-link-exact-active {
+  background: #172033;
   color: #ffffff;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+}
+
+/* important: active item should NOT turn white on hover */
+.nav-item.router-link-active:hover,
+.nav-item.router-link-exact-active:hover {
+  background: #172033;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+}
+
+/* smoother click on active item */
+.nav-item.router-link-active:active,
+.nav-item.router-link-exact-active:active {
+  background: #111827;
+  transform: scale(0.985);
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.14);
 }
 
 .nav-icon {
   width: 16.5px;
   height: 16.5px;
   flex-shrink: 0;
-  opacity: 0.88;
+  opacity: 0.9;
+  transition: opacity 0.18s ease;
+}
+
+.nav-item.router-link-active .nav-icon,
+.nav-item.router-link-exact-active .nav-icon {
+  opacity: 1;
 }
 
 .nav-text {

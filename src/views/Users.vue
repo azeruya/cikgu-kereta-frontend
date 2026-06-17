@@ -33,10 +33,7 @@
         </div>
       </div>
 
-      <Card>
-        <template #header>
-          <span class="card-title">User List</span>
-        </template>
+      <Card class="data-card">
 
         <div v-if="loading" class="empty-state">Loading users...</div>
 
