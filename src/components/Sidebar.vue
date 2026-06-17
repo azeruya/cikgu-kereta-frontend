@@ -127,52 +127,52 @@ export default {
 
 <style scoped>
 .sidebar {
-  width: 240px;
+  width: 248px;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 28%),
-    linear-gradient(180deg, #111 0%, #070707 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
   transition: width 0.2s ease;
+  box-shadow: 1px 0 0 rgba(16, 24, 40, 0.02);
 }
 
 .sidebar.collapsed {
-  width: 74px;
+  width: 76px;
 }
 
 /* =========================
    BRAND
 ========================= */
+
 .brand-row {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 18px 0 14px;
-  min-height: 86px;
+  min-height: 84px;
 }
 
 .brand-logo-only {
-  width: 58px;
-  height: 58px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
   opacity: 0.98;
-  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 8px 16px rgba(16, 24, 40, 0.12));
 }
 
 .collapse-edge-btn {
   position: absolute;
-  right: -12px;
+  right: -13px;
   top: 50%;
   transform: translateY(-50%);
-  width: 25px;
-  height: 25px;
+  width: 27px;
+  height: 27px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  background: #1b1b1b;
-  color: rgba(255, 255, 255, 0.72);
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
   cursor: pointer;
   font-size: 17px;
   line-height: 1;
@@ -180,31 +180,40 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 5;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.1);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
 }
 
 .collapse-edge-btn:hover {
-  color: #fff;
-  background: #2a2a2a;
-  border-color: rgba(255, 255, 255, 0.22);
+  color: #111827;
+  background: #f8fafc;
+  border-color: #d1d5db;
+}
+
+.collapse-edge-btn:active {
+  transform: translateY(-50%) scale(0.94);
 }
 
 .nav-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.14);
-  margin: 0 20px 16px;
+  background: #eef0f3;
+  margin: 0 18px 16px;
 }
 
 /* =========================
    NAVIGATION
 ========================= */
+
 .sidebar-nav {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 0 16px;
+  padding: 0 14px;
   overflow-y: auto;
 }
 
@@ -213,27 +222,31 @@ export default {
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
+  background: #d8dde5;
   border-radius: 999px;
 }
 
 .nav-item {
-  height: 46px;
+  height: 44px;
   border-radius: 13px;
-  padding: 0 15px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
   gap: 13px;
-  color: rgba(255, 255, 255, 0.56);
+  color: #6b7280;
   text-decoration: none;
   font-size: 14px;
-  font-weight: 550;
-  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  font-weight: 650;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: #fff;
+  background: #f5f6f8;
+  color: #111827;
 }
 
 .nav-item:active {
@@ -241,15 +254,9 @@ export default {
 }
 
 .router-link-active {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.17),
-    rgba(255, 255, 255, 0.11)
-  );
-  color: #fff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 10px 24px rgba(0, 0, 0, 0.22);
+  background: #111827;
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.14);
 }
 
 .nav-icon {
@@ -266,10 +273,34 @@ export default {
 /* =========================
    FOOTER USER AREA
 ========================= */
+
 .sidebar-foot {
   padding: 14px 14px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  background: transparent;
+  border-top: 1px solid #eef0f3;
+  background: #ffffff;
+}
+
+.branch-card {
+  margin-bottom: 10px;
+  padding: 11px 12px;
+  border-radius: 15px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+
+.branch-label {
+  font-size: 9px;
+  font-weight: 850;
+  color: #9aa3af;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 5px;
+}
+
+.branch-name {
+  font-size: 12.5px;
+  font-weight: 760;
+  color: #111827;
 }
 
 .user-row {
@@ -278,17 +309,16 @@ export default {
   gap: 11px;
   padding: 9px;
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.055);
-  box-shadow: none;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
 }
 
 .avatar {
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.1));
-  color: #fff;
+  background: #111827;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -305,8 +335,8 @@ export default {
 
 .user-name {
   font-size: 12.5px;
-  font-weight: 750;
-  color: rgba(255, 255, 255, 0.92);
+  font-weight: 760;
+  color: #111827;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -316,29 +346,34 @@ export default {
 .user-role {
   margin-top: 3px;
   font-size: 10.5px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.42);
+  font-weight: 550;
+  color: #8b95a1;
   line-height: 1.2;
 }
 
 .logout-icon-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
+  width: 31px;
+  height: 31px;
+  border: 1px solid #e5e7eb;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.035);
-  color: rgba(255, 255, 255, 0.48);
+  background: #ffffff;
+  color: #8b95a1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
 }
 
 .logout-icon-btn:hover {
-  background: rgba(239, 68, 68, 0.16);
-  color: #f87171;
+  background: #fff1f0;
+  border-color: #f1b8b2;
+  color: #b42318;
 }
 
 .logout-icon-btn:active {
@@ -351,59 +386,9 @@ export default {
 }
 
 /* =========================
-.branch-card {
-  margin-bottom: 10px;
-  padding: 10px 11px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.055);
-}
-
-.branch-label {
-  font-size: 9.5px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.36);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-
-.branch-name {
-  font-size: 12px;
-  font-weight: 750;
-  color: rgba(255, 255, 255, 0.86);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-========================= */
-
-.branch-card {
-  margin-bottom: 10px;
-  padding: 11px 12px;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.055);
-}
-
-.branch-label {
-  font-size: 9px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.38);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 5px;
-}
-
-.branch-name {
-  font-size: 12.5px;
-  font-weight: 750;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* =========================
    COLLAPSED STATE
 ========================= */
+
 .sidebar.collapsed .brand-row {
   padding: 14px 0 12px;
   min-height: 74px;
@@ -459,7 +444,6 @@ export default {
   padding: 8px 0;
   background: transparent;
   border: none;
-  box-shadow: none;
 }
 
 .sidebar.collapsed .avatar,
@@ -470,10 +454,10 @@ export default {
 }
 
 .sidebar.collapsed .avatar {
-  background: rgba(255, 255, 255, 0.12);
+  background: #111827;
 }
 
 .sidebar.collapsed .logout-icon-btn {
-  background: rgba(255, 255, 255, 0.055);
+  background: #ffffff;
 }
 </style>
