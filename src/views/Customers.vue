@@ -100,7 +100,7 @@
                   </span>
                 </td>
                 <td>
-                  <span :class="['status-pill', customerStatusClass(cust)]">
+                  <span :class="['badge', customerStatusClass(cust)]">
                     {{ customerStatusLabel(cust) }}
                   </span>
                 </td>
@@ -708,9 +708,9 @@ export default {
     customerStatusClass(customer) {
       const status = customer.latest_transaction?.status;
 
-      if (status === "invoice") return "sp-green";
-      if (status === "quotation") return "sp-amber";
-      if (status === "receipt") return "sp-blue";
+      if (status === "invoice") return "badge-quotation";
+      if (status === "quotation") return "badge-invoice";
+      if (status === "receipt") return "badge-receipt";
       return "empty-inline";
     },
 

@@ -649,36 +649,176 @@ textarea {
   color: #8a8a8a;
 }
 
-/* =========================
-   MINI BUTTONS / ACTIONS
-========================= */
-.mini-btn {
-  padding: 7px 11px;
-  border: 1px solid #e5e5e2;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.95);
-  cursor: pointer;
-  text-decoration: none;
-  color: #444;
+/* ================================
+   BADGES / STATUS refactored
+================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
   font-size: 11px;
-  font-weight: 600;
-  box-shadow: var(--shadow-sm);
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: capitalize;
 }
 
-.mini-btn:hover {
-  background: #fcfcfb;
+/* Sizes */
+.badge-sm {
+  min-height: 19px;
+  padding: 3px 8px;
+  font-size: 10.5px;
 }
 
-.mini-btn.primary {
-  background: #121212;
-  color: #fff;
-  border-color: #121212;
+.badge-lg {
+  min-height: 26px;
+  padding: 5px 12px;
+  font-size: 12px;
 }
 
-.mini-btn.success {
-  background: #1f8f4d;
-  color: #fff;
-  border-color: #1f8f4d;
+/* Neutral / default */
+.badge-muted {
+  background: #f2f2f0;
+  color: #777777;
+  border-color: #e8e8e4;
+}
+
+/* Info / blue */
+.badge-info {
+  background: #eef4ff;
+  color: #3366cc;
+  border-color: #dbe8ff;
+}
+
+/* Success / green */
+.badge-success {
+  background: #edf8f0;
+  color: #1f8f4d;
+  border-color: #d7f0df;
+}
+
+/* Warning / amber */
+.badge-warning {
+  background: #fff4e8;
+  color: #c87518;
+  border-color: #ffe4c2;
+}
+
+/* Danger / red */
+.badge-danger {
+  background: #ffecec;
+  color: #c93434;
+  border-color: #ffd0d0;
+}
+
+/* Transaction document statuses */
+.badge-quotation {
+  background: #fff4e8;
+  color: #c87518;
+  border-color: #ffe4c2;
+}
+
+.badge-invoice {
+  background: #eef4ff;
+  color: #3366cc;
+  border-color: #dbe8ff;
+}
+
+.badge-receipt {
+  background: #edf8f0;
+  color: #1f8f4d;
+  border-color: #d7f0df;
+}
+
+/* Stock levels */
+.badge-low {
+  background: #fff4e8;
+  color: #c87518;
+  border-color: #ffe4c2;
+}
+
+.badge-critical {
+  background: #ffecec;
+  color: #c93434;
+  border-color: #ffd0d0;
+}
+
+/* Inventory type */
+.badge-generic {
+  background: #eef4ff;
+  color: #3366cc;
+  border-color: #dbe8ff;
+}
+
+.badge-specific {
+  background: #fff4e8;
+  color: #c87518;
+  border-color: #ffe4c2;
+}
+
+/* User roles */
+.badge-admin {
+  background: #eef4ff;
+  color: #3366cc;
+  border-color: #dbe8ff;
+}
+
+.badge-staff {
+  background: #f2f2f0;
+  color: #777777;
+  border-color: #e8e8e4;
+}
+
+.badge-self {
+  min-height: 19px;
+  padding: 3px 8px;
+  background: #eef7e9;
+  color: #2f6b1f;
+  border-color: #d7f0d2;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+/* ================================
+   DOT INDICATORS
+================================ */
+
+.dot-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  display: inline-block;
+  flex-shrink: 0;
+  background: #b8b8b8;
+}
+
+.dot-muted {
+  background: #b8b8b8;
+}
+
+.dot-info {
+  background: #94bff5;
+}
+
+.dot-warning {
+  background: #f2c078;
+}
+
+.dot-success {
+  background: #7fc78d;
+}
+
+.dot-purple {
+  background: #d9b8ff;
+}
+
+.dot-danger {
+  background: #f29b9b;
 }
 
 /* =========================

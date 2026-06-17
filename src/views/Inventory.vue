@@ -103,8 +103,8 @@
 
                   <td>
                     <span
-                      class="status-pill"
-                      :class="part.is_generic ? 'sp-blue' : 'sp-amber'"
+                      class="badge"
+                      :class="part.is_generic ? 'badge-generic' : 'badge-specific'"
                     >
                       {{ part.is_generic ? "Generic" : "Specific" }}
                     </span>
@@ -1257,26 +1257,6 @@ nextPage() {
 .stock-preview-right small {
   font-size: 11px;
   color: #999;
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.status-pill.sp-blue {
-  background: #eef4ff;
-  color: #4d6fa8;
-}
-
-.status-pill.sp-amber {
-  background: #fff3e6;
-  color: #a8662a;
 }
 
 /* low stock meter */

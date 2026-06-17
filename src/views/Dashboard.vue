@@ -116,7 +116,7 @@
                     </td>
 
                     <td>
-                      <span class="status-pill" :class="job.badgeClass">
+                      <span class="badge" :class="job.badgeClass">
                         {{ job.status }}
                       </span>
                     </td>
@@ -288,8 +288,8 @@
                     <div class="stock-qty">{{ item.left }} left</div>
 
                     <span
-                      class="stock-badge"
-                      :class="item.level === 'critical' ? 'badge-crit' : 'badge-warn'"
+                      class="badge"
+                      :class="item.level === 'critical' ? 'badge-critical' : 'badge-low'"
                     >
                       {{ item.level === "critical" ? "Critical" : "Low" }}
                     </span>
@@ -693,10 +693,10 @@ export default {
     },
 
     statusClass(status) {
-      if (status === "receipt") return "sp-green";
-      if (status === "invoice") return "sp-blue";
-      if (status === "quotation") return "sp-amber";
-      return "sp-gray";
+      if (status === "receipt") return "badge-receipt";
+      if (status === "invoice") return "badge-invoice";
+      if (status === "quotation") return "badge-quotation";
+      return "empty-inline";
     },
   },
 };

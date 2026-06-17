@@ -84,7 +84,7 @@
                 </td>
 
                 <td>
-                  <span :class="['status-badge', trx.status]">
+                  <span :class="['badge', `badge-${trx.status}`]">
                     {{ trx.status }}
                   </span>
                 </td>

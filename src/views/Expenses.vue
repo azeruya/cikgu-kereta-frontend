@@ -87,19 +87,19 @@
                   <td>{{ formatDate(expense.expense_date) }}</td>
 
                   <td>
-                    <span class="status-pill" :class="categoryClass(expense.category)">
+                    <span class="badge" :class="categoryClass(expense.category)">
                       {{ expense.category || "-" }}
                     </span>
                   </td>
 
                   <td>
-  <div
-    class="description-cell"
-    :class="{ empty: !expense.description }"
-  >
-    {{ expense.description || "No description" }}
-  </div>
-</td>
+                    <div
+                      class="description-cell"
+                      :class="{ empty: !expense.description }"
+                    >
+                      {{ expense.description || "No description" }}
+                    </div>
+                  </td>
 
                   <td>
                     <span class="money-cell">RM {{ formatMoney(expense.amount) }}</span>
@@ -254,7 +254,7 @@
                 class="category-row"
               >
               <div class="category-name-wrap">
-                  <span class="category-dot" :class="categoryClass(row.category)"></span>
+                  <span class="dot-indicator" :class="categoryClass(row.category)"></span>
                   <span class="item-name">{{ row.category }}</span>
                 </div>
                 <div class="job-price">RM {{ formatMoney(row.total) }}</div>
@@ -871,11 +871,12 @@ export default {
     categoryClass(category) {
       const c = (category || "").toLowerCase();
 
-      if (c.includes("salary")) return "sp-blue";
-      if (c.includes("utility")) return "sp-amber";
-      if (c.includes("purchase")) return "sp-green";
-      if (c.includes("maintenance")) return "sp-purple";
-      return "sp-gray";
+      if (c.includes("salary")) return "badge-category-salary";
+      if (c.includes("utility")) return "badge-category-utility";
+      if (c.includes("purchase")) return "badge-category-purchase";
+      if (c.includes("maintenance")) return "badge-category-maintenance";
+      if (c.includes("misc")) return "badge-category-misc";
+      return "empty-inline";
     },
     
     getExpenseCacheKey(page = 1) {
@@ -1102,35 +1103,6 @@ export default {
   gap: 8px;
 }
 
-.category-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  display: inline-block;
-  flex-shrink: 0;
-  background: #b8b8b8;
-}
-
-.category-dot.sp-blue {
-  background: #94bff5;
-}
-
-.category-dot.sp-amber {
-  background: #f2c078;
-}
-
-.category-dot.sp-green {
-  background: #7fc78d;
-}
-
-.category-dot.sp-purple {
-  background: #d9b8ff;
-}
-
-.category-dot.sp-gray {
-  background: #b8b8b8;
-}
-
 .expense-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1142,12 +1114,6 @@ export default {
 .expense-detail-grid .full {
   grid-column: 1 / -1;
 }
-
-.sp-purple {
-  background: #f2eaff;
-  color: #7b3fe4;
-}
-
 
 /* modal */
 .modal-card.large {

@@ -63,7 +63,7 @@
                   <div class="user-main">
                     <div class="user-name">
                       {{ user.name }}
-                      <span v-if="user.id === currentUser?.id" class="self-badge">You</span>
+                      <span v-if="user.id === currentUser?.id" class="badge badge-self">You</span>
                     </div>
                     <div class="user-sub">
                       {{ user.role === "admin" ? "Administrator account" : "Staff account" }}
@@ -77,7 +77,7 @@
               </td>
 
               <td>
-                <span class="status-pill" :class="user.role === 'admin' ? 'sp-blue' : 'sp-gray'">
+                <span class="badge" :class="user.role === 'admin' ? 'badge-admin' : 'badge-staff'">
                   {{ formatRole(user.role) }}
                 </span>
               </td>
@@ -760,14 +760,6 @@ export default {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #999;
-}
-
-.status-pill {
-  height: 22px;
-  padding: 0 10px;
-  border-radius: 999px;
-  font-size: 11.5px;
-  font-weight: 700;
 }
 
 .page-actions {
