@@ -2553,3 +2553,77 @@ th.center {
 .form-modal-body .form-field input::placeholder {
   color: #a7b0be;
 }
+
+/* =========================================================
+   STRUCTURED FORM PANEL
+========================================================= */
+
+.form-data-panel {
+  overflow: hidden;
+  border: 1px solid #dfe5ee;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.form-data-header {
+  height: 38px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  background: #f4f6f9;
+  border-bottom: 1px solid #dfe5ee;
+}
+
+.form-data-header span {
+  font-size: 10.3px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.form-data-panel .form-grid {
+  padding: 14px;
+}
+
+.form-grid-compact {
+  gap: 12px 14px;
+}
+
+.form-data-panel .form-field label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.form-data-panel .form-field input,
+.form-data-panel .form-field select {
+  height: 38px;
+  border-radius: 9px;
+  font-size: 12.8px;
+  border-color: #dfe5ee;
+  background: #ffffff;
+}
+
+.form-data-panel .form-field input:focus,
+.form-data-panel .form-field select:focus {
+  border-color: #aeb8c8;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.055);
+}
+
+.modal-card.form-modal-card {
+  width: min(500px, calc(100vw - 32px));
+}
+
+.modal-header {
+  padding: 20px 32px 10px;
+}
+
+.modal-body {
+  padding: 8px 32px 16px;
+}
+
+.modal-footer,
+.modal-actions {
+  padding: 13px 32px 18px;
+}

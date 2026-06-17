@@ -134,43 +134,45 @@
             </div>
 
             <div class="modal-body form-modal-body">
-              <div class="form-panel">
-                <div class="section-title">User Information</div>
+  <div class="form-data-panel">
+    <div class="form-data-header">
+      <span>User Information</span>
+    </div>
 
-                <div class="form-grid">
-                  <div class="form-field">
-                    <label>Name</label>
-                    <input v-model="form.name" type="text" placeholder="Full name" />
-                  </div>
+    <div class="form-grid form-grid-compact">
+      <div class="form-field">
+        <label>Name</label>
+        <input v-model="form.name" type="text" placeholder="Full name" />
+      </div>
 
-                  <div class="form-field">
-                    <label>Email</label>
-                    <input v-model="form.email" type="email" placeholder="Email address" />
-                  </div>
+      <div class="form-field">
+        <label>Email</label>
+        <input v-model="form.email" type="email" placeholder="Email address" />
+      </div>
 
-                  <div class="form-field">
-                    <label>Role</label>
-                    <select v-model="form.role">
-                      <option value="staff">Staff</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </div>
+      <div class="form-field">
+        <label>Role</label>
+        <select v-model="form.role">
+          <option value="staff">Staff</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
 
-                  <div class="form-field">
-                    <label>{{ editingUserId ? "New Password" : "Password" }}</label>
-                    <input
-                      v-model="form.password"
-                      type="password"
-                      :placeholder="editingUserId ? 'Leave blank to keep current' : 'Password'"
-                    />
-                  </div>
-                </div>
-              </div>
+      <div class="form-field">
+        <label>{{ editingUserId ? "New Password" : "Password" }}</label>
+        <input
+          v-model="form.password"
+          type="password"
+          :placeholder="editingUserId ? 'Leave blank to keep current' : 'Password'"
+        />
+      </div>
+    </div>
+  </div>
 
-              <div v-if="formError" class="page-error" style="margin-top:12px;">
-                {{ formError }}
-              </div>
-            </div>
+  <div v-if="formError" class="page-error" style="margin-top:12px;">
+    {{ formError }}
+  </div>
+</div>
 
             <div class="modal-footer form-actions">
               <button type="button" class="btn btn-secondary btn-pill" @click="closeModal">Cancel</button>
