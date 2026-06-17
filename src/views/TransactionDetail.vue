@@ -178,22 +178,22 @@
             <div class="summary-box">
               <div class="summary-box-row">
                 <span>Subtotal</span>
-                <span>RM {{ formatMoney(transaction.total_amount) }}</span>
+                <strong>RM {{ formatMoney(transaction.total_amount) }}</strong>
               </div>
 
               <div class="summary-box-row">
                 <span>Discount</span>
-                <span>RM {{ formatMoney(transaction.discount_amount || 0) }}</span>
+                <strong>RM {{ formatMoney(transaction.discount_amount || 0) }}</strong>
               </div>
 
               <div class="summary-box-row">
                 <span>Total Paid</span>
-                <span>RM {{ formatMoney(totalPaid) }}</span>
+                <strong>RM {{ formatMoney(totalPaid) }}</strong>
               </div>
 
               <div class="summary-box-row">
                 <span>Balance Due</span>
-                <span>RM {{ formatMoney(balanceDue) }}</span>
+                <strong>RM {{ formatMoney(balanceDue) }}</strong>
               </div>
 
               <div
@@ -287,7 +287,7 @@
               </div>
 
               <div class="pdf-actions">
-                <button class="pdf-close-btn" type="button" @click="closePdfPreview">
+                <button class="btn btn-secondary btn-pill" type="button" @click="closePdfPreview">
                   Close
                 </button>
 
@@ -356,7 +356,7 @@
               </div>
             </div>
 
-            <div class="modal-footer split">
+            <div class="modal-footer form-actions">
               <button type="button" class="btn btn-secondary btn-pill" @click="closePaymentModal">Cancel</button>
               <button
                 type="button"
@@ -785,19 +785,6 @@ export default {
   border-radius: 10px;
 }
 
-.info-label {
-  font-size: 11px;
-  color: #999;
-  margin-bottom: 4px;
-}
-
-.info-value {
-  font-size: 12px;
-  color: #111;
-  font-weight: 500;
-  line-height: 1.4;
-}
-
 .actions-panel {
   display: flex;
   flex-direction: column;
@@ -825,12 +812,6 @@ export default {
   min-width: 0;
 }
 
-.item-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #111;
-}
-
 .item-meta {
   margin-top: 4px;
   font-size: 11px;
@@ -845,7 +826,7 @@ export default {
 
 .item-price {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: #111;
 }
 
@@ -855,126 +836,10 @@ export default {
   color: #888;
 }
 
-.page-error {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #e53935;
-  background: #fff1f1;
-  border: 1px solid #ffd6d6;
-  border-radius: 8px;
-  padding: 10px 12px;
-}
-
-.pdf-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  width: 100dvw;
-  height: 100dvh;
-  background: rgba(15, 15, 15, 0.45);
-  backdrop-filter: blur(3px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 24px;
-  z-index: 99999;
-}
-
-.pdf-container {
-  width: min(95vw, 1400px);
-  height: min(92vh, 1000px);
-  background: #fff;
-  border-radius: 16px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-}
-
-.pdf-container iframe {
-  flex: 1;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 12px;
-  background: #f5f5f5;
-}
-
-/*
-.pdf-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.pdf-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #171717;
-}
-
-.pdf-actions {
-  display: flex;
-  gap: 8px;
-}
-
 .payment-history {
   margin-top: 12px;
   border-top: 1px solid #eeeeea;
   padding-top: 10px;
-}
-  */
-
-.pdf-topbar {
-  height: 58px;
-  padding: 0 16px 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  border-bottom: 1px solid #eeeeea;
-  background: #fff;
-}
-
-.pdf-title {
-  font-size: 14px;
-  font-weight: 800;
-  color: #111;
-}
-
-.pdf-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.pdf-close-btn {
-  height: 38px;
-  padding: 0 18px;
-  border: 1px solid #deded9;
-  border-radius: 12px;
-  background: #ffffff;
-  color: #444;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
-}
-
-.pdf-close-btn:hover {
-  background: #f5f5f2;
-  border-color: #d2d2cc;
-}
-
-.pdf-close-btn:active {
-  transform: scale(0.97);
 }
 
 .payment-title {
@@ -1011,89 +876,69 @@ export default {
   margin-top: 2px;
 }
 
-.modal {
+.pdf-modal {
   position: fixed;
   inset: 0;
-  z-index: 9999;
-  background: rgba(17, 17, 17, 0.45);
-  backdrop-filter: blur(4px);
+  width: 100dvw;
+  height: 100dvh;
+  background: rgba(15, 15, 15, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 99999;
+}
+
+.pdf-container {
+  width: min(95vw, 1400px);
+  height: min(92vh, 1000px);
+  background: #fff;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-topbar {
+  height: 58px;
+  padding: 0 16px 0 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 24px;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #eeeeea;
+  background: #fff;
 }
 
-.modal-card {
-  width: min(460px, 100%);
-  max-height: calc(100vh - 48px);
-  background: #ffffff;
-  border: 1px solid #eeeeea;
-  border-radius: 16px;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
-  overflow: hidden;
+.pdf-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #111;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.modal-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.pdf-actions {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  padding: 14px 20px 20px;
-  border-top: 1px solid #f0f0ed;
-  background: #ffffff;
+  flex-shrink: 0;
 }
 
-.modal-actions button {
-  height: 42px;
-  border-radius: 10px;
-  border: 1px solid #deded9;
-  background: #ffffff;
-  color: #333333;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+.pdf-container iframe {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #f5f5f5;
 }
 
-.modal-actions button.primary {
-  border-color: #111111;
-  background: #111111;
-  color: #ffffff;
-}
-
-.modal-actions button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-@media (max-width: 640px) {
-  .modal {
-    padding: 16px;
-    align-items: flex-end;
-  }
-
-  .modal-card.large {
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-actions {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 1100px) {
-  .detail-grid,
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 1100px) { 
+  .detail-grid, 
+  .summary-grid { 
+    grid-template-columns: 1fr; 
+  } 
 }
 </style>
