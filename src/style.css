@@ -2633,3 +2633,9 @@ th.center {
   padding-left: 34px;
   padding-right: 34px;
 }
+
+.form-field input, 
+.form-field select, 
+.form-field textarea {
+  padding: 10px;
+}
