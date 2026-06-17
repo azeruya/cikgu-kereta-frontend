@@ -93,7 +93,7 @@
             <div class="card-scroll today-scroll">
               <table
                 v-if="todayTransactions.length > 0"
-                class="table compact-table"
+                class="table table-compact dashboard-table"
               >
                 <thead>
                   <tr>
@@ -997,53 +997,24 @@ export default {
 /* =========================
    TODAY'S TRANSACTIONS
 ========================= */
-.today-card .compact-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.compact-table th {
-  padding: 11px 12px;
-  font-size: 10.5px;
-  font-weight: 850;
-  color: #8f8f8f;
-  text-transform: uppercase;
-  letter-spacing: 0.085em;
-  border-bottom: 1px solid #eeeeea;
-  text-align: left;
-}
-
-.compact-table td {
-  padding: 14px 12px;
-  font-size: 13px;
-  color: #2a2a2a;
-  border-bottom: 1px solid #f2f2ee;
-  vertical-align: middle;
-}
-
-.compact-table th:nth-child(1),
-.compact-table td:nth-child(1) {
+.dashboard-table th:nth-child(1),
+.dashboard-table td:nth-child(1) {
   width: 31%;
 }
 
-.compact-table th:nth-child(2),
-.compact-table td:nth-child(2) {
+.dashboard-table th:nth-child(2),
+.dashboard-table td:nth-child(2) {
   width: 33%;
 }
 
-.compact-table th:nth-child(3),
-.compact-table td:nth-child(3) {
+.dashboard-table th:nth-child(3),
+.dashboard-table td:nth-child(3) {
   width: 18%;
 }
 
-.compact-table th:nth-child(4),
-.compact-table td:nth-child(4) {
+.dashboard-table th:nth-child(4),
+.dashboard-table td:nth-child(4) {
   width: 18%;
-}
-
-.compact-table tbody tr:hover {
-  background: #fafaf8;
 }
 
 .item-name {
@@ -1058,13 +1029,6 @@ export default {
   font-size: 11.5px;
   color: #999;
   line-height: 1.25;
-}
-
-.today-card .status-pill {
-  height: 23px;
-  padding: 0 10px;
-  font-size: 11px;
-  font-weight: 750;
 }
 
 /* =========================
@@ -1224,28 +1188,6 @@ export default {
   font-weight: 850;
   color: #d24b4b;
   line-height: 1.2;
-}
-
-.stock-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 6px;
-  min-height: 21px;
-  padding: 2px 9px;
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 750;
-}
-
-.badge-warn {
-  background: #fff3df;
-  color: #9b5d13;
-}
-
-.badge-crit {
-  background: #ffecec;
-  color: #c93434;
 }
 
 .stock-meter {
@@ -1438,44 +1380,6 @@ export default {
 .act-time {
   margin-top: 4px;
   font-size: 11.5px;
-  color: #999;
-}
-
-/* =========================
-   OLD TABLE COMPATIBILITY
-========================= */
-.jobs-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.jobs-table th {
-  text-align: left;
-  padding: 10px;
-  font-size: 10.5px;
-  font-weight: 800;
-  color: #999;
-  text-transform: uppercase;
-  border-bottom: 1px solid #eeeeea;
-}
-
-.jobs-table td {
-  padding: 10px;
-  font-size: 12.5px;
-  color: #333;
-  border-bottom: 1px solid #f3f3f0;
-  vertical-align: middle;
-}
-
-.job-customer {
-  font-weight: 700;
-  color: #111;
-  font-size: 12.5px;
-}
-
-.job-plate {
-  font-size: 11px;
   color: #999;
 }
 

@@ -93,10 +93,10 @@
                 <td>{{ formatDate(trx.created_at) }}</td>
 
                 <td class="right">
-                  <div class="action-icon-group" @click.stop>
+                  <div class="icon-btn-group" @click.stop>
                     <!-- View -->
                     <router-link
-                      class="icon-action"
+                      class="icon-btn"
                       :to="`/transactions/${trx.id}`"
                       title="View transaction"
                     >
@@ -108,7 +108,7 @@
 
                     <!-- WhatsApp -->
                     <button
-                      class="icon-action"
+                      class="icon-btn"
                       title="Send WhatsApp"
                       @click="openWhatsApp(trx)"
                     >
@@ -122,7 +122,7 @@
                     <!-- Confirm quotation -->
                     <button
                       v-if="trx.status === 'quotation'"
-                      class="icon-action confirm"
+                      class="icon-btn icon-btn-success"
                       :disabled="actionLoadingId === trx.id"
                       title="Confirm quotation"
                       @click="openConfirmQuotationModal(trx)"
@@ -136,7 +136,7 @@
                     <!-- Add payment -->
                     <button
                       v-if="trx.status === 'invoice'"
-                      class="icon-action payment"
+                      class="icon-btn icon-btn-info"
                       :disabled="actionLoadingId === trx.id"
                       title="Add payment"
                       @click="openPaymentModal(trx)"
@@ -715,7 +715,7 @@ export default {
   text-align: right;
 }
 
-.action-icon-group {
+.icon-btn-group {
   display: flex;
   justify-content: flex-start;
   align-items: center;

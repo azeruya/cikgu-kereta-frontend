@@ -108,7 +108,7 @@
                   <td class="center">
                     <button
                       v-if="expense.receipt_file"
-                      class="icon-action receipt"
+                      class="icon-btn icon-btn-info"
                       @click.stop="viewReceipt(expense)"
                       title="Open receipt"
                     >
@@ -124,9 +124,9 @@
                   </td>
 
                   <td class="right">
-                    <div class="action-icon-group" @click.stop>
+                    <div class="icon-btn-group" @click.stop>
                       <button
-                        class="icon-action"
+                        class="icon-btn"
                         title="View expense"
                         @click="openDetail(expense)"
                       >
@@ -137,7 +137,7 @@
                       </button>
 
                       <button
-                        class="icon-action"
+                        class="icon-btn"
                         title="Edit expense"
                         @click="openFormModal(expense)"
                       >
@@ -148,7 +148,7 @@
                       </button>
 
                       <button
-                        class="icon-action danger"
+                        class="icon-btn icon-btn-danger"
                         title="Delete expense"
                         @click="openDeleteModal(expense)"
                       >
@@ -1429,49 +1429,6 @@ export default {
   color: #444;
 }
 
-/* table */
-.table {
-  table-layout: fixed;
-  width: 100%;
-}
-
-.table th:nth-child(1),
-.table td:nth-child(1) {
-  width: 105px;
-}
-
-.table th:nth-child(2),
-.table td:nth-child(2) {
-  width: 125px;
-}
-
-.table th:nth-child(3),
-.table td:nth-child(3) {
-  width: auto;
-}
-
-.table th:nth-child(4),
-.table td:nth-child(4) {
-  width: 105px;
-}
-
-.table th:nth-child(5),
-.table td:nth-child(5) {
-  width: 92px;
-  text-align: center;
-}
-
-.table th:nth-child(6),
-.table td:nth-child(6) {
-  width: 130px;
-  text-align: right;
-}
-
-.table td {
-  font-size: 13px;
-  vertical-align: middle;
-}
-
 .description-cell {
   max-width: 220px;
   color: #444;
@@ -1527,51 +1484,6 @@ export default {
   color: #aaa;
   font-style: italic;
   white-space: nowrap;
-}
-
-.action-icon-group {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 7px;
-}
-
-.icon-action {
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-  border: 1px solid #dedede;
-  background: #fff;
-  color: #6f6f6f; 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
-}
-
-.icon-action:hover {
-  background: #f8f8f8;
-  border-color: #cfcfcf;
-  color: #333; 
-}
-
-.icon-action:active {
-  transform: scale(0.96);
-}
-
-.icon-action.receipt {
-  background: #faf9f4;
-}
-
-.icon-action.danger {
-  color: #8a6a66; 
-}
-
-.icon-action.danger:hover {
-  color: #b42318; 
-  background: #fff1f0;
-  border-color: #f1b8b2;
 }
 
 .icon-svg {

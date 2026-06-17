@@ -87,10 +87,10 @@
               </td>
 
               <td class="right">
-                <div class="action-icon-group" @click.stop>
-                  <div class="action-icon-group" @click.stop>
+                <div class="icon-btn-group" @click.stop>
+                  <div class="icon-btn-group" @click.stop>
                     <button
-                      class="icon-action"
+                      class="icon-btn"
                       title="Edit user"
                       @click="openModal(user)"
                     >
@@ -101,7 +101,7 @@
                     </button>
 
                     <button
-                      class="icon-action danger"
+                      class="icon-btn icon-btn-danger"
                       title="Delete user"
                       :disabled="user.id === currentUser?.id"
                       @click="openDeleteModal(user)"
@@ -510,53 +510,6 @@ export default {
   text-align: right;
 }
 
-.action-icon-group {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 7px;
-}
-
-.icon-action {
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-  border: 1px solid #e6e6e6;
-  background: #fff;
-  color: #6f6f6f;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
-}
-
-.icon-action:hover {
-  color: #333;
-  background: #f9f9f9;
-  border-color: #d8d8d8;
-}
-
-.icon-action:active {
-  transform: scale(0.96);
-}
-
-.icon-action.danger {
-  color: #8a6a66;
-  border-color: #efd8d5;
-}
-
-.icon-action.danger:hover {
-  color: #b42318;
-  background: #fff5f4;
-  border-color: #f1b8b2;
-}
-
-.icon-action:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
 .icon-svg {
   width: 17px;
   height: 17px;
@@ -712,44 +665,10 @@ export default {
   color: #fff;
 }
 
-.table td {
-  font-size: 13px;
-  vertical-align: middle;
-  padding: 5px 5px;
-}
-
-.table th {
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #999;
-}
-
 .page-actions {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.search-input {
-  width: 280px;
-  height: 38px;
-  border: 1px solid #e5e5e2;
-  border-radius: 13px;
-  background: #fff;
-  padding: 0 14px;
-  font-size: 13px;
-  color: #222;
-  outline: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-}
-
-.search-input:focus {
-  border-color: #111;
-}
-
-.search-input::placeholder {
-  color: #aaa;
 }
 
 .users-table td {
