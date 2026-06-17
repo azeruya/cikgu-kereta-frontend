@@ -412,7 +412,7 @@
               <div class="confirm-actions">
                 <button
                   type="button"
-                  class="confirm-cancel"
+                  class="btn btn-secondary btn-pill"
                   :disabled="restockLoading"
                   @click="closeRestockModal"
                 >
@@ -421,7 +421,7 @@
 
                 <button
                   type="button"
-                  class="confirm-primary"
+                  class="btn btn-primary btn-pill"
                   :disabled="restockLoading"
                   @click="submitRestock"
                 >
@@ -892,158 +892,115 @@ nextPage() {
 }
 
 /* Modal style matching Customer page */
-.modal-card.large {
-  width: min(520px, calc(100vw - 32px));
-  border-radius: 18px;
-}
-
-.modal-header {
-  padding: 18px 42px 8px;
-}
-
-.modal-header span {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: #222;
-}
-
-.modal-body {
-  padding: 10px 42px 14px;
-}
-
-.modal-detail-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.detail-section {
-  border: 1px solid #eeeeee;
-  border-radius: 14px;
-  padding: 12px 14px;
-  background: #fff;
-}
-
-.info-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.info-row {
+.inventory-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1.8fr) 340px;
   gap: 18px;
-  padding: 8px 0;
+  align-items: start;
 }
 
-.info-row:first-child {
-  padding-top: 0;
+.stack-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.info-row.last {
-  padding-bottom: 0;
-}
-
-.info-item {
+/* Stock text inside inventory table */
+.stock-block {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 0;
 }
 
-.info-item.full {
-  grid-column: 1 / -1;
-}
-
-.info-label {
-  font-size: 10px;
+.stock-main {
+  font-size: 12.8px;
   font-weight: 700;
-  color: #8a8a8a;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.info-value {
-  font-size: 12px;
-  font-weight: 600;
-  color: #222;
-  line-height: 1.25;
-  word-break: break-word;
-}
-
-.info-value.stock-normal {
   color: #287a3e;
+  white-space: nowrap;
 }
 
-.info-value.stock-danger {
+.stock-main.stock-danger {
   color: #d92d20;
 }
 
-.detail-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 9px 0;
-  border-top: 1px solid #f1f1f1;
+.stock-main.stock-normal {
+  color: #287a3e;
 }
 
-.detail-list-item:first-of-type {
-  border-top: none;
-  padding-top: 0;
-}
-
-.detail-list-item small {
-  font-size: 11.5px;
-  color: #666;
-}
-
-.empty-small {
-  font-size: 12px;
+.stock-min {
+  font-size: 11px;
   color: #999;
-  padding: 4px 0;
 }
 
-.modal-actions.split {
+/* Low stock preview card */
+.stock-preview-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  padding: 12px 42px 18px;
-  border-top: 1px solid #eeeeee;
-}
-
-.left-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.modal-actions button,
-.modal-action-btn {
-  height: 34px;
-  min-width: 82px;
-  padding: 0 12px;
-  border-radius: 11px;
-  border: 1px solid #e5e5e5;
+  gap: 12px;
+  padding: 12px 13px;
+  border: 1px solid #ececea;
+  border-radius: 13px;
   background: #fff;
-  color: #333;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.stock-preview-item:hover {
+  background: #fafafa;
+}
+
+.stock-alert-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.stock-alert-main .item-name {
+  font-size: 12px;
+}
+
+.stock-preview-right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.stock-danger-text {
   font-size: 12px;
   font-weight: 600;
+  color: #d24b4b;
+}
+
+.restock-link {
+  margin-top: 3px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #999;
+  font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.modal-actions button.primary {
-  min-width: 92px;
-  background: #111;
-  color: #fff;
-  border-color: #111;
+.restock-link:hover {
+  color: #d24b4b;
 }
 
-/* Skeleton loading matching Customer modal */
+/* Low stock meter */
+.stock-meter {
+  height: 3px;
+  margin-top: 7px;
+  border-radius: 999px;
+  background: #eeeeee;
+  overflow: hidden;
+}
+
+.stock-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #f06b6b;
+}
+
+/* Skeleton loading */
 .skeleton-line {
   height: 13px;
   border-radius: 999px;
@@ -1073,116 +1030,10 @@ nextPage() {
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
-}
-
-/* min stock */
-.stock-block {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.stock-main {
-  font-size: 12.8px;
-  font-weight: 700;
-  color: #287a3e;
-  white-space: nowrap;
-}
-
-.stock-main.stock-danger {
-  color: #d92d20;
-}
-
-.stock-main.stock-normal {
-  color: #287a3e;
-}
-
-.stock-min {
-  font-size: 11px;
-  color: #999;
-}
-
-
-/* low stock */
-.stock-preview-right {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.stock-preview-right .stock-danger {
-  font-size: 13px;
-  font-weight: 800;
-  color: #d92d20;
-}
-
-.stock-preview-right small {
-  font-size: 11px;
-  color: #999;
-}
-
-/* low stock meter */
-.stock-preview-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 13px;
-  border: 1px solid #ececea;
-  border-radius: 13px;
-  background: #fff;
-  cursor: pointer;
-  margin-bottom: 5px;
-}
-
-.stock-preview-item:hover {
-  background: #fafafa;
-}
-
-.stock-alert-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.stock-alert-main .item-name{
-  font-size: 12px;
-}
-
-.stock-meter {
-  height: 3px;
-  margin-top: 7px;
-  border-radius: 999px;
-  background: #eeeeee;
-  overflow: hidden;
-}
-
-.stock-meter-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: #f06b6b; /* softer red */
-}
-
-.stock-danger-text {
-  font-size: 12px;
-  font-weight: 600;
-  color: #d24b4b;
-}
-
-.restock-link {
-  margin-top: 3px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #999;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.restock-link:hover {
-  color: #d24b4b;
 }
 
 @media (max-width: 1100px) {
@@ -1192,16 +1043,8 @@ nextPage() {
 }
 
 @media (max-width: 700px) {
-  .info-row,
   .skeleton-grid {
     grid-template-columns: 1fr;
-  }
-
-  .modal-header,
-  .modal-body,
-  .modal-actions.split {
-    padding-left: 20px;
-    padding-right: 20px;
   }
 }
 </style>
