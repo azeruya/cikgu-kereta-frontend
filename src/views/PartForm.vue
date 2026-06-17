@@ -404,19 +404,18 @@ export default {
 </script>
 
 <style scoped>
-.checkbox-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.action-stack {
-  margin-top: 14px;
-}
-
-.full-btn {
+.form-page-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
   width: 100%;
-  justify-content: center;
+  max-width: 1180px;
+}
+
+.compatibility-wrapper {
+  width: 100%;
+  max-width: 1180px;
+  margin-top: 18px;
 }
 
 .compatibility-list {
@@ -439,36 +438,6 @@ export default {
   margin-bottom: 10px;
 }
 
-/* generic toggle card */
-.toggle-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #222;
-}
-
-.toggle-subtitle {
-  margin-top: 2px;
-  font-size: 11.5px;
-  color: #888;
-  line-height: 1.35;
-}
-
-/* Page-specific layout only */
-.form-page-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
-  width: 100%;
-  max-width: 1180px;
-}
-
-.compatibility-wrapper {
-  width: 100%;
-  max-width: 1180px;
-  margin-top: 18px;
-}
-
-/* Compatibility empty state */
 .compat-empty {
   min-height: 105px;
   border: 1px dashed #dddddd;
@@ -493,31 +462,10 @@ export default {
   color: #888;
 }
 
-@media (max-width: 1000px) {
-  .part-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .part-form-grid > .card:nth-child(2) {
-    position: static;
-  }
-}
-
 @media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
   .toggle-card {
     align-items: flex-start;
     flex-direction: column;
-  }
-}
-
-@media (max-width: 1100px) {
-  .part-form-grid,
-  .form-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>
