@@ -175,7 +175,7 @@
               <button type="button" @click="closeModal">Cancel</button>
               <button
                 type="button"
-                class="btn-primary"
+                class="btn btn-primary"
                 :disabled="saving"
                 @click="saveUser"
               >
@@ -601,37 +601,6 @@ export default {
   border-radius: 15px;
   padding: 16px;
   background: #fff;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.field label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #777;
-}
-
-.field input,
-.field select {
-  width: 100%;
-  height: 40px;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  background: #fff;
-  font-size: 13px;
-  color: #222;
-  outline: none;
-  padding: 0 13px;
-  box-sizing: border-box;
-}
-
-.field input:focus,
-.field select:focus {
-  border-color: #111;
 }
 
 .modal-actions.form-actions {

@@ -332,7 +332,7 @@
             </div>
           </div>
 
-          <div class="form-actions">
+          <div class="page-bottom actions">
             <button class="btn btn-secondary btn-pill" type="button" @click="resetForm">
               Reset
             </button>
@@ -856,12 +856,6 @@ export default {
   border-top: 1px solid #ececea;
   font-weight: 600;
   color: #111;
-}
-
-.action-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
 }
 
 .link-btn {

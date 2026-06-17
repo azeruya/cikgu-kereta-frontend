@@ -398,7 +398,7 @@
           <button type="button" @click="closeFormModal">Cancel</button>
           <button
             type="button"
-            class="btn-primary"
+            class="btn btn-primary"
             :disabled="savingForm"
             @click="submitCustomer"
           >
@@ -980,15 +980,6 @@ async confirmDeleteCustomer() {
   background: #fff;
 }
 
-.section-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #777;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 14px;
-}
-
 .customer-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1148,15 +1139,6 @@ async confirmDeleteCustomer() {
   border-radius: 14px;
   padding: 12px 14px;
   background: #fff;
-}
-
-.section-title {
-  font-size: 10px;
-  font-weight: 700;
-  color: #444;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 10px;
 }
 
 .customer-info-list {
