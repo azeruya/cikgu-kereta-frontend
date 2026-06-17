@@ -59,11 +59,11 @@
             <option value="partial">Partial</option>
           </select>
 
-          <button class="btn btn-primary" type="button" @click="applyFilters">
+          <button class="btn btn-primary btn-pill" type="button" @click="applyFilters">
             Apply
           </button>
 
-          <button class="btn btn-secondary" type="button" @click="clearFilters">
+          <button class="btn btn-secondary btn-pill" type="button" @click="clearFilters">
             Reset
           </button>
         </div>
@@ -752,113 +752,6 @@ export default {
 </script>
 
 <style scoped>
-.item-name {
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.card {
-  transition: all 0.15s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-}
-
-.apex-chart-wrap {
-  width: 100%;
-}
-
-.small-chart {
-  min-height: 150px;
-}
-
-.medium-chart {
-  min-height: 280px;
-}
-
-.filter-shell {
-  margin-bottom: 16px;
-}
-
-.mini-stat-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.mini-stat-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid #f1f1ee;
-  font-size: 13px;
-}
-
-.mini-stat-row:last-child {
-  border-bottom: none;
-}
-
-.analytics-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.insight-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.insight-stats.single {
-  grid-template-columns: 1fr;
-}
-
-.insight-stat {
-  background: #fafaf9;
-  border: 1px solid #ecece8;
-  border-radius: 16px;
-  padding: 14px 16px;
-}
-
-.insight-stat span {
-  display: block;
-  font-size: 12px;
-  color: #888;
-  margin-bottom: 8px;
-}
-
-.insight-stat strong {
-  font-size: 24px;
-  line-height: 1.1;
-}
-
-.subsection-title {
-  margin-top: 2px;
-  margin-bottom: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #666;
-}
-
-.subtext {
-  font-size: 11px;
-  color: #888;
-  margin-top: 3px;
-}
-
-.danger-text {
-  color: #c73a3a;
-}
-
-/* =========================
-   REPORTS PAGE
-========================= */
-
 .report-filter-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -885,9 +778,8 @@ export default {
 .filter-subtitle {
   margin-top: 4px;
   font-size: 11.5px;
-  color: var(--text-muted);
-  line-height: 1.35;
   color: #999;
+  line-height: 1.35;
 }
 
 .report-filters {
@@ -917,7 +809,6 @@ export default {
   border-color: #111;
 }
 
-/* Main report layout */
 .report-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -936,18 +827,14 @@ export default {
   position: sticky;
   top: 24px;
   align-self: start;
-
   display: flex;
   flex-direction: column;
   gap: 14px;
-
   padding-left: 18px;
   border-left: 1px solid #e8e8e3;
-
   padding-bottom: 4px;
 }
 
-/* Financial hero */
 .financial-card {
   min-height: auto;
 }
@@ -990,7 +877,6 @@ export default {
   color: #b42318 !important;
 }
 
-/* Analytics */
 .analytics-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1001,13 +887,17 @@ export default {
   min-height: 280px;
 }
 
+.apex-chart-wrap {
+  width: 100%;
+  min-width: 0;
+}
+
 .medium-chart {
   min-height: 210px;
 }
 
-.apex-chart-wrap {
-  width: 100%;
-  min-width: 0;
+.small-chart {
+  min-height: 135px;
 }
 
 .apex-chart-wrap :deep(.apexcharts-tooltip) {
@@ -1025,7 +915,6 @@ export default {
   fill: #777 !important;
 }
 
-/* Right side cards */
 .collection-card {
   padding-bottom: 16px;
 }
@@ -1038,67 +927,6 @@ export default {
   margin-bottom: -14px;
 }
 
-.small-chart {
-  min-height: 135px;
-}
-
-.summary-stack.compact {
-  margin-top: 4px;
-}
-
-.summary-stack {
-  display: flex;
-  flex-direction: column;
-}
-
-.summary-line {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 9px 0;
-  border-bottom: 1px solid #f1f1ef;
-  font-size: 12.5px;
-  color: #666;
-}
-
-.summary-line:last-child {
-  border-bottom: none;
-}
-
-.summary-line b {
-  color: #222;
-  font-weight: 700;
-  text-align: right;
-}
-
-/* Quick overview */
-.mini-stat-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.mini-stat-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 0;
-  border-bottom: 1px solid #f1f1ef;
-  font-size: 12.5px;
-  color: #666;
-}
-
-.mini-stat-row:last-child {
-  border-bottom: none;
-}
-
-.mini-stat-row b {
-  color: #222;
-  font-weight: 700;
-  text-align: right;
-}
-
-/* Insights */
 .insight-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1144,50 +972,13 @@ export default {
   border-bottom: none;
 }
 
-.subtext {
-  margin-top: 3px;
-  font-size: 11.5px;
-  color: #999;
-  line-height: 1.35;
-}
-
-.job-price {
-  font-size: 13px;
-  font-weight: 700;
-  color: #222;
-  white-space: nowrap;
-  text-align: right;
-}
-
-.empty-small {
-  min-height: 76px;
-  display: flex;
-  align-items: center;
-  color: #999;
-  font-size: 12.5px;
-  font-style: italic;
-}
-
-.empty-state {
-  min-height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-  font-size: 13px;
-  font-style: italic;
-  border: 1px dashed #e3e3df;
-  border-radius: 14px;
-  background: #fafafa;
-}
-
-/* Responsive */
 @media (max-width: 1200px) {
   .report-layout {
     grid-template-columns: 1fr;
   }
 
   .report-side {
+    position: static;
     border-left: none;
     padding-left: 0;
     display: grid;
@@ -1208,7 +999,8 @@ export default {
 
   .report-kpis,
   .analytics-grid,
-  .report-side {
+  .report-side,
+  .insight-stats {
     grid-template-columns: 1fr;
   }
 
@@ -1216,31 +1008,6 @@ export default {
   .report-filters select {
     flex: 1;
     min-width: 150px;
-  }
-}
-
-@media (max-width: 1200px) {
-  .report-hero-grid,
-  .analytics-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-top {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 700px) {
-  .hero-chart-row {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-chart-values {
-    text-align: left;
-  }
-
-  .insight-stats {
-    grid-template-columns: 1fr;
   }
 }
 </style>
