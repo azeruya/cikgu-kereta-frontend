@@ -186,12 +186,13 @@
                   {{ paymentTransactionDocNo }}
                 </div>
 
+              <div class="form-data-body">
                 <div class="summary-highlight">
                   <span>Amount due</span>
                   <strong>RM {{ formatMoney(paymentTransactionTotal) }}</strong>
                 </div>
 
-                <div class="form-grid">
+                <div class="form-grid form-grid-compact">
                   <div class="form-field">
                     <label>Amount Paid</label>
                     <input
@@ -227,6 +228,8 @@
                   </div>
                 </div>
               </div>
+              
+            </div>
 
               <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
                 {{ paymentFormError }}
