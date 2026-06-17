@@ -116,7 +116,7 @@
           <Card v-if="!form.is_generic">
           <template #header>
             <span class="card-title">Compatibility</span>
-            <button class="pill-btn" type="button" @click="addCompatibility">
+            <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="addCompatibility">
               + Add Compatibility
             </button>
           </template>
@@ -126,7 +126,7 @@
             <div class="compat-empty-sub">
               Add make, model, and year range for vehicle-specific parts.
             </div>
-            <button class="pill-btn" type="button" @click="addCompatibility">
+            <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="addCompatibility">
               + Add Compatibility
             </button>
           </div>
@@ -576,11 +576,6 @@ export default {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-}
-
-.page-form-actions .pill-btn {
-  height: 38px;
-  min-width: 120px;
 }
 
 .compat-empty {

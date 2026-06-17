@@ -344,46 +344,6 @@ textarea {
   background: #fff;
 }
 
-/* =========================
-   BUTTONS
-========================= */
-.pill-btn {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid #e5e5e1;
-  border-radius: 12px;
-  padding: 9px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #444;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-  box-shadow: var(--shadow-sm);
-  text-decoration: none;
-}
-
-.pill-btn:hover {
-  border-color: #d7d7d2;
-  background: #fcfcfb;
-}
-
-.pill-btn:active {
-  transform: scale(0.985);
-}
-
-.pill-btn.primary {
-  background: #121212;
-  color: #fff;
-  border-color: #121212;
-}
-
-.pill-btn.primary:hover {
-  background: #1d1d1d;
-}
-
 /* ================================
   BUTTONS REFACTORED
 ================================ */

@@ -27,7 +27,7 @@
             v-model.trim="searchQuery"
             placeholder="Search category / description..."
           />
-          <button class="pill-btn" type="button" @click="exportCsv">
+          <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="exportCsv">
             Export CSV
           </button>
           <button class="pill-btn primary btn btn-primary btn-pill" type="button" @click="openFormModal()">
@@ -58,8 +58,8 @@
               <option>Misc</option>
             </select>
 
-            <button class="pill-btn" @click="applyFilters">Apply</button>
-            <button class="pill-btn" @click="clearFilters">Reset</button>
+            <button class="pill-btn btn btn-secondary btn-pill" @click="applyFilters">Apply</button>
+            <button class="pill-btn btn btn-secondary btn-pill" @click="clearFilters">Reset</button>
           </div>
 
           <div v-if="loading" class="empty-state">Loading expenses...</div>

@@ -166,7 +166,7 @@
       <Card>
   <template #header>
     <span class="card-title">Transaction Items</span>
-    <button class="pill-btn" type="button" @click="addServiceItem">
+    <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="addServiceItem">
       + Add Service
     </button>
   </template>
@@ -333,7 +333,7 @@
           </div>
 
           <div class="action-row">
-            <button class="pill-btn" type="button" @click="resetForm">
+            <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="resetForm">
               Reset
             </button>
 

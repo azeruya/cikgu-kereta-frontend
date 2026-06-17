@@ -36,7 +36,7 @@
             placeholder="Search part / SKU / variant..."
         />
         <button
-          class="pill-btn"
+          class="pill-btn btn btn-secondary btn-pill"
           type="button"
           :disabled="exporting"
           @click="exportInventory"

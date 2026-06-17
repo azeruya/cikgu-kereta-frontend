@@ -115,7 +115,7 @@
 
             <div class="actions-panel">
                 <button
-                class="pill-btn"
+                class="pill-btn btn btn-secondary btn-pill"
                 @click="previewDocument('quotation')"
                 v-if="transaction.status === 'quotation'"
                 >
@@ -123,7 +123,7 @@
                 </button>
 
                 <button
-                class="pill-btn"
+                class="pill-btn btn btn-secondary btn-pill"
                 @click="previewDocument('invoice')"
                 v-if="transaction.status === 'invoice'"
                 >
@@ -131,27 +131,27 @@
                 </button>
 
                 <button
-                class="pill-btn"
+                class="pill-btn btn btn-secondary btn-pill"
                 @click="previewDocument('receipt')"
                 v-if="transaction.status === 'receipt'"
                 >
                 Preview Receipt
                 </button>
                 <button
-                class="pill-btn"
+                class="pill-btn btn btn-secondary btn-pill"
                 @click="downloadDocument('receipt')"
                 v-if="transaction.status === 'receipt'"
                 >
                 Download Receipt
                 </button>
-              <button class="pill-btn" @click="openWhatsApp(transaction)">
+              <button class="pill-btn btn btn-secondary btn-pill" @click="openWhatsApp(transaction)">
                 WhatsApp Customer
               </button>
 
               <router-link
                 v-if="transaction.status === 'quotation'"
                 :to="`/transactions/${transaction.id}/edit`"
-                class="pill-btn"
+                class="pill-btn btn btn-secondary btn-pill"
                 >
                 Edit Transaction
                 </router-link>
