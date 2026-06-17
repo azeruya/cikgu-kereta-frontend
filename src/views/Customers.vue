@@ -86,8 +86,8 @@
                   </div>
 
                     <div class="cust-text">
-                    <div class="cust-name">{{ cust.name }}</div>
-                    <div class="cust-meta">{{ customerStatusLabel(cust) }}</div>
+                      <div class="cust-name">{{ cust.name }}</div>
+                      <div class="cust-meta">{{ customerStatusLabel(cust) }}</div>
                     </div>
                 </td>
 
@@ -153,7 +153,7 @@
               <div class="detail-section customer-info-section">
               <div class="section-title">Customer Information</div>
 
-              <div class="customer-info-list">
+             <div class="info-list">
                 <div class="info-row">
                   <div class="info-item">
                     <span class="info-label">Phone</span>
@@ -164,7 +164,9 @@
                     <span class="info-label">Email</span>
                     <span class="info-value">{{ activeCustomer.email || "-" }}</span>
                   </div>
-              
+                </div>
+
+                <div class="info-row">
                   <div class="info-item">
                     <span class="info-label">Address</span>
                     <span class="info-value">{{ activeCustomer.address || "-" }}</span>
@@ -174,7 +176,9 @@
                     <span class="info-label">Total Visits</span>
                     <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
                   </div>
+                </div>
 
+                <div class="info-row">
                   <div class="info-item">
                     <span class="info-label">Total Spent</span>
                     <span class="info-value">
@@ -903,7 +907,7 @@ async confirmDeleteCustomer() {
 
 .cust-name {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: #171717;
   line-height: 1.2;
 }
@@ -914,27 +918,13 @@ async confirmDeleteCustomer() {
   line-height: 1.2;
 }
 
-.customer-detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 18px;
-  font-size: 12px;
-  color: #555;
-}
-
-.jobs-section {
-  margin-top: 14px;
-}
-
-.checkbox-row {
+/* Customer modal-specific only */
+.customer-info-list {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: #555;
+  flex-direction: column;
 }
 
-/* skeleton loading styles */
+/* Skeleton loading */
 .skeleton-line {
   height: 14px;
   border-radius: 999px;
@@ -964,282 +954,9 @@ async confirmDeleteCustomer() {
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
-  }
-}
-
-/* modal actions */
-.detail-section {
-  border: 1px solid #eeeeee;
-  border-radius: 16px;
-  padding: 16px;
-  background: #fff;
-}
-
-.customer-detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px 24px;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.detail-item.full {
-  grid-column: 1 / -1;
-}
-
-.detail-label {
-  font-size: 12px;
-  color: #888;
-}
-
-.detail-item strong {
-  font-size: 14px;
-  color: #222;
-  font-weight: 600;
-}
-
-.detail-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 0;
-  border-top: 1px solid #f1f1f1;
-}
-
-.detail-list-item:first-of-type {
-  border-top: none;
-  padding-top: 0;
-}
-
-.detail-list-item:last-child {
-  padding-bottom: 0;
-}
-
-.item-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #222;
-}
-
-.detail-list-item small {
-  font-size: 12px;
-  color: #666;
-}
-
-.job-price {
-  font-size: 14px;
-  font-weight: 700;
-  color: #222;
-  white-space: nowrap;
-}
-
-.empty-small {
-  font-size: 13px;
-  color: #999;
-  padding: 8px 0;
-}
-
-.modal-actions.split {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 20px 18px;
-  border-top: 1px solid #eeeeee;
-}
-
-.left-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.modal-actions button {
-  height: 38px;
-  min-width: 92px;
-  padding: 0 14px;
-  border-radius: 12px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.modal-actions button.primary {
-  min-width: 120px;
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-
-.modal-overlay {
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(3px);
-}
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 28px;
-  margin-top: 16px;
-}
-
-.detail-item label {
-  display: block;
-  font-size: 11px;
-  text-transform: uppercase;
-  color: #999;
-  margin-bottom: 4px;
-}
-
-.detail-item span {
-  font-size: 14px;
-  font-weight: 500;
-  color: #222;
-}
-
-/* modal */
-.detail-section {
-  border: 1px solid #eeeeee;
-  border-radius: 14px;
-  padding: 12px 14px;
-  background: #fff;
-}
-
-.customer-info-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.info-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  padding: 9px 0;
-  border-top: 1px solid #f1f1f1;
-}
-
-.info-row:first-child {
-  border-top: none;
-  padding-top: 0;
-}
-
-.info-row.last {
-  padding-bottom: 0;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.info-label {
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #8a8a8a;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.info-value {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #222;
-  line-height: 1.25;
-  word-break: break-word;
-}
-
-.detail-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 9px 0;
-  border-top: 1px solid #f1f1f1;
-}
-
-.detail-list-item:first-of-type {
-  border-top: none;
-  padding-top: 0;
-}
-
-.item-name {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #222;
-}
-
-.detail-list-item small {
-  font-size: 11.5px;
-  color: #666;
-}
-
-.job-price {
-  font-size: 12.5px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.empty-inline {
-  font-size: 11.5px;
-  color: #aaa;
-  font-style: italic;
-  white-space: nowrap;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  padding: 14px 42px 20px;
-  border-top: 1px solid #eeeeee;
-  background: #fff;
-}
-
-.modal-actions button {
-  flex: 1;
-  height: 38px;
-  border-radius: 12px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  color: #333;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.modal-actions button.primary {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-
-.checkbox-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 14px 0 10px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #444;
-}
-
-.checkbox-row input {
-  width: 14px;
-  height: 14px;
-}
-
-@media (max-width: 900px) {
-  .customer-detail-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>
