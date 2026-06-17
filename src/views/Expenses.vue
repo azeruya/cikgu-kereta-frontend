@@ -357,24 +357,24 @@
       <Teleport to="body">
         <div
           v-if="showDeleteModal"
-          class="delete-modal-overlay"
+          class="modal-overlay"
           @click.self="closeDeleteModal"
         >
-          <div class="delete-modal-card">
-            <div class="delete-icon">!</div>
+          <div class="confirm-card">
+            <div class="confirm-icon confirm-icon-danger">!</div>
 
-            <div class="delete-title">Delete expense?</div>
+            <div class="confirm-title">Delete expense?</div>
 
-            <div class="delete-message">
+            <div class="confirm-message">
               Are you sure you want to delete this
               <strong>{{ expenseToDelete?.category }}</strong>
               expense? This action cannot be undone.
             </div>
 
-            <div class="delete-actions">
+            <div class="confirm-actions">
               <button
                 type="button"
-                class="delete-cancel"
+                class="btn btn-secondary btn-pill"
                 :disabled="deletingExpense"
                 @click="closeDeleteModal"
               >
@@ -383,7 +383,7 @@
 
               <button
                 type="button"
-                class="delete-confirm"
+                class="btn btn-danger btn-pill"
                 :disabled="deletingExpense"
                 @click="confirmDeleteExpense"
               >

@@ -1117,38 +1117,6 @@ nextPage() {
   text-align: left;
 }
 
-.confirm-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.confirm-actions button {
-  flex: 1;
-  height: 38px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.confirm-cancel {
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  color: #333;
-}
-
-.confirm-primary {
-  border: 1px solid #111;
-  background: #111;
-  color: #fff;
-}
-
-.confirm-actions button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
 /* min stock */
 .stock-block {
   display: flex;

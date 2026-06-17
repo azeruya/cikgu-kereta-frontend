@@ -167,6 +167,7 @@
         </template>
       </div>
 
+      <!-- PAYMENT MODAL -->
       <Teleport to="body">
         <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
           <div class="modal-card large form-modal-card">
@@ -243,18 +244,19 @@
         </div>
       </Teleport>
 
+      <!-- CONFIRM QUOTATION MODAL -->
       <Teleport to="body">
         <div
           v-if="showConfirmQuotationModal"
-          class="delete-modal-overlay"
+          class="modal-overlay"
           @click.self="closeConfirmQuotationModal"
         >
-          <div class="confirm-modal-card">
+          <div class="confirm-card">
             <div class="confirm-icon">✓</div>
 
-            <div class="delete-title">Confirm quotation?</div>
+            <div class="confirm-title">Confirm quotation?</div>
 
-            <div class="delete-message">
+            <div class="confirm-message">
               This will convert
               <strong>{{ quotationToConfirm?.document_number || "this quotation" }}</strong>
               for
@@ -262,10 +264,10 @@
               into an invoice.
             </div>
 
-            <div class="delete-actions">
+            <div class="confirm-actions">
               <button
                 type="button"
-                class="delete-cancel"
+                class="btn btn-secondary btn-pill"
                 :disabled="actionLoadingId === quotationToConfirm?.id"
                 @click="closeConfirmQuotationModal"
               >
@@ -274,7 +276,7 @@
 
               <button
                 type="button"
-                class="confirm-action"
+                class="btn btn-danger btn-pill"
                 :disabled="actionLoadingId === quotationToConfirm?.id"
                 @click="submitConfirmQuotation"
               >
@@ -773,131 +775,5 @@ export default {
   background: #111;
   color: #fff;
   border-color: #111;
-}
-
-/*confirm quotation modal */
-.confirm-modal-card {
-  width: min(370px, calc(100vw - 32px));
-  background: #fff;
-  border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
-  text-align: center;
-}
-
-.confirm-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  background: #f3faf4;
-  color: #287a3e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 12px;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.confirm-action {
-  flex: 1;
-  height: 38px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1px solid #111;
-  background: #111;
-  color: #fff;
-}
-
-.confirm-action:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.delete-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(1.5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.confirm-modal-card {
-  width: min(370px, calc(100vw - 32px));
-  background: #fff;
-  border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
-  text-align: center;
-}
-
-.confirm-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  background: #f3faf4;
-  color: #287a3e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 12px;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.delete-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #171717;
-  margin-bottom: 8px;
-}
-
-.delete-message {
-  font-size: 13px;
-  line-height: 1.5;
-  color: #666;
-  margin-bottom: 20px;
-}
-
-.delete-message strong {
-  color: #222;
-}
-
-.delete-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.delete-actions button {
-  flex: 1;
-  height: 38px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.delete-cancel {
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  color: #333;
-}
-
-.confirm-action {
-  border: 1px solid #111;
-  background: #111;
-  color: #fff;
-}
-
-.confirm-action:disabled,
-.delete-cancel:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 </style>
