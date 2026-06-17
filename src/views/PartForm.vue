@@ -170,7 +170,7 @@
         </Card>
         </div>
 
-        <div class="form-actions">
+        <div class="page-bottom-actions form-actions">
           <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
             Cancel
           </router-link>

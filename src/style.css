@@ -1148,7 +1148,6 @@ textarea {
 ================================ */
 
 .form-actions,
-.action-row,
 .page-bottom-actions {
   display: flex;
   justify-content: flex-end;
