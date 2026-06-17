@@ -509,11 +509,12 @@ export default {
 
 <style scoped>
 .users-table td {
-  padding: 12px 5px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .users-table th:last-child {
-  text-align: center;
+  text-align: right;
 }
 
 .user-cell {
@@ -523,30 +524,30 @@ export default {
 }
 
 .user-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  border: 1px solid #e5e5e2;
-  background: #f2f2f0;
-  color: #555;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #f3f4f6;
+  color: #4b5563;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   flex-shrink: 0;
 }
 
 .user-avatar.avatar-admin {
   background: #eef4ff;
-  border-color: #d8e7ff;
+  border-color: #d9e7ff;
   color: #2563eb;
 }
 
 .user-avatar.avatar-staff {
-  background: #f2f2f0;
-  border-color: #e4e4e0;
-  color: #666;
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #6b7280;
 }
 
 .user-main {
@@ -557,21 +558,21 @@ export default {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #222;
+  font-size: 13.5px;
+  font-weight: 750;
+  color: var(--text);
   line-height: 1.2;
 }
 
 .user-sub {
-  margin-top: 3px;
-  font-size: 11.5px;
-  color: #999;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 .email-text {
-  font-size: 13px;
-  color: #333;
+  font-size: 13.5px;
+  color: var(--text-soft);
 }
 
 @media (max-width: 900px) {

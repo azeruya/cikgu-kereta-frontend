@@ -142,10 +142,10 @@ a {
 
 .page-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 22px;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .page-intro {
@@ -163,8 +163,8 @@ a {
 }
 
 .page-title {
-  font-size: 23px;
-  font-weight: 760;
+  font-size: 22px;
+  font-weight: 800;
   color: var(--text);
   letter-spacing: -0.04em;
   line-height: 1.08;
@@ -201,12 +201,12 @@ a {
 }
 
 .search-input {
-  width: 340px;
-  height: 42px;
+  width: 360px;
+  height: 44px;
   padding: 0 15px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 15px;
   font-size: 13.5px;
   color: var(--text);
   outline: none;
@@ -514,16 +514,16 @@ a {
 }
 
 .table th {
-  height: 42px;
+  height: 44px;
   text-align: left;
-  padding: 0 14px;
+  padding: 0 18px;
   font-size: 11px;
-  font-weight: 760;
-  color: #7d8794;
+  font-weight: 800;
+  color: #7c8592;
   text-transform: uppercase;
-  letter-spacing: 0.055em;
-  border-bottom: 1px solid var(--border);
-  background: #f8fafc;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid #e6e9ee;
+  background: #f6f8fb;
   white-space: nowrap;
 }
 
@@ -536,10 +536,10 @@ a {
 }
 
 .table td {
-  padding: 14px;
-  border-bottom: 1px solid var(--border-soft);
+  padding: 16px 18px;
+  border-bottom: 1px solid #edf0f3;
   vertical-align: middle;
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--text-soft);
   line-height: 1.35;
 }
@@ -549,7 +549,7 @@ a {
 }
 
 .table tbody tr:hover {
-  background: #fafbfc;
+  background: #f8fafc;
 }
 
 .table tbody tr:last-child td {
@@ -617,16 +617,16 @@ th.center {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 9px;
 }
 
 .icon-btn {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--border);
-  border-radius: 11px;
+  border-radius: 12px;
   background: #ffffff;
-  color: #6b7280;
+  color: #667085;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -640,8 +640,8 @@ th.center {
 
 .icon-btn:hover {
   background: #f8fafc;
-  border-color: var(--border-strong);
-  color: var(--text);
+  border-color: #cfd6df;
+  color: #111827;
 }
 
 .icon-btn:active {
@@ -655,14 +655,14 @@ th.center {
 }
 
 .icon-btn-danger {
-  color: #a34d47;
-  border-color: #f0d6d2;
+  color: #b42318;
+  border-color: #f0c8c3;
 }
 
 .icon-btn-danger:hover {
-  background: var(--danger-soft);
-  border-color: #e8aaa3;
-  color: var(--danger);
+  background: #fff1f0;
+  border-color: #e5aaa3;
+  color: #981b12;
 }
 
 .icon-btn-success {
