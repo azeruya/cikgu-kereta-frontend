@@ -277,30 +277,32 @@
         <div class="empty-state">Transaction not found.</div>
       </div>
 
+      <!-- PDF Preview Modal -->
       <Teleport to="body">
-  <div v-if="pdfPreviewUrl" class="pdf-modal" @click.self="closePdfPreview">
-    <div class="pdf-container">
-      <div class="pdf-topbar">
-        <div class="pdf-title">
-          {{ currentDocType ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1) : "Document Preview" }}
+        <div v-if="pdfPreviewUrl" class="pdf-modal" @click.self="closePdfPreview">
+          <div class="pdf-container">
+            <div class="pdf-topbar">
+              <div class="pdf-title">
+                {{ currentDocType ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1) : "Document Preview" }}
+              </div>
+
+              <div class="pdf-actions">
+                <button class="pdf-close-btn" type="button" @click="closePdfPreview">
+                  Close
+                </button>
+
+                <button class="btn btn-primary btn-pill" type="button" @click="downloadDocument(currentDocType)">
+                  Download
+                </button>
+              </div>
+            </div>
+
+            <iframe :src="pdfPreviewUrl"></iframe>
+          </div>
         </div>
+      </Teleport>
 
-        <div class="pdf-actions">
-          <button class="pdf-close-btn" type="button" @click="closePdfPreview">
-            Close
-          </button>
-
-          <button class="btn btn-primary btn-pill" type="button" @click="downloadDocument(currentDocType)">
-            Download
-          </button>
-        </div>
-      </div>
-
-      <iframe :src="pdfPreviewUrl"></iframe>
-    </div>
-  </div>
-</Teleport>
-
+      <!-- Payment Modal -->
       <Teleport to="body">
         <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
           <div class="modal-card large">
@@ -354,11 +356,11 @@
               </div>
             </div>
 
-            <div class="modal-actions">
-              <button type="button" @click="closePaymentModal">Cancel</button>
+            <div class="modal-footer split">
+              <button type="button" class="btn btn-secondary btn-pill" @click="closePaymentModal">Cancel</button>
               <button
                 type="button"
-                class="btn-primary"
+                class="btn btn-primary btn-pill"
                 :disabled="actionLoading"
                 @click="submitPayment"
               >
@@ -1029,27 +1031,6 @@ export default {
   border-radius: 16px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
   overflow: hidden;
-}
-
-.modal-card.large {
-  width: min(520px, 100%);
-  padding: 0;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 18px 20px 12px;
-  border-bottom: 1px solid #f0f0ed;
-  font-size: 15px;
-  font-weight: 700;
-  color: #111111;
-}
-
-.modal-body {
-  padding: 18px 20px;
 }
 
 .form-grid {

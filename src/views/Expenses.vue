@@ -1131,31 +1131,6 @@ export default {
 }
 
 /* modal */
-.modal-card.large {
-  width: min(500px, calc(100vw - 32px));
-  border-radius: 18px;
-}
-
-.modal-header {
-  padding: 18px 42px 8px;
-}
-
-.modal-header span {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: #222;
-}
-
-.modal-body {
-  padding: 10px 42px 14px;
-}
-
-.modal-detail-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .detail-section {
   border: 1px solid #eeeeee;
   border-radius: 14px;

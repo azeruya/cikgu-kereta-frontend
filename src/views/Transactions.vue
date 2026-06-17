@@ -229,11 +229,11 @@
               </div>
             </div>
 
-            <div class="modal-actions form-actions">
-              <button type="button" @click="closePaymentModal">Cancel</button>
+            <div class="modal-footer form-actions">
+              <button type="button" class="btn btn-secondary btn-pill" @click="closePaymentModal">Cancel</button>
               <button
                 type="button"
-                class="btn-primary"
+                class="btn btn-primary btn-pill"
                 :disabled="actionLoadingId === paymentTransactionId"
                 @click="submitPayment"
               >
@@ -717,63 +717,5 @@ export default {
   font-size: 11px;
   font-weight: 700;
   color: #777;
-}
-
-/* payment modal */
-.form-modal-card {
-  width: min(560px, calc(100vw - 32px));
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 22px 38px 10px;
-}
-
-.modal-header span {
-  font-size: 15px;
-  font-weight: 700;
-  color: #222;
-}
-
-.modal-body {
-  padding: 10px 38px 16px;
-}
-
-.form-section {
-  border: 1px solid #eeeeee;
-  border-radius: 15px;
-  padding: 16px;
-  background: #fff;
-}
-
-.modal-actions.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 38px 20px;
-  border-top: 1px solid #eeeeee;
-}
-
-.modal-actions.form-actions button {
-  height: 36px;
-  min-width: 96px;
-  padding: 0 14px;
-  border-radius: 11px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  color: #333;
-  font-size: 12.5px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.modal-actions.form-actions button.primary {
-  min-width: 135px;
-  background: #111;
-  color: #fff;
-  border-color: #111;
 }
 </style>
