@@ -706,83 +706,9 @@ export default {
   color: #555;
 }
 
-.link-btn {
-  text-decoration: none;
-}
-
 /* action buttons */
 .right {
   text-align: right;
-}
-
-.icon-btn-group {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 7px;
-}
-
-.icon-action {
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-  border: 1px solid #e6e6e6;
-  background: #fff;
-  color: #6f6f6f;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
-}
-
-.icon-action:hover {
-  color: #333;
-  background: #f9f9f9;
-  border-color: #d8d8d8;
-}
-
-.icon-action:active {
-  transform: scale(0.96);
-}
-
-.icon-action:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.icon-action.confirm {
-  color: #5f6f4f;
-  border-color: #dfe9d8;
-}
-
-.icon-action.confirm:hover {
-  color: #287a3e;
-  background: #f3faf4;
-  border-color: #cce5d2;
-}
-
-.icon-action.payment {
-  color: #4f6f58;
-  border-color: #d7eadc;
-}
-
-.icon-action.payment:hover {
-  color: #1f7a3a;
-  background: #f3faf4;
-  border-color: #cce5d2;
-}
-
-.icon-svg {
-  width: 17px;
-  height: 17px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .icon-loading {

@@ -839,10 +839,6 @@ export default {
   color: #111;
 }
 
-.link-btn {
-  text-decoration: none;
-}
-
 .empty-box {
   border: 1px dashed #ddddda;
   border-radius: 12px;

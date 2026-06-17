@@ -718,10 +718,6 @@ export default {
   text-align: right;
 }
 
-.link-btn {
-  text-decoration: none;
-}
-
 .btn-link {
   border: none;
   background: transparent;

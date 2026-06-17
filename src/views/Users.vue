@@ -124,6 +124,7 @@
         </table>
       </Card>
 
+      <!-- ADD/EDIT USER FORM MODAL -->
       <Teleport to="body">
         <div v-if="showModal" class="modal" @click.self="closeModal">
           <div class="modal-card large form-modal-card">
@@ -171,11 +172,11 @@
               </div>
             </div>
 
-            <div class="modal-actions form-actions">
-              <button type="button" @click="closeModal">Cancel</button>
+            <div class="modal-footer form-actions">
+              <button type="button" class="btn btn-secondary btn-pill" @click="closeModal">Cancel</button>
               <button
                 type="button"
-                class="btn btn-primary"
+                class="btn btn-primary btn-pill"
                 :disabled="saving"
                 @click="saveUser"
               >
@@ -186,6 +187,7 @@
         </div>
       </Teleport>
 
+      <!-- DELETE CONFIRMATION MODAL -->
       <Teleport to="body">
         <div
           v-if="showDeleteModal"
@@ -508,16 +510,6 @@ export default {
 <style scoped>
 .right {
   text-align: right;
-}
-
-.icon-svg {
-  width: 17px;
-  height: 17px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 /* modal */

@@ -218,6 +218,7 @@
         </div>
       </div>
 
+      <!-- PART DETAIL MODAL -->
       <Teleport to="body">
         <div
           class="modal"
@@ -374,6 +375,7 @@
         </div>
       </Teleport>
 
+      <!-- RESTOCK MODAL -->
         <Teleport to="body">
           <div
             v-if="showRestockModal"
@@ -858,25 +860,6 @@ nextPage() {
 }
 
 /* Inventory layout polish */
-.table th {
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #999;
-}
-
-.table td {
-  vertical-align: middle;
-}
-
-.clickable-row {
-  cursor: pointer;
-}
-
-.clickable-row:hover {
-  background: #fafafa;
-}
-
 .item-name {
   font-size: 13px;
   font-weight: 700;
@@ -906,35 +889,6 @@ nextPage() {
 .stock-pill.stock-danger {
   background: #fff1f0;
   color: #d92d20;
-}
-
-.summary-stack {
-  display: flex;
-  flex-direction: column;
-}
-
-.summary-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #f1f1f1;
-  font-size: 12px;
-  color: #666;
-}
-
-.summary-line:first-child {
-  padding-top: 8px;
-}
-
-.summary-line:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.summary-line b {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #222;
 }
 
 /* Modal style matching Customer page */

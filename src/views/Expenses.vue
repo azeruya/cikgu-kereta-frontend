@@ -265,134 +265,136 @@
       </div>
 
       <!-- Detail Modal -->
-    <Teleport to="body">
-      <div class="modal" v-if="activeExpense" @click.self="closeDetail">
-        <div v-if="detailLoading" class="modal-card large">
-          <div class="modal-header">
-            <span>Expense Detail</span>
-            <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+      <Teleport to="body">
+        <div class="modal" v-if="activeExpense" @click.self="closeDetail">
+          <div v-if="detailLoading" class="modal-card large">
+            <div class="modal-header">
+              <span>Expense Detail</span>
+              <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+            </div>
+
+            <div class="modal-body modal-detail-body">
+              <div class="detail-section">
+                <div class="skeleton-line title"></div>
+                <div class="skeleton-grid">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="modal-body modal-detail-body">
-            <div class="detail-section">
-              <div class="skeleton-line title"></div>
-              <div class="skeleton-grid">
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
+        <div v-else class="modal-card large">
+        <div class="modal-header">
+          <span>{{ activeExpense.category || "Expense Detail" }}</span>
+          <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+        </div>
+
+        <div class="modal-body modal-detail-body">
+          <div class="detail-section">
+            <div class="section-title">Expense Information</div>
+
+            <div class="info-list">
+              <div class="info-row">
+                <div class="info-item">
+                  <span class="info-label">Date</span>
+                  <span class="info-value">{{ formatDate(activeExpense.expense_date) }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">Category</span>
+                  <span class="info-value">{{ activeExpense.category || "-" }}</span>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-item">
+                  <span class="info-label">Amount</span>
+                  <span class="info-value">RM {{ formatMoney(activeExpense.amount) }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">Receipt</span>
+                  <span class="info-value">
+                    {{ activeExpense.receipt_file ? "Available" : "-" }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-row last">
+                <div class="info-item full">
+                  <span class="info-label">Description</span>
+                  <span class="info-value">{{ activeExpense.description || "-" }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-      <div v-else class="modal-card large">
-      <div class="modal-header">
-        <span>{{ activeExpense.category || "Expense Detail" }}</span>
-        <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
-      </div>
-
-      <div class="modal-body modal-detail-body">
-        <div class="detail-section">
-          <div class="section-title">Expense Information</div>
-
-          <div class="info-list">
-            <div class="info-row">
-              <div class="info-item">
-                <span class="info-label">Date</span>
-                <span class="info-value">{{ formatDate(activeExpense.expense_date) }}</span>
-              </div>
-
-              <div class="info-item">
-                <span class="info-label">Category</span>
-                <span class="info-value">{{ activeExpense.category || "-" }}</span>
-              </div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-item">
-                <span class="info-label">Amount</span>
-                <span class="info-value">RM {{ formatMoney(activeExpense.amount) }}</span>
-              </div>
-
-              <div class="info-item">
-                <span class="info-label">Receipt</span>
-                <span class="info-value">
-                  {{ activeExpense.receipt_file ? "Available" : "-" }}
-                </span>
-              </div>
-            </div>
-
-            <div class="info-row last">
-              <div class="info-item full">
-                <span class="info-label">Description</span>
-                <span class="info-value">{{ activeExpense.description || "-" }}</span>
-              </div>
-            </div>
+        <div class="modal-actions split">
+          <div class="left-actions">
+            <button @click="openFormModal(activeExpense)">Edit</button>
+            <button
+              class="btn-primary"
+              :disabled="!activeExpense.receipt_file"
+              @click="viewReceipt(activeExpense)"
+            >
+              View Receipt
+            </button>
           </div>
-        </div>
-      </div>
 
-      <div class="modal-actions split">
-        <div class="left-actions">
-          <button @click="openFormModal(activeExpense)">Edit</button>
-          <button
-            class="btn-primary"
-            :disabled="!activeExpense.receipt_file"
-            @click="viewReceipt(activeExpense)"
-          >
-            View Receipt
+          <button class="btn btn-danger-light" @click="openDeleteModal(activeExpense)">
+            Delete
           </button>
         </div>
-
-        <button class="btn btn-danger-light" @click="openDeleteModal(activeExpense)">
-          Delete
-        </button>
       </div>
     </div>
-  </div>
-</Teleport>
+      </Teleport>
 
-<Teleport to="body">
-  <div
-    v-if="showDeleteModal"
-    class="delete-modal-overlay"
-    @click.self="closeDeleteModal"
-  >
-    <div class="delete-modal-card">
-      <div class="delete-icon">!</div>
-
-      <div class="delete-title">Delete expense?</div>
-
-      <div class="delete-message">
-        Are you sure you want to delete this
-        <strong>{{ expenseToDelete?.category }}</strong>
-        expense? This action cannot be undone.
-      </div>
-
-      <div class="delete-actions">
-        <button
-          type="button"
-          class="delete-cancel"
-          :disabled="deletingExpense"
-          @click="closeDeleteModal"
+      <!-- Delete Confirmation Modal -->
+      <Teleport to="body">
+        <div
+          v-if="showDeleteModal"
+          class="delete-modal-overlay"
+          @click.self="closeDeleteModal"
         >
-          Cancel
-        </button>
+          <div class="delete-modal-card">
+            <div class="delete-icon">!</div>
 
-        <button
-          type="button"
-          class="delete-confirm"
-          :disabled="deletingExpense"
-          @click="confirmDeleteExpense"
-        >
-          {{ deletingExpense ? "Deleting..." : "Delete" }}
-        </button>
-      </div>
-    </div>
-  </div>
-</Teleport>
+            <div class="delete-title">Delete expense?</div>
 
+            <div class="delete-message">
+              Are you sure you want to delete this
+              <strong>{{ expenseToDelete?.category }}</strong>
+              expense? This action cannot be undone.
+            </div>
+
+            <div class="delete-actions">
+              <button
+                type="button"
+                class="delete-cancel"
+                :disabled="deletingExpense"
+                @click="closeDeleteModal"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                class="delete-confirm"
+                :disabled="deletingExpense"
+                @click="confirmDeleteExpense"
+              >
+                {{ deletingExpense ? "Deleting..." : "Delete" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Teleport>
+
+        <!-- Add/Edit Expense Form Modal -->
         <Teleport to="body">
           <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
             <div class="modal-card large form-modal-card">
@@ -492,11 +494,11 @@
                 </div>
               </div>
 
-              <div class="modal-actions form-actions">
+              <div class="modal-footer form-actions">
                 <button type="button" @click="closeFormModal">Cancel</button>
                 <button
                   type="button"
-                  class="btn btn-primary"
+                  class="btn btn-primary btn-pill"
                   :disabled="savingForm"
                   @click="submitExpense"
                 >
@@ -1484,16 +1486,6 @@ export default {
   color: #aaa;
   font-style: italic;
   white-space: nowrap;
-}
-
-.icon-svg {
-  width: 17px;
-  height: 17px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 /* trend cards */

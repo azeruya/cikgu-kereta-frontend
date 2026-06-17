@@ -120,142 +120,143 @@
         </template>
       </div>
 
+      <!-- CUSTOMER DETAIL MODAL -->
       <Teleport to="body">
-      <div class="modal" v-if="activeCustomer" @click.self="closeDetail">
-        <div v-if="detailLoading" class="modal-card large">
-  <div class="modal-header">
-    <span>Customer Details</span>
-    <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
-  </div>
+        <div class="modal" v-if="activeCustomer" @click.self="closeDetail">
+          <div v-if="detailLoading" class="modal-card large">
+            <div class="modal-header">
+              <span>Customer Details</span>
+              <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+            </div>
 
-  <div class="modal-body">
-    <div class="skeleton-line title"></div>
-    <div class="skeleton-grid">
-      <div class="skeleton-line"></div>
-      <div class="skeleton-line"></div>
-      <div class="skeleton-line"></div>
-      <div class="skeleton-line"></div>
-    </div>
-    <div class="skeleton-line wide"></div>
-    <div class="skeleton-line wide"></div>
-  </div>
-</div>
-
-        <div v-else class="modal-card large">
-          <div class="modal-header">
-            <span>{{ activeCustomer.name }}</span>
-            <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+            <div class="modal-body">
+              <div class="skeleton-line title"></div>
+              <div class="skeleton-grid">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+              </div>
+              <div class="skeleton-line wide"></div>
+              <div class="skeleton-line wide"></div>
+            </div>
           </div>
 
-          <div class="modal-body modal-detail-body">
-          <!-- CUSTOMER INFO -->
-          <div class="detail-section customer-info-section">
-          <div class="section-title">Customer Information</div>
+          <div v-else class="modal-card large">
+            <div class="modal-header">
+              <span>{{ activeCustomer.name }}</span>
+              <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+            </div>
 
-          <div class="customer-info-list">
-            <div class="info-row">
-              <div class="info-item">
-                <span class="info-label">Phone</span>
-                <span class="info-value">{{ activeCustomer.phone || "-" }}</span>
+            <div class="modal-body modal-detail-body">
+            <!-- CUSTOMER INFO -->
+            <div class="detail-section customer-info-section">
+            <div class="section-title">Customer Information</div>
+
+            <div class="customer-info-list">
+              <div class="info-row">
+                <div class="info-item">
+                  <span class="info-label">Phone</span>
+                  <span class="info-value">{{ activeCustomer.phone || "-" }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">Email</span>
+                  <span class="info-value">{{ activeCustomer.email || "-" }}</span>
+                </div>
+            
+                <div class="info-item">
+                  <span class="info-label">Address</span>
+                  <span class="info-value">{{ activeCustomer.address || "-" }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">Total Visits</span>
+                  <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">Total Spent</span>
+                  <span class="info-value">
+                    RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <!-- VEHICLES -->
+            <div class="detail-section">
+              <div class="section-title">Vehicles</div>
+
+              <div
+                v-for="vehicle in activeCustomer.vehicles || []"
+                :key="vehicle.id"
+                class="detail-list-item"
+              >
+                <div>
+                  <div class="item-name">{{ vehicle.license_plate }}</div>
+                  <small>
+                    {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
+                    <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
+                  </small>
+                </div>
               </div>
 
-              <div class="info-item">
-                <span class="info-label">Email</span>
-                <span class="info-value">{{ activeCustomer.email || "-" }}</span>
+              <div
+                v-if="!activeCustomer.vehicles || activeCustomer.vehicles.length === 0"
+                class="empty-small"
+              >
+                No vehicles found
               </div>
-          
-              <div class="info-item">
-                <span class="info-label">Address</span>
-                <span class="info-value">{{ activeCustomer.address || "-" }}</span>
+            </div>
+
+            <!-- RECENT TRANSACTIONS -->
+            <div class="detail-section">
+              <div class="section-title">Recent Transactions</div>
+
+              <div
+                v-for="trx in activeCustomer.transactions || []"
+                :key="trx.id"
+                class="detail-list-item"
+              >
+                <div>
+                  <div class="item-name">{{ trx.document_number || "-" }}</div>
+                  <small>
+                    {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
+                  </small>
+                </div>
+
+                <div class="job-price">
+                  RM {{ formatMoney(trx.total_amount) }}
+                </div>
               </div>
 
-              <div class="info-item">
-                <span class="info-label">Total Visits</span>
-                <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
+              <div
+                v-if="!activeCustomer.transactions || activeCustomer.transactions.length === 0"
+                class="empty-small"
+              >
+                No recent transactions
+              </div>
+            </div>
+    </div>  
+
+            <div class="modal-actions split">
+              <div class="left-actions">
+                <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
+                <button @click="openFormModal(activeCustomer)">Edit</button>
+                <button class="btn-primary" @click="viewCustomerTransactions(activeCustomer)">
+                  View Transactions
+                </button>
               </div>
 
-              <div class="info-item">
-                <span class="info-label">Total Spent</span>
-                <span class="info-value">
-                  RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
-                </span>
-              </div>
+            <button class="btn btn-danger-light" @click="openDeleteModal(activeCustomer)">
+              Delete
+            </button>
             </div>
           </div>
         </div>
-
-          <!-- VEHICLES -->
-          <div class="detail-section">
-            <div class="section-title">Vehicles</div>
-
-            <div
-              v-for="vehicle in activeCustomer.vehicles || []"
-              :key="vehicle.id"
-              class="detail-list-item"
-            >
-              <div>
-                <div class="item-name">{{ vehicle.license_plate }}</div>
-                <small>
-                  {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
-                  <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
-                </small>
-              </div>
-            </div>
-
-            <div
-              v-if="!activeCustomer.vehicles || activeCustomer.vehicles.length === 0"
-              class="empty-small"
-            >
-              No vehicles found
-            </div>
-          </div>
-
-          <!-- RECENT TRANSACTIONS -->
-          <div class="detail-section">
-            <div class="section-title">Recent Transactions</div>
-
-            <div
-              v-for="trx in activeCustomer.transactions || []"
-              :key="trx.id"
-              class="detail-list-item"
-            >
-              <div>
-                <div class="item-name">{{ trx.document_number || "-" }}</div>
-                <small>
-                  {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
-                </small>
-              </div>
-
-              <div class="job-price">
-                RM {{ formatMoney(trx.total_amount) }}
-              </div>
-            </div>
-
-            <div
-              v-if="!activeCustomer.transactions || activeCustomer.transactions.length === 0"
-              class="empty-small"
-            >
-              No recent transactions
-            </div>
-          </div>
-  </div>  
-
-          <div class="modal-actions split">
-            <div class="left-actions">
-              <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
-              <button @click="openFormModal(activeCustomer)">Edit</button>
-              <button class="btn-primary" @click="viewCustomerTransactions(activeCustomer)">
-                View Transactions
-              </button>
-            </div>
-
-          <button class="btn btn-danger-light" @click="openDeleteModal(activeCustomer)">
-            Delete
-          </button>
-          </div>
-        </div>
-      </div>
-        </Teleport>
+      </Teleport>
 
       <div v-if="error" class="page-error">
         {{ error }}
@@ -263,6 +264,7 @@
     </div>
   </div>
 
+  <!-- DELETE CONFIRMATION MODAL -->
   <Teleport to="body">
   <div
     v-if="showDeleteModal"
@@ -305,15 +307,16 @@
   </div>
   </Teleport>
 
+  <!-- ADD/EDIT CUSTOMER FORM MODAL -->
   <Teleport to="body">
     <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
-      <div class="modal-card large">
+      <div class="modal-card large form-modal-card">
         <div class="modal-header">
           <span>{{ editingCustomerId ? "Edit Customer" : "Add Customer" }}</span>
           <button type="button" class="btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
         </div>
 
-        <div class="modal-body">
+        <div class="modal-body form-modal-body">
           <div class="form-grid">
             <div class="form-field">
               <label>Name</label>
@@ -394,11 +397,11 @@
           </div>
         </div>
 
-        <div class="modal-actions">
-          <button type="button" @click="closeFormModal">Cancel</button>
+        <div class="modal-footer form-actions">
+          <button type="button" class="btn btn-secondary btn-pill" @click="closeFormModal">Cancel</button>
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-primary btn-pill"
             :disabled="savingForm"
             @click="submitCustomer"
           >

@@ -472,12 +472,22 @@ textarea {
   box-shadow: none;
   text-decoration: underline;
   text-underline-offset: 2px;
+  cursor: pointer;
 }
 
 .btn-link:hover {
   background: transparent;
   color: #111;
   border-color: transparent;
+}
+
+.btn-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.link-btn {
+  text-decoration: none;
 }
 
 /* =========================
@@ -696,8 +706,7 @@ th.center {
   gap: 8px;
 }
 
-.icon-btn,
-.icon-action {
+.icon-btn {
   width: 34px;
   height: 34px;
   border: 1px solid #e5e5e2;
@@ -711,41 +720,34 @@ th.center {
   transition: all 0.15s ease;
 }
 
-.icon-btn:hover,
-.icon-action:hover {
+.icon-btn:hover {
   background: #fafaf8;
   border-color: #d7d7d2;
   color: #222;
 }
 
-.icon-btn:disabled,
-.icon-action:disabled {
+.icon-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
-.icon-btn-danger,
-.icon-action.danger {
+.icon-btn-danger {
   color: #9b4a45;
   border-color: #f1d6d2;
 }
 
-.icon-btn-danger:hover,
-.icon-action.danger:hover {
+.icon-btn-danger:hover {
   background: #fff5f4;
   border-color: #e8aaa3;
   color: #b42318;
 }
 
-.icon-btn-success,
-.icon-action.confirm {
+.icon-btn-success {
   color: #386a3a;
   border-color: #d7ead7;
 }
 
-.icon-btn-info,
-.icon-action.payment,
-.icon-action.receipt {
+.icon-btn-info {
   color: #406a5a;
   border-color: #d8eadf;
 }

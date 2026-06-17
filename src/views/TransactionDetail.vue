@@ -853,10 +853,6 @@ export default {
   color: #888;
 }
 
-.link-btn {
-  text-decoration: none;
-}
-
 .page-error {
   margin-top: 12px;
   font-size: 12px;
