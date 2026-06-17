@@ -15,7 +15,10 @@
             <div class="page-title">Users</div>
             <span class="page-chip">{{ filteredUsers.length }} users</span>
           </div>
+          <!--
           <div class="page-subtitle">Manage staff and admin accounts for this branch</div>
+           -->
+          
         </div>
 
         <div class="page-actions">
