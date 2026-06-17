@@ -444,6 +444,17 @@ textarea {
   border-color: #e59c95;
 }
 
+.btn-success {
+  background: #1f8f4d;
+  color: #ffffff;
+  border-color: #1f8f4d;
+}
+
+.btn-success:hover {
+  background: #18763f;
+  border-color: #18763f;
+}
+
 
 /* Pill shape / page action buttons */
 .btn-pill {
@@ -1023,84 +1034,12 @@ th.center {
   color: var(--text-soft);
 }
 
-/* =========================
-   MODALS
-========================= */
-.modal {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(15, 15, 15, 0.42);
-  backdrop-filter: blur(3px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  z-index: 3000;
-}
-
-.modal-card {
-  width: 380px;
-  max-width: 100%;
-  background: rgba(255, 255, 255, 0.98);
-  border-radius: 18px;
-  padding-top: 10px;
-  border: 1px solid var(--border);
-  box-shadow:
-    0 8px 24px rgba(16, 24, 40, 0.08),
-    0 18px 44px rgba(16, 24, 40, 0.12);
-}
-
-.modal-card.large {
-  width: min(460px, calc(100vw - 32px));
-  border-radius: 18px;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.modal-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.modal-actions button,
-.modal-actions a {
-  flex: 1;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  background: #fff;
-  text-align: center;
-  text-decoration: none;
-  color: #444;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.modal-actions .primary {
-  background: #121212;
-  color: #fff;
-  border-color: #121212;
-}
-
 /* ================================
    MODALS refactored
 ================================ */
 
 .modal,
 .modal-overlay,
-.delete-modal-overlay,
 .stacked-modal {
   position: fixed;
   inset: 0;
@@ -1116,8 +1055,7 @@ th.center {
   justify-content: center;
 }
 
-.stacked-modal,
-.delete-modal-overlay {
+.stacked-modal {
   z-index: 5000;
   background: rgba(15, 15, 15, 0.32);
 }
@@ -1229,8 +1167,7 @@ th.center {
    CONFIRM MODALS
 ================================ */
 
-.confirm-card,
-.delete-modal-card {
+.confirm-card {
   width: min(380px, calc(100vw - 32px));
   background: #ffffff;
   border-radius: 18px;
@@ -1239,8 +1176,7 @@ th.center {
   text-align: center;
 }
 
-.confirm-icon,
-.delete-icon {
+.confirm-icon {
   width: 42px;
   height: 42px;
   border-radius: 999px;
@@ -1254,42 +1190,41 @@ th.center {
   font-weight: 800;
 }
 
-.confirm-icon-danger,
-.delete-icon {
+.confirm-icon-danger {
   background: #fff1f0;
   color: #b42318;
 }
 
-.confirm-title,
-.delete-title {
+.confirm-icon-success {
+  background: #edf8f0;
+  color: #1f8f4d;
+}
+
+.confirm-title {
   font-size: 16px;
   font-weight: 800;
   color: #171717;
   margin-bottom: 8px;
 }
 
-.confirm-message,
-.delete-message {
+.confirm-message {
   font-size: 13px;
   line-height: 1.5;
   color: #666;
   margin-bottom: 20px;
 }
 
-.confirm-message strong,
-.delete-message strong {
+.confirm-message strong {
   color: #222;
   font-weight: 800;
 }
 
-.confirm-actions,
-.delete-actions {
+.confirm-actions {
   display: flex;
   gap: 10px;
 }
 
-.confirm-actions > *,
-.delete-actions > * {
+.confirm-actions > * {
   flex: 1;
 }
 
@@ -1298,7 +1233,6 @@ th.center {
 @media (max-width: 700px) {
   .modal,
   .modal-overlay,
-  .delete-modal-overlay,
   .stacked-modal {
     padding: 16px;
   }

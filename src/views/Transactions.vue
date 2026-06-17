@@ -252,7 +252,7 @@
           @click.self="closeConfirmQuotationModal"
         >
           <div class="confirm-card">
-            <div class="confirm-icon">✓</div>
+            <div class="confirm-icon confirm-icon-success">✓</div>
 
             <div class="confirm-title">Confirm quotation?</div>
 
@@ -276,7 +276,7 @@
 
               <button
                 type="button"
-                class="btn btn-danger btn-pill"
+                class="btn btn-success btn-pill"
                 :disabled="actionLoadingId === quotationToConfirm?.id"
                 @click="submitConfirmQuotation"
               >
