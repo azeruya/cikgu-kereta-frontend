@@ -2588,11 +2588,11 @@ th.center {
 }
 
 .form-data-panel .form-grid {
-  padding: 14px;
+  padding: 16px;
 }
 
 .form-grid-compact {
-  gap: 12px 14px;
+  gap: 13px 16px;
 }
 
 .form-data-panel .form-field label {
@@ -2612,23 +2612,24 @@ th.center {
 
 .form-data-panel .form-field input:focus,
 .form-data-panel .form-field select:focus {
-  border-color: #aeb8c8;
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.055);
+  border-color: #b8c2d1;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.045);
 }
 
 .modal-card.form-modal-card {
-  width: min(500px, calc(100vw - 32px));
+  width: min(540px, calc(100vw - 32px));
 }
 
 .modal-header {
-  padding: 20px 32px 10px;
+  padding: 19px 34px 8px;
 }
 
 .modal-body {
-  padding: 8px 32px 16px;
+  padding: 8px 34px 16px;
 }
 
 .modal-footer,
 .modal-actions {
-  padding: 13px 32px 18px;
+  padding-left: 34px;
+  padding-right: 34px;
 }
