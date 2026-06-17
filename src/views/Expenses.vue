@@ -495,7 +495,7 @@
               </div>
 
               <div class="modal-footer form-actions">
-                <button type="button" @click="closeFormModal">Cancel</button>
+                <button type="button" class="btn btn-secondary btn-pill" @click="closeFormModal">Cancel</button>
                 <button
                   type="button"
                   class="btn btn-primary btn-pill"
