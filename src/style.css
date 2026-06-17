@@ -701,6 +701,37 @@ textarea {
   border-color: #d7f0df;
 }
 
+/* Expense categories */
+.badge-category-utility {
+  background: #fff4e8;
+  color: #c87518;
+  border-color: #ffe4c2;
+}
+
+.badge-category-purchase {
+  background: #edf8f0;
+  color: #1f8f4d;
+  border-color: #d7f0df;
+}
+
+.badge-category-maintenance {
+  background: #f3eaff;
+  color: #7d3fd1;
+  border-color: #e4d1ff;
+}
+
+.badge-category-misc {
+  background: #f2f2f0;
+  color: #777777;
+  border-color: #e8e8e4;
+}
+
+.badge-category-salary {
+  background: #eef4ff;
+  color: #3366cc;
+  border-color: #dbe8ff;
+}
+
 /* Stock levels */
 .badge-low {
   background: #fff4e8;
