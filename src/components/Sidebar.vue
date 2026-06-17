@@ -61,32 +61,33 @@
       </router-link>
     </div>
 
-    <div class="sidebar-foot">
+    <div v-if="!collapsed" class="sidebar-foot">
+      <div class="workspace-card">
+        <div class="workspace-label">Current Branch</div>
 
-      <div v-if="!collapsed" class="branch-card">
-        <div class="branch-label">Current branch</div>
-        <div class="branch-name">
-          {{ branchName }}
+        <div class="workspace-main">
+          <div class="workspace-avatar">
+            {{ initials }}
+          </div>
+
+          <div class="workspace-meta">
+            <div class="workspace-branch">Johor Bahru</div>
+            <div class="workspace-user">
+              {{ user?.name || "User" }} · {{ user?.role || "Staff" }}
+            </div>
+          </div>
+
+          <button class="logout-icon-btn" @click="$emit('logout')" title="Logout" type="button">
+            <svg class="logout-icon" viewBox="0 0 16 16" fill="none">
+              <path d="M9.5 3H12.5V13H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7 5.5L3.5 8L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 8H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
         </div>
-      </div>
-
-      <div class="user-row">
-        <div class="avatar">{{ initials }}</div>
-
-        <div v-if="!collapsed" class="user-meta">
-          <div class="user-name">{{ user?.name || "User" }}</div>
-          <div class="user-role">{{ prettyRole }}</div>
-        </div>
-
-        <button class="logout-icon-btn" @click="$emit('logout')" title="Sign out" type="button">
-          <svg class="logout-icon" viewBox="0 0 16 16" fill="none">
-            <path d="M9.5 3H12.5V13H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7 5.5L3.5 8L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4 8H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </button>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -158,20 +159,20 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 18px 18px 14px;
-  min-height: 84px;
+  padding: 20px 20px 16px;
+  min-height: 88px;
 }
 
 .brand-lockup {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
   min-width: 0;
 }
 
 .brand-logo-only {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   flex-shrink: 0;
   object-fit: contain;
   opacity: 0.98;
@@ -183,16 +184,16 @@ export default {
 }
 
 .brand-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 850;
   color: #111827;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   line-height: 1.1;
 }
 
 .brand-sub {
   margin-top: 3px;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 600;
   color: #8b95a1;
 }
@@ -247,7 +248,7 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   padding: 0 14px;
   overflow-y: auto;
 }
@@ -262,16 +263,16 @@ export default {
 }
 
 .nav-item {
-  height: 44px;
-  border-radius: 13px;
+  height: 42px;
+  border-radius: 12px;
   padding: 0 14px;
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 12px;
   color: #6b7280;
   text-decoration: none;
-  font-size: 14px;
-  font-weight: 650;
+  font-size: 13.5px;
+  font-weight: 700;
   transition:
     background 0.15s ease,
     color 0.15s ease,
@@ -308,47 +309,35 @@ export default {
 /* =========================
    FOOTER USER AREA
 ========================= */
-
 .sidebar-foot {
   padding: 14px 14px 16px;
   border-top: 1px solid #eef0f3;
   background: #ffffff;
 }
 
-.branch-card {
-  margin-bottom: 10px;
-  padding: 11px 12px;
-  border-radius: 15px;
+.workspace-card {
+  padding: 12px;
+  border-radius: 16px;
   background: #f8fafc;
   border: 1px solid #e5e7eb;
 }
 
-.branch-label {
+.workspace-label {
   font-size: 9px;
   font-weight: 850;
   color: #9aa3af;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
-.branch-name {
-  font-size: 12.5px;
-  font-weight: 760;
-  color: #111827;
-}
-
-.user-row {
+.workspace-main {
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 9px;
-  border-radius: 15px;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  gap: 10px;
 }
 
-.avatar {
+.workspace-avatar {
   width: 36px;
   height: 36px;
   border-radius: 12px;
@@ -359,31 +348,28 @@ export default {
   justify-content: center;
   font-size: 12px;
   font-weight: 800;
-  letter-spacing: -0.02em;
   flex-shrink: 0;
 }
 
-.user-meta {
+.workspace-meta {
   flex: 1;
   min-width: 0;
 }
 
-.user-name {
-  font-size: 12.5px;
-  font-weight: 760;
+.workspace-branch {
+  font-size: 12.8px;
+  font-weight: 800;
   color: #111827;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   line-height: 1.2;
 }
 
-.user-role {
+.workspace-user {
   margin-top: 3px;
-  font-size: 10.5px;
-  font-weight: 550;
+  font-size: 10.8px;
   color: #8b95a1;
-  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .logout-icon-btn {
