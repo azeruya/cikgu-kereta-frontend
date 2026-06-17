@@ -615,40 +615,6 @@ textarea {
   margin-top: 2px;
 }
 
-/* =========================
-   BADGES / STATUS
-========================= */
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.sp-green {
-  background: #edf8f0;
-  color: #1f8f4d;
-}
-
-.sp-blue {
-  background: #edf3ff;
-  color: #3366cc;
-}
-
-.sp-amber {
-  background: #fff4e8;
-  color: #c87518;
-}
-
-.sp-gray {
-  background: #f2f2f0;
-  color: #8a8a8a;
-}
-
 /* ================================
    BADGES / STATUS refactored
 ================================ */
