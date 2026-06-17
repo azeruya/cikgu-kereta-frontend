@@ -357,16 +357,16 @@
               </div>
             </div>
 
-            <div class="modal-actions split">
+            <div class="modal-footer split">
               <div class="left-actions">
                 <router-link
                   :to="`/inventory/${activePart.id}/edit`"
-                  class="modal-action-btn"
+                  class="btn btn-secondary btn-pill"
                 >
                   Edit
                 </router-link>
 
-                <button class="btn-primary" @click="openRestockModal">
+                <button class="btn btn-primary btn-pill" @click="openRestockModal">
                   Restock
                 </button>
               </div>
@@ -1076,45 +1076,6 @@ nextPage() {
   100% {
     background-position: -200% 0;
   }
-}
-
-/* Stacked restock modal */
-.stacked-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(1.5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.confirm-card {
-  width: min(360px, calc(100vw - 32px));
-  background: #fff;
-  border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
-}
-
-.confirm-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #171717;
-  margin-bottom: 8px;
-}
-
-.confirm-message {
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: #777;
-  margin-bottom: 16px;
-}
-
-.confirm-message.left {
-  text-align: left;
 }
 
 /* min stock */
