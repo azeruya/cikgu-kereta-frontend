@@ -172,7 +172,7 @@
           <div class="modal-card large form-modal-card">
             <div class="modal-header">
               <span>Record Payment</span>
-              <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closePaymentModal">✕</button>
+              <button type="button" class="btn btn-sm btn-ghost" @click="closePaymentModal">✕</button>
             </div>
 
             <div class="modal-body form-modal-body">
@@ -232,7 +232,7 @@
               <button type="button" @click="closePaymentModal">Cancel</button>
               <button
                 type="button"
-                class="primary btn-primary"
+                class="btn-primary"
                 :disabled="actionLoadingId === paymentTransactionId"
                 @click="submitPayment"
               >
@@ -691,18 +691,6 @@ export default {
 .status-badge.receipt {
   background: #f0faf0;
   color: #2e7d32;
-}
-
-.mini-btn.primary {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-
-.mini-btn.success {
-  background: #2e7d32;
-  color: #fff;
-  border-color: #2e7d32;
 }
 
 .jobs-section {

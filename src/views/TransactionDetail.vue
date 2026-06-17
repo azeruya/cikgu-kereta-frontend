@@ -306,7 +306,7 @@
           <div class="modal-card large">
             <div class="modal-header">
               <span>Record Payment</span>
-              <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closePaymentModal">✕</button>
+              <button type="button" class="btn btn-sm btn-ghost" @click="closePaymentModal">✕</button>
             </div>
 
             <div class="modal-body">
@@ -358,7 +358,7 @@
               <button type="button" @click="closePaymentModal">Cancel</button>
               <button
                 type="button"
-                class="primary btn-primary"
+                class="btn-primary"
                 :disabled="actionLoading"
                 @click="submitPayment"
               >
@@ -1173,21 +1173,6 @@ export default {
 .modal-actions button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
-}
-
-.mini-btn {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #deded9;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #555555;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.mini-btn:hover {
-  background: #f5f5f2;
 }
 
 @media (max-width: 640px) {

@@ -270,7 +270,7 @@
         <div v-if="detailLoading" class="modal-card large">
           <div class="modal-header">
             <span>Expense Detail</span>
-            <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+            <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
           </div>
 
           <div class="modal-body modal-detail-body">
@@ -289,7 +289,7 @@
       <div v-else class="modal-card large">
       <div class="modal-header">
         <span>{{ activeExpense.category || "Expense Detail" }}</span>
-        <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+        <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
       </div>
 
       <div class="modal-body modal-detail-body">
@@ -337,7 +337,7 @@
         <div class="left-actions">
           <button @click="openFormModal(activeExpense)">Edit</button>
           <button
-            class="primary btn-primary"
+            class="btn-primary"
             :disabled="!activeExpense.receipt_file"
             @click="viewReceipt(activeExpense)"
           >
@@ -398,7 +398,7 @@
             <div class="modal-card large form-modal-card">
               <div class="modal-header">
                 <span>{{ editingExpenseId ? "Edit Expense" : "Add Expense" }}</span>
-                <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
+                <button type="button" class="btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
               </div>
 
               <div class="modal-body form-modal-body">
@@ -496,7 +496,7 @@
                 <button type="button" @click="closeFormModal">Cancel</button>
                 <button
                   type="button"
-                  class="primary btn-primary"
+                  class="btn-primary"
                   :disabled="savingForm"
                   @click="submitExpense"
                 >
@@ -1148,35 +1148,6 @@ export default {
   color: #7b3fe4;
 }
 
-/* action group buttons */
-.action-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
-}
-
-.mini-btn {
-  height: 30px;
-  padding: 0 10px;
-  border-radius: 9px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  color: #333;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.mini-btn:hover {
-  background: #fafafa;
-}
-
-.mini-btn.danger-text {
-  color: #b42318;
-  border-color: #f1b8b2;
-}
 
 /* modal */
 .modal-card.large {

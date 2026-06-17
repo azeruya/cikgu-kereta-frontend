@@ -129,7 +129,7 @@
           <div class="modal-card large form-modal-card">
             <div class="modal-header">
               <span>{{ editingUserId ? "Edit User" : "Add User" }}</span>
-              <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closeModal">✕</button>
+              <button type="button" class="btn btn-sm btn-ghost" @click="closeModal">✕</button>
             </div>
 
             <div class="modal-body form-modal-body">
@@ -175,7 +175,7 @@
               <button type="button" @click="closeModal">Cancel</button>
               <button
                 type="button"
-                class="primary btn-primary"
+                class="btn-primary"
                 :disabled="saving"
                 @click="saveUser"
               >

@@ -125,7 +125,7 @@
         <div v-if="detailLoading" class="modal-card large">
   <div class="modal-header">
     <span>Customer Details</span>
-    <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+    <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
   </div>
 
   <div class="modal-body">
@@ -144,7 +144,7 @@
         <div v-else class="modal-card large">
           <div class="modal-header">
             <span>{{ activeCustomer.name }}</span>
-            <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+            <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
           </div>
 
           <div class="modal-body modal-detail-body">
@@ -244,7 +244,7 @@
             <div class="left-actions">
               <button @click="openWhatsApp(activeCustomer)">WhatsApp</button>
               <button @click="openFormModal(activeCustomer)">Edit</button>
-              <button class="primary btn-primary" @click="viewCustomerTransactions(activeCustomer)">
+              <button class="btn-primary" @click="viewCustomerTransactions(activeCustomer)">
                 View Transactions
               </button>
             </div>
@@ -310,7 +310,7 @@
     <div class="modal-card large">
       <div class="modal-header">
         <span>{{ editingCustomerId ? "Edit Customer" : "Add Customer" }}</span>
-        <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
+        <button type="button" class="btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
       </div>
 
       <div class="modal-body">
@@ -398,7 +398,7 @@
         <button type="button" @click="closeFormModal">Cancel</button>
         <button
           type="button"
-          class="primary btn-primary"
+          class="btn-primary"
           :disabled="savingForm"
           @click="submitCustomer"
         >

@@ -192,7 +192,7 @@
           </div>
         </div>
 
-        <button type="button" class="mini-btn btn btn-sm btn-ghost" @click="removeItem(index)">
+        <button type="button" class="btn btn-sm btn-ghost" @click="removeItem(index)">
           Remove
         </button>
       </div>
@@ -837,20 +837,6 @@ Created from online request #${requestId}`;
   font-size: 13px;
   font-weight: 600;
   color: #111;
-}
-
-.mini-btn {
-  padding: 5px 9px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 12px;
-  opacity: 0.72;
-}
-
-.mini-btn:hover {
-  opacity: 1;
 }
 
 .summary-list {

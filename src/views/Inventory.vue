@@ -227,7 +227,7 @@
           <div v-if="detailLoading" class="modal-card large">
             <div class="modal-header">
               <span>Part Details</span>
-              <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+              <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
             </div>
 
             <div class="modal-body modal-detail-body">
@@ -254,7 +254,7 @@
                 {{ activePart.name }}
                 <span v-if="activePart.variant">— {{ activePart.variant }}</span>
               </span>
-              <button class="mini-btn btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+              <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
             </div>
 
             <div class="modal-body modal-detail-body">
@@ -365,7 +365,7 @@
                   Edit
                 </router-link>
 
-                <button class="primary btn-primary" @click="openRestockModal">
+                <button class="btn-primary" @click="openRestockModal">
                   Restock
                 </button>
               </div>
