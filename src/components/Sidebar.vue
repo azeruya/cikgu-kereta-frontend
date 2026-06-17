@@ -1,11 +1,10 @@
 <template>
   <div class="sidebar" :class="{ collapsed }">
     <div class="brand-row">
-      <img :src="vulcanLogo" alt="Vulcan Auto Service" class="brand-logo" />
-      <button class="collapse-btn" @click="$emit('toggle')" type="button" :title="collapsed ? 'Expand' : 'Collapse'">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path :d="collapsed ? 'M4 2l4 4-4 4' : 'M8 2L4 6l4 4'" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <img :src="vulcanLogo" alt="Vulcan Auto Service" class="brand-logo-only" />
+
+      <button class="collapse-edge-btn" @click="$emit('toggle')" type="button">
+        <span>{{ collapsed ? "›" : "‹" }}</span>
       </button>
     </div>
 
@@ -19,26 +18,32 @@
         class="nav-item"
         :title="item.name"
       >
+        <!-- keep your existing svg icons here exactly as they are -->
         <svg v-if="item.icon === 'grid'" class="nav-icon" viewBox="0 0 16 16">
           <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/>
           <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/>
           <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/>
           <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/>
         </svg>
+
         <svg v-else-if="item.icon === 'list'" class="nav-icon" viewBox="0 0 16 16">
           <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
+
         <svg v-else-if="item.icon === 'user'" class="nav-icon" viewBox="0 0 16 16">
           <circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.5"/>
           <path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.5"/>
         </svg>
+
         <svg v-else-if="item.icon === 'box'" class="nav-icon" viewBox="0 0 16 16">
           <rect x="2" y="6" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
           <path d="M5 6V4a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.5"/>
         </svg>
+
         <svg v-else-if="item.icon === 'chart'" class="nav-icon" viewBox="0 0 16 16">
           <path d="M2 13l3-3 3 3 3-5 3 5" stroke="currentColor" stroke-width="1.5"/>
         </svg>
+
         <svg v-else-if="item.icon === 'alert'" class="nav-icon" viewBox="0 0 16 16">
           <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
           <path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5"/>
@@ -49,19 +54,24 @@
     </div>
 
     <div class="sidebar-foot">
+
       <div v-if="!collapsed" class="branch-card">
-        <div class="branch-label">Branch</div>
-        <div class="branch-name">{{ branchName }}</div>
+        <div class="branch-label">Current branch</div>
+        <div class="branch-name">
+          {{ branchName }}
+        </div>
       </div>
 
       <div class="user-row">
         <div class="avatar">{{ initials }}</div>
+
         <div v-if="!collapsed" class="user-meta">
-          <div class="user-name">{{ user?.name || 'User' }}</div>
+          <div class="user-name">{{ user?.name || "User" }}</div>
           <div class="user-role">{{ prettyRole }}</div>
         </div>
-        <button class="logout-btn" @click="$emit('logout')" title="Sign out" type="button">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+
+        <button class="logout-icon-btn" @click="$emit('logout')" title="Sign out" type="button">
+          <svg class="logout-icon" viewBox="0 0 16 16" fill="none">
             <path d="M9.5 3H12.5V13H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M7 5.5L3.5 8L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M4 8H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -81,24 +91,33 @@ export default {
     menu: Array,
     user: Object,
   },
+
   emits: ["toggle", "logout"],
+
   data() {
     return { vulcanLogo };
   },
+
   computed: {
     initials() {
       const name = this.user?.name || "User";
       return name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
     },
+
     prettyRole() {
       const role = this.user?.role || "staff";
       return role.charAt(0).toUpperCase() + role.slice(1);
     },
+
     visibleMenu() {
       const role = this.user?.role || "staff";
       if (role === "admin") return this.menu;
-      return this.menu.filter(item => !["/reports", "/users"].includes(item.path));
+
+      return this.menu.filter(item => {
+        return !["/reports", "/users"].includes(item.path);
+      });
     },
+
     branchName() {
       return this.user?.branch?.name || "Main Workshop";
     },
@@ -107,208 +126,175 @@ export default {
 </script>
 
 <style scoped>
-/* ── BASE ── */
 .sidebar {
-  width: 232px;
-  height: 100vh;
+  width: 240px;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #111111 0%, #070707 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 28%),
+    linear-gradient(180deg, #111 0%, #070707 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
   transition: width 0.2s ease;
-  flex-shrink: 0;
 }
 
 .sidebar.collapsed {
-  width: 68px;
+  width: 74px;
 }
 
-/* ── BRAND ── */
+/* =========================
+   BRAND
+========================= */
 .brand-row {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0 16px;
-  min-height: 88px;
+  padding: 18px 0 14px;
+  min-height: 86px;
 }
 
-.brand-logo {
-  width: 54px;
-  height: 54px;
+.brand-logo-only {
+  width: 58px;
+  height: 58px;
   object-fit: contain;
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
+  opacity: 0.98;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
 }
 
-.sidebar.collapsed .brand-logo {
-  width: 42px;
-  height: 42px;
-}
-
-.collapse-btn {
+.collapse-edge-btn {
   position: absolute;
-  right: -11px;
+  right: -12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #1c1c1c;
-  color: rgba(255, 255, 255, 0.6);
+  width: 25px;
+  height: 25px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: #1b1b1b;
+  color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  z-index: 5;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.collapse-btn:hover {
-  background: #2a2a2a;
+.collapse-edge-btn:hover {
   color: #fff;
+  background: #2a2a2a;
   border-color: rgba(255, 255, 255, 0.22);
 }
 
-/* ── DIVIDER ── */
 .nav-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 0 18px 12px;
+  background: rgba(255, 255, 255, 0.14);
+  margin: 0 20px 16px;
 }
 
-.sidebar.collapsed .nav-divider {
-  margin: 0 12px 12px;
-}
-
-/* ── NAV ── */
+/* =========================
+   NAVIGATION
+========================= */
 .sidebar-nav {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 0 10px;
+  gap: 6px;
+  padding: 0 16px;
   overflow-y: auto;
-  scrollbar-width: none;
 }
 
-.sidebar-nav::-webkit-scrollbar { display: none; }
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
 
 .nav-item {
-  height: 42px;
-  border-radius: 10px;
-  padding: 0 12px;
+  height: 46px;
+  border-radius: 13px;
+  padding: 0 15px;
   display: flex;
   align-items: center;
-  gap: 11px;
-  color: rgba(255, 255, 255, 0.48);
+  gap: 13px;
+  color: rgba(255, 255, 255, 0.56);
   text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 500;
-  transition: background 0.13s, color 0.13s;
-  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 550;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 
 .nav-item:hover {
   background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.85);
+  color: #fff;
+}
+
+.nav-item:active {
+  transform: scale(0.985);
 }
 
 .router-link-active {
-  background: rgba(180, 28, 28, 0.22);
-  color: #f87171;
-  position: relative;
-}
-
-.router-link-active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 2.5px;
-  border-radius: 0 2px 2px 0;
-  background: #B41C1C;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.17),
+    rgba(255, 255, 255, 0.11)
+  );
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.22);
 }
 
 .nav-icon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
+  opacity: 0.9;
 }
 
 .nav-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ── COLLAPSED NAV ── */
-.sidebar.collapsed .nav-item {
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  justify-content: center;
-  border-radius: 10px;
-}
-
-.sidebar.collapsed .sidebar-nav {
-  align-items: center;
-  padding: 0 6px;
-}
-
-/* ── FOOTER ── */
-.sidebar-foot {
-  padding: 12px 10px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.branch-card {
-  margin-bottom: 8px;
-  padding: 10px 11px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.branch-label {
-  font-size: 9px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.32);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-
-.branch-name {
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.82);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+/* =========================
+   FOOTER USER AREA
+========================= */
+.sidebar-foot {
+  padding: 14px 14px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
 }
 
 .user-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  gap: 11px;
+  padding: 9px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  box-shadow: none;
 }
 
 .avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(180, 28, 28, 0.35);
-  color: #f87171;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.1));
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   flex-shrink: 0;
 }
 
@@ -318,43 +304,135 @@ export default {
 }
 
 .user-name {
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.88);
+  font-size: 12.5px;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.92);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .user-role {
-  margin-top: 2px;
+  margin-top: 3px;
   font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.38);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.42);
+  line-height: 1.2;
 }
 
-.logout-btn {
-  width: 28px;
-  height: 28px;
+.logout-icon-btn {
+  width: 30px;
+  height: 30px;
   border: none;
-  border-radius: 8px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.36);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(255, 255, 255, 0.48);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.14s, color 0.14s;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 
-.logout-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
+.logout-icon-btn:hover {
+  background: rgba(239, 68, 68, 0.16);
   color: #f87171;
 }
 
-/* ── COLLAPSED FOOTER ── */
+.logout-icon-btn:active {
+  transform: scale(0.94);
+}
+
+.logout-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* =========================
+.branch-card {
+  margin-bottom: 10px;
+  padding: 10px 11px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.branch-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.36);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.branch-name {
+  font-size: 12px;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.86);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+========================= */
+
+.branch-card {
+  margin-bottom: 10px;
+  padding: 11px 12px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.branch-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.38);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 5px;
+}
+
+.branch-name {
+  font-size: 12.5px;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* =========================
+   COLLAPSED STATE
+========================= */
+.sidebar.collapsed .brand-row {
+  padding: 14px 0 12px;
+  min-height: 74px;
+}
+
+.sidebar.collapsed .brand-logo-only {
+  width: 46px;
+  height: 46px;
+}
+
+.sidebar.collapsed .nav-divider {
+  margin: 0 14px 14px;
+}
+
+.sidebar.collapsed .sidebar-nav {
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar.collapsed .sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+
 .sidebar.collapsed .sidebar-foot {
-  padding: 12px 6px 14px;
+  padding: 14px 8px 16px;
   border-top: none;
 }
 
@@ -362,25 +440,40 @@ export default {
   display: none;
 }
 
+.sidebar.collapsed .nav-item {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 14px;
+}
+
+.sidebar.collapsed .nav-icon {
+  width: 17px;
+  height: 17px;
+}
+
 .sidebar.collapsed .user-row {
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   padding: 8px 0;
   background: transparent;
   border: none;
+  box-shadow: none;
+}
+
+.sidebar.collapsed .avatar,
+.sidebar.collapsed .logout-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 13px;
 }
 
 .sidebar.collapsed .avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
 }
 
-.sidebar.collapsed .logout-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.36);
+.sidebar.collapsed .logout-icon-btn {
+  background: rgba(255, 255, 255, 0.055);
 }
 </style>

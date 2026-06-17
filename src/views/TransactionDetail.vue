@@ -1,273 +1,373 @@
 <template>
   <div class="dash">
     <Sidebar
-      :collapsed="collapsed"
-      :menu="menu"
-      :user="currentUser"
-      @toggle="toggleSidebar"
-      @logout="handleLogout"
+    :collapsed="collapsed"
+    :menu="menu"
+    :user="currentUser"
+    @toggle="toggleSidebar"
+    @logout="handleLogout"
     />
 
     <div class="main">
-
-      <!-- TOP BAR -->
-      <div class="topbar">
-        <div class="topbar-left">
-          <router-link to="/transactions" class="back-link">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Transactions
-          </router-link>
-          <h1 class="page-title">{{ transaction?.document_number || 'Transaction detail' }}</h1>
+      <div class="top-bar">
+        <div>
+          <div class="page-title">
+            {{ transaction?.document_number || "Transaction Detail" }}
+          </div>
+          <div class="page-date">
+            Review quotation, invoice, receipt, and transaction items
+          </div>
         </div>
-        <div class="topbar-right">
+
+        <div class="top-right">
+          <router-link to="/transactions" class="pill-btn link-btn">
+            Back
+          </router-link>
+
           <button
             v-if="transaction?.status === 'quotation'"
-            class="btn-primary"
+            class="pill-btn primary"
             :disabled="actionLoading"
             @click="confirmQuotation"
           >
-            {{ actionLoading ? 'Processing...' : 'Confirm to invoice' }}
+            {{ actionLoading ? "Processing..." : "Confirm to Invoice" }}
           </button>
+
           <button
             v-if="transaction?.status === 'invoice' && balanceDue > 0"
-            class="btn-primary"
+            class="pill-btn primary"
             :disabled="actionLoading"
             @click="openPaymentModal"
           >
-            Add payment
+            Add Payment
           </button>
         </div>
       </div>
 
-      <!-- LOADING -->
-      <div v-if="loading" class="card-bare">
-        <div class="empty-state">Loading transaction...</div>
+      <div v-if="loading" class="card">
+        <div class="empty-state">Loading transaction detail...</div>
       </div>
 
       <template v-else-if="transaction">
-
-        <!-- DETAIL GRID -->
         <div class="detail-grid">
-
-          <!-- LEFT: summary info -->
-          <Card class="detail-card">
+          <Card>
             <template #header>
-              <span class="card-title">Summary</span>
-              <span class="status-badge" :class="transaction.status">{{ transaction.status }}</span>
+              <span class="card-title">Transaction Summary</span>
+              <span :class="['status-badge', transaction.status]">
+                {{ transaction.status }}
+              </span>
             </template>
-            <div class="info-grid">
+
+            <div class="summary-grid">
               <div class="info-block">
-                <div class="info-label">Document no.</div>
-                <div class="info-value">{{ transaction.document_number || '-' }}</div>
+                <div class="info-label">Document No.</div>
+                <div class="info-value">{{ transaction.document_number || "-" }}</div>
               </div>
+
               <div class="info-block">
-                <div class="info-label">Created</div>
+                <div class="info-label">Created At</div>
                 <div class="info-value">{{ formatDateTime(transaction.created_at) }}</div>
               </div>
+
               <div class="info-block">
                 <div class="info-label">Customer</div>
-                <div class="info-value">{{ transaction.customer?.name || '-' }}</div>
+                <div class="info-value">{{ transaction.customer?.name || "-" }}</div>
               </div>
+
               <div class="info-block">
                 <div class="info-label">Phone</div>
-                <div class="info-value">{{ transaction.customer?.phone || '-' }}</div>
+                <div class="info-value">{{ transaction.customer?.phone || "-" }}</div>
               </div>
+
               <div class="info-block">
-                <div class="info-label">Plate</div>
-                <div class="info-value">{{ transaction.vehicle?.license_plate || '-' }}</div>
+                <div class="info-label">Vehicle</div>
+                <div class="info-value">
+                  {{ transaction.vehicle?.license_plate || "-" }}
+                </div>
               </div>
+
               <div class="info-block">
-                <div class="info-label">Make / model</div>
-                <div class="info-value">{{ transaction.vehicle?.make || '-' }} {{ transaction.vehicle?.model || '' }}</div>
+                <div class="info-label">Make / Model</div>
+                <div class="info-value">
+                  {{ transaction.vehicle?.make || "-" }}
+                  {{ transaction.vehicle?.model || "" }}
+                </div>
               </div>
+
               <div class="info-block">
                 <div class="info-label">Year</div>
-                <div class="info-value">{{ transaction.vehicle?.year || '-' }}</div>
+                <div class="info-value">{{ transaction.vehicle?.year || "-" }}</div>
               </div>
+
               <div class="info-block">
                 <div class="info-label">Notes</div>
-                <div class="info-value">{{ transaction.notes || '-' }}</div>
+                <div class="info-value">
+                  {{ transaction.notes || "-" }}
+                </div>
               </div>
             </div>
           </Card>
 
-          <!-- RIGHT: actions + totals -->
-          <div class="detail-right-col">
-            <Card class="detail-card">
-              <template #header>
-                <span class="card-title">Actions</span>
-              </template>
-              <div class="actions-col">
-                <button v-if="transaction.status === 'quotation'" class="btn-outline" @click="previewDocument('quotation')">Preview quotation</button>
-                <button v-if="transaction.status === 'invoice'"   class="btn-outline" @click="previewDocument('invoice')">Preview invoice</button>
-                <button v-if="transaction.status === 'receipt'"   class="btn-outline" @click="previewDocument('receipt')">Preview receipt</button>
-                <button v-if="transaction.status === 'receipt'"   class="btn-outline" @click="downloadDocument('receipt')">Download receipt</button>
-                <button class="btn-wa" @click="openWhatsApp(transaction)">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                  Send via WhatsApp
-                </button>
-                <router-link v-if="transaction.status === 'quotation'" :to="`/transactions/${transaction.id}/edit`" class="btn-outline link-btn">Edit transaction</router-link>
-                <button v-if="transaction.status === 'quotation'" class="btn-primary" :disabled="actionLoading" @click="confirmQuotation">
-                  {{ actionLoading ? 'Processing...' : 'Confirm to invoice' }}
-                </button>
-                <button v-if="transaction.status === 'invoice'" class="btn-primary" :disabled="actionLoading" @click="openPaymentModal">
-                  Add payment
-                </button>
-              </div>
-            </Card>
+          <Card>
+            <template #header>
+              <span class="card-title">Actions</span>
+            </template>
 
-            <Card class="detail-card totals-card">
-              <template #header>
-                <span class="card-title">Totals</span>
-              </template>
-              <div class="totals-rows">
-                <div class="totals-row">
-                  <span>Subtotal</span>
-                  <span>RM {{ formatMoney(transaction.total_amount) }}</span>
-                </div>
-                <div class="totals-row">
-                  <span>Discount</span>
-                  <span>RM {{ formatMoney(transaction.discount_amount || 0) }}</span>
-                </div>
-                <div class="totals-row">
-                  <span>Total paid</span>
-                  <span>RM {{ formatMoney(totalPaid) }}</span>
-                </div>
-                <div class="totals-row totals-row--total">
-                  <span>Balance due</span>
-                  <span>RM {{ formatMoney(balanceDue) }}</span>
-                </div>
+            <div class="actions-panel">
+                <button
+                class="pill-btn"
+                @click="previewDocument('quotation')"
+                v-if="transaction.status === 'quotation'"
+                >
+                Preview Quotation
+                </button>
+
+                <button
+                class="pill-btn"
+                @click="previewDocument('invoice')"
+                v-if="transaction.status === 'invoice'"
+                >
+                Preview Invoice
+                </button>
+
+                <button
+                class="pill-btn"
+                @click="previewDocument('receipt')"
+                v-if="transaction.status === 'receipt'"
+                >
+                Preview Receipt
+                </button>
+                <button
+                class="pill-btn"
+                @click="downloadDocument('receipt')"
+                v-if="transaction.status === 'receipt'"
+                >
+                Download Receipt
+                </button>
+              <button class="pill-btn" @click="openWhatsApp(transaction)">
+                WhatsApp Customer
+              </button>
+
+              <router-link
+                v-if="transaction.status === 'quotation'"
+                :to="`/transactions/${transaction.id}/edit`"
+                class="pill-btn"
+                >
+                Edit Transaction
+                </router-link>
+
+              <button
+                v-if="transaction.status === 'quotation'"
+                class="pill-btn primary"
+                :disabled="actionLoading"
+                @click="confirmQuotation"
+              >
+                {{ actionLoading ? "Processing..." : "Confirm to Invoice" }}
+              </button>
+
+              <button
+                v-if="transaction.status === 'invoice'"
+                class="pill-btn primary"
+                :disabled="actionLoading"
+                @click="openPaymentModal"
+              >
+                Add Payment
+              </button>
+            </div>
+
+            <div class="summary-box">
+              <div class="summary-row">
+                <span>Subtotal</span>
+                <span>RM {{ formatMoney(transaction.total_amount) }}</span>
               </div>
 
-              <div v-if="transaction.payments && transaction.payments.length" class="payment-history">
-                <div class="payment-history-title">Payment history</div>
-                <div v-for="payment in transaction.payments" :key="payment.id" class="payment-row">
-                  <div>
-                    <div class="payment-method">{{ payment.payment_method || '-' }}</div>
-                    <div class="payment-meta">
-                      {{ formatDateTime(payment.payment_date) }}
-                      <span v-if="payment.payment_reference"> · Ref: {{ payment.payment_reference }}</span>
-                    </div>
-                  </div>
-                  <strong class="payment-amount">RM {{ formatMoney(payment.amount_paid) }}</strong>
-                </div>
+              <div class="summary-row">
+                <span>Discount</span>
+                <span>RM {{ formatMoney(transaction.discount_amount || 0) }}</span>
               </div>
-            </Card>
-          </div>
+
+              <div class="summary-row">
+    <span>Total Paid</span>
+    <span>RM {{ formatMoney(totalPaid) }}</span>
+  </div>
+
+  <div class="summary-row">
+    <span>Balance Due</span>
+    <span>RM {{ formatMoney(balanceDue) }}</span>
+  </div>
+
+  <div
+    v-if="transaction.payments && transaction.payments.length"
+    class="payment-history"
+  >
+    <div class="payment-title">Payment History</div>
+
+    <div
+      v-for="payment in transaction.payments"
+      :key="payment.id"
+      class="payment-row"
+    >
+      <div>
+        <div class="payment-method">{{ payment.payment_method || "-" }}</div>
+        <div class="payment-meta">
+          {{ formatDateTime(payment.payment_date) }}
+          <span v-if="payment.payment_reference">
+            · Ref: {{ payment.payment_reference }}
+          </span>
+        </div>
+      </div>
+
+      <strong>RM {{ formatMoney(payment.amount_paid) }}</strong>
+    </div>
+  </div>
+</div>
+          </Card>
         </div>
 
-        <!-- ITEMS -->
-        <Card class="detail-card items-card">
+        <Card>
           <template #header>
-            <span class="card-title">Line items</span>
-            <span class="items-count">{{ transaction.items?.length || 0 }} item{{ (transaction.items?.length || 0) !== 1 ? 's' : '' }}</span>
+            <span class="card-title">Items</span>
+            <span class="card-link">{{ transaction.items?.length || 0 }} item(s)</span>
           </template>
 
-          <div v-if="!transaction.items || transaction.items.length === 0" class="empty-state">No items for this transaction.</div>
-          <table v-else class="items-table">
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th>Type</th>
-                <th>Qty</th>
-                <th class="col-right">Unit price</th>
-                <th class="col-right">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in transaction.items" :key="item.id">
-                <td>
-                  <div class="cell-primary">
-                    {{ item.item_type === 'service' ? (item.service_name || 'Service') : partDisplayName(item) }}
-                  </div>
-                  <div v-if="item.note" class="cell-sub">{{ item.note }}</div>
-                </td>
-                <td>
-                  <span class="type-badge" :class="item.item_type">{{ item.item_type || '-' }}</span>
-                </td>
-                <td>{{ item.quantity || '-' }}</td>
-                <td class="col-right">RM {{ formatMoney(item.selling_price) }}</td>
-                <td class="col-right cell-primary">RM {{ formatMoney(item.total_price) }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-if="!transaction.items || transaction.items.length === 0" class="empty-state">
+            No items found for this transaction.
+          </div>
+
+          <div v-else class="items-list">
+            <div
+              v-for="item in transaction.items"
+              :key="item.id"
+              class="item-row"
+            >
+              <div class="item-left">
+                <div class="item-name">
+                  {{
+                    item.item_type === "service"
+                      ? item.service_name || "Service"
+                      : partDisplayName(item)
+                  }}
+                </div>
+
+                <div class="item-meta">
+                  Type: {{ item.item_type || "-" }}
+                  <span v-if="item.quantity"> · Qty: {{ item.quantity }}</span>
+                  <span v-if="item.note"> · {{ item.note }}</span>
+                </div>
+              </div>
+
+              <div class="item-right">
+                <div class="item-price">
+                  RM {{ formatMoney(item.total_price) }}
+                </div>
+                <div class="item-unit">
+                  Unit: RM {{ formatMoney(item.selling_price) }}
+                </div>
+              </div>
+            </div>
+          </div>
         </Card>
 
-        <div v-if="error" class="page-error">{{ error }}</div>
+        <div v-if="error" class="page-error">
+          {{ error }}
+        </div>
       </template>
 
-      <div v-else class="card-bare">
+      <div v-else class="card">
         <div class="empty-state">Transaction not found.</div>
       </div>
 
-      <!-- PDF PREVIEW MODAL -->
       <Teleport to="body">
-        <div v-if="pdfPreviewUrl" class="modal-overlay" @click.self="closePdfPreview">
-          <div class="pdf-container">
-            <div class="pdf-topbar">
-              <div class="pdf-title">
-                {{ currentDocType ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1) : 'Document preview' }}
-              </div>
-              <div class="pdf-actions">
-                <button class="btn-outline" type="button" @click="closePdfPreview">Close</button>
-                <button class="btn-primary" type="button" @click="downloadDocument(currentDocType)">Download</button>
-              </div>
-            </div>
-            <iframe :src="pdfPreviewUrl"></iframe>
-          </div>
+  <div v-if="pdfPreviewUrl" class="pdf-modal" @click.self="closePdfPreview">
+    <div class="pdf-container">
+      <div class="pdf-topbar">
+        <div class="pdf-title">
+          {{ currentDocType ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1) : "Document Preview" }}
         </div>
-      </Teleport>
 
-      <!-- PAYMENT MODAL -->
+        <div class="pdf-actions">
+          <button class="pdf-close-btn" type="button" @click="closePdfPreview">
+            Close
+          </button>
+
+          <button class="pill-btn primary" type="button" @click="downloadDocument(currentDocType)">
+            Download
+          </button>
+        </div>
+      </div>
+
+      <iframe :src="pdfPreviewUrl"></iframe>
+    </div>
+  </div>
+</Teleport>
+
       <Teleport to="body">
-        <div v-if="showPaymentModal" class="modal-overlay" @click.self="closePaymentModal">
-          <div class="modal-card">
+        <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
+          <div class="modal-card large">
             <div class="modal-header">
-              <span>Record payment</span>
-              <button type="button" class="modal-close" @click="closePaymentModal">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-              </button>
+              <span>Record Payment</span>
+              <button type="button" class="mini-btn" @click="closePaymentModal">✕</button>
             </div>
+
             <div class="modal-body">
               <div class="form-grid">
                 <div class="field">
-                  <label>Amount paid</label>
-                  <input v-model.number="paymentForm.amount_paid" type="number" min="0.01" step="0.01" />
+                  <label>Amount Paid</label>
+                  <input
+                    v-model.number="paymentForm.amount_paid"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                  />
                 </div>
+
                 <div class="field">
-                  <label>Payment method</label>
+                  <label>Payment Method</label>
                   <select v-model="paymentForm.payment_method">
                     <option value="cash">Cash</option>
-                    <option value="bank_transfer">Bank transfer</option>
+                    <option value="bank_transfer">Bank Transfer</option>
                     <option value="qr">QR</option>
                     <option value="card">Card</option>
                   </select>
                 </div>
+
                 <div class="field">
-                  <label>Reference</label>
-                  <input v-model="paymentForm.payment_reference" type="text" placeholder="Optional" />
+                  <label>Payment Reference</label>
+                  <input
+                    v-model="paymentForm.payment_reference"
+                    type="text"
+                    placeholder="Optional reference"
+                  />
                 </div>
+
                 <div class="field">
-                  <label>Payment date</label>
-                  <input v-model="paymentForm.payment_date" type="date" />
+                  <label>Payment Date</label>
+                  <input
+                    v-model="paymentForm.payment_date"
+                    type="date"
+                  />
                 </div>
               </div>
-              <div v-if="paymentFormError" class="page-error" style="margin-top: 12px;">{{ paymentFormError }}</div>
+
+              <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
+                {{ paymentFormError }}
+              </div>
             </div>
+
             <div class="modal-actions">
-              <button type="button" class="btn-outline" @click="closePaymentModal">Cancel</button>
-              <button type="button" class="btn-primary" :disabled="actionLoading" @click="submitPayment">
-                {{ actionLoading ? 'Processing...' : 'Confirm payment' }}
+              <button type="button" @click="closePaymentModal">Cancel</button>
+              <button
+                type="button"
+                class="primary"
+                :disabled="actionLoading"
+                @click="submitPayment"
+              >
+                {{ actionLoading ? "Processing..." : "Confirm Payment" }}
               </button>
             </div>
           </div>
         </div>
       </Teleport>
-
     </div>
   </div>
 </template>
@@ -663,476 +763,385 @@ export default {
 </script>
 
 <style scoped>
-/* ── PAGE BASE ── */
-.dash {
-  display: flex;
-  min-height: 100vh;
-  background: #f6f6f4;
-}
-
-.main {
-  flex: 1;
-  min-width: 0;
-  padding: 28px 32px 40px;
-}
-
-/* ── TOPBAR ── */
-.topbar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: #999;
-  text-decoration: none;
-  margin-bottom: 5px;
-  transition: color 0.13s;
-}
-
-.back-link:hover { color: #555; }
-
-.page-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #111;
-  letter-spacing: -0.03em;
-  margin: 0;
-}
-
-.topbar-right { display: flex; gap: 8px; align-items: center; }
-
-/* ── BUTTONS ── */
-.btn-primary {
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 9px;
-  background: #B41C1C;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.13s;
-}
-
-.btn-primary:hover { background: #991818; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.btn-outline {
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 9px;
-  border: 0.5px solid #d8d8d4;
-  background: #fff;
-  color: #333;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  transition: background 0.13s, border-color 0.13s;
-}
-
-.btn-outline:hover { background: #f5f5f2; border-color: #c8c8c4; }
-
-.btn-wa {
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 9px;
-  background: #25D366;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  transition: background 0.13s;
-}
-
-.btn-wa:hover { background: #1ebe5a; }
-.link-btn { text-decoration: none; }
-
-/* ── LAYOUT ── */
 .detail-grid {
   display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
+  grid-template-columns: 1.2fr 0.8fr;
   gap: 16px;
   margin-bottom: 16px;
-  align-items: start;
 }
 
-.detail-right-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* ── CARDS ── */
-.detail-card {
-  background: #fff;
-  border: 0.5px solid #e4e4e0;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.card-bare {
-  background: #fff;
-  border: 0.5px solid #e4e4e0;
-  border-radius: 14px;
-  padding: 24px;
-}
-
-.items-card { margin-bottom: 0; }
-
-.card-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #111;
-}
-
-/* ── STATUS BADGE ── */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.status-badge.quotation { background: #FAEEDA; color: #854F0B; }
-.status-badge.invoice   { background: #E6F1FB; color: #185FA5; }
-.status-badge.receipt   { background: #EAF3DE; color: #3B6D11; }
-
-/* ── INFO GRID ── */
-.info-grid {
+.summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 14px;
 }
 
 .info-block {
   padding: 10px 12px;
-  background: #fafaf8;
-  border: 0.5px solid #eeeee9;
-  border-radius: 9px;
+  background: #fafaf9;
+  border: 1px solid #ececea;
+  border-radius: 10px;
 }
 
 .info-label {
-  font-size: 10.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #bbb;
+  font-size: 11px;
+  color: #999;
   margin-bottom: 4px;
 }
 
 .info-value {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
   color: #111;
+  font-weight: 500;
   line-height: 1.4;
 }
 
-/* ── ACTIONS COL ── */
-.actions-col {
+.actions-panel {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  text-transform: capitalize;
+  border: 1px solid #ddd;
+}
+
+.status-badge.quotation {
+  background: #fff8e1;
+  color: #8a5a00;
+}
+
+.status-badge.invoice {
+  background: #eef4ff;
+  color: #1565c0;
+}
+
+.status-badge.receipt {
+  background: #f0faf0;
+  color: #2e7d32;
+}
+
+.summary-box {
+  margin-top: 8px;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 10px;
+  border: 1px solid #ececec;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.summary-row:last-child {
+  margin-bottom: 0;
+}
+
+.summary-row.total {
+  padding-top: 8px;
+  border-top: 1px solid #ececec;
+  color: #111;
+  font-weight: 600;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid #ececea;
+  border-radius: 10px;
+  background: #fafaf9;
+}
+
+.item-left {
+  min-width: 0;
+}
+
+.item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+}
+
+.item-meta {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.item-right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.item-price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+}
+
+.item-unit {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #888;
+}
+
+.link-btn {
+  text-decoration: none;
+}
+
+.page-error {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #e53935;
+  background: #fff1f1;
+  border: 1px solid #ffd6d6;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.pdf-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
+  background: rgba(15, 15, 15, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 99999;
+}
+
+.pdf-container {
+  width: min(95vw, 1400px);
+  height: min(92vh, 1000px);
+  background: #fff;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-container iframe {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #f5f5f5;
+}
+
+/*
+.pdf-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.pdf-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #171717;
+}
+
+.pdf-actions {
+  display: flex;
   gap: 8px;
 }
 
-.actions-col .btn-outline,
-.actions-col .btn-primary,
-.actions-col .btn-wa,
-.actions-col .link-btn {
-  width: 100%;
-  justify-content: center;
-}
-
-/* ── TOTALS ── */
-.totals-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.totals-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #666;
-  padding: 8px 0;
-  border-bottom: 0.5px solid #f0f0ec;
-}
-
-.totals-row:last-of-type { border-bottom: none; }
-
-.totals-row--total {
-  padding-top: 10px;
-  border-top: 1px solid #e4e4e0;
-  border-bottom: none;
-  font-weight: 600;
-  color: #111;
-  font-size: 14px;
-  margin-top: 4px;
-}
-
-/* ── PAYMENT HISTORY ── */
 .payment-history {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 0.5px solid #eeeee9;
+  margin-top: 12px;
+  border-top: 1px solid #eeeeea;
+  padding-top: 10px;
+}
+  */
+
+.pdf-topbar {
+  height: 58px;
+  padding: 0 16px 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #eeeeea;
+  background: #fff;
 }
 
-.payment-history-title {
-  font-size: 10.5px;
-  font-weight: 600;
+.pdf-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #111;
+}
+
+.pdf-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.pdf-close-btn {
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid #deded9;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #444;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.pdf-close-btn:hover {
+  background: #f5f5f2;
+  border-color: #d2d2cc;
+}
+
+.pdf-close-btn:active {
+  transform: scale(0.97);
+}
+
+.payment-title {
+  font-size: 11px;
+  color: #999;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #bbb;
-  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .payment-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
   gap: 12px;
   padding: 8px 0;
-  border-bottom: 0.5px solid #f0f0ec;
+  border-bottom: 1px solid #f3f3f0;
 }
 
-.payment-row:last-child { border-bottom: none; }
+.payment-row:last-child {
+  border-bottom: none;
+}
 
 .payment-method {
-  font-size: 13px;
-  font-weight: 500;
-  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: 600;
+  color: #111;
   text-transform: capitalize;
 }
 
 .payment-meta {
-  margin-top: 2px;
   font-size: 11px;
-  color: #aaa;
+  color: #999;
+  margin-top: 2px;
 }
 
-.payment-amount {
-  font-size: 13px;
-  font-weight: 600;
-  color: #111;
-  white-space: nowrap;
-}
-
-/* ── ITEMS TABLE ── */
-.items-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.items-table th {
-  padding: 9px 16px;
-  text-align: left;
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #aaa;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  border-bottom: 0.5px solid #eeeee9;
-  background: #fafaf8;
-}
-
-.items-table td {
-  padding: 12px 16px;
-  border-bottom: 0.5px solid #f2f2ee;
-  vertical-align: middle;
-  color: #333;
-}
-
-.items-table tbody tr:last-child td { border-bottom: none; }
-.items-table tbody tr:hover td { background: #fafaf8; }
-
-.col-right { text-align: right; }
-
-.cell-primary { font-weight: 500; color: #111; }
-.cell-sub { margin-top: 3px; font-size: 11px; color: #aaa; }
-
-.items-count {
-  font-size: 12px;
-  color: #aaa;
-  font-weight: 400;
-}
-
-.type-badge {
-  display: inline-flex;
-  align-items: center;
-  height: 20px;
-  padding: 0 8px;
-  border-radius: 20px;
-  font-size: 10.5px;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.type-badge.service { background: #E6F1FB; color: #185FA5; }
-.type-badge.part    { background: #EAF3DE; color: #3B6D11; }
-
-.empty-state {
-  padding: 20px 0 8px;
-  font-size: 13px;
-  color: #aaa;
-  font-style: italic;
-}
-
-/* ── ERROR ── */
-.page-error {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #A32D2D;
-  background: #FCEBEB;
-  border: 0.5px solid #F7C1C1;
-  border-radius: 8px;
-  padding: 10px 14px;
-}
-
-/* ── PDF MODAL ── */
-.modal-overlay {
+.modal {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(10, 10, 10, 0.5);
+  background: rgba(17, 17, 17, 0.45);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
 }
 
-.pdf-container {
-  width: min(95vw, 1320px);
-  height: min(92vh, 960px);
-  background: #fff;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.pdf-topbar {
-  height: 54px;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 0.5px solid #eeeee9;
-  flex-shrink: 0;
-}
-
-.pdf-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #111;
-}
-
-.pdf-actions { display: flex; gap: 8px; }
-
-.pdf-container iframe {
-  flex: 1;
-  width: 100%;
-  border: none;
-  background: #f5f5f2;
-}
-
-/* ── PAYMENT MODAL ── */
 .modal-card {
-  width: min(500px, 100%);
-  background: #fff;
-  border-radius: 14px;
-  border: 0.5px solid #e4e4e0;
+  width: min(460px, 100%);
+  max-height: calc(100vh - 48px);
+  background: #ffffff;
+  border: 1px solid #eeeeea;
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+.modal-card.large {
+  width: min(520px, 100%);
+  padding: 0;
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 20px 14px;
-  border-bottom: 0.5px solid #eeeee9;
-  font-size: 14px;
-  font-weight: 600;
-  color: #111;
+  gap: 12px;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid #f0f0ed;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111111;
 }
 
-.modal-close {
-  width: 28px;
-  height: 28px;
-  border: 0.5px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  color: #777;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.13s;
+.modal-body {
+  padding: 18px 20px;
 }
-
-.modal-close:hover { background: #f5f5f2; }
-
-.modal-body { padding: 18px 20px; }
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
-.field { display: flex; flex-direction: column; gap: 6px; }
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
 
 .field label {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
-  color: #777;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  color: #666666;
 }
 
 .field input,
 .field select {
-  height: 40px;
-  border: 0.5px solid #d8d8d4;
-  border-radius: 9px;
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #deded9;
+  border-radius: 10px;
   padding: 0 12px;
-  background: #fafaf8;
-  color: #111;
+  background: #ffffff;
+  color: #111111;
   font-size: 13px;
   outline: none;
-  transition: border-color 0.13s;
-  font: inherit;
 }
 
 .field input:focus,
 .field select:focus {
-  border-color: #B41C1C;
-  background: #fff;
+  border-color: #111111;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
 }
 
 .modal-actions {
@@ -1140,23 +1149,71 @@ export default {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   padding: 14px 20px 20px;
-  border-top: 0.5px solid #eeeee9;
+  border-top: 1px solid #f0f0ed;
+  background: #ffffff;
 }
 
-/* ── RESPONSIVE ── */
+.modal-actions button {
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid #deded9;
+  background: #ffffff;
+  color: #333333;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-actions button.primary {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+}
+
+.modal-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.mini-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #deded9;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #555555;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.mini-btn:hover {
+  background: #f5f5f2;
+}
+
+@media (max-width: 640px) {
+  .modal {
+    padding: 16px;
+    align-items: flex-end;
+  }
+
+  .modal-card.large {
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1100px) {
-  .detail-grid { grid-template-columns: 1fr; }
-  .info-grid { grid-template-columns: 1fr 1fr; }
-}
-
-@media (max-width: 768px) {
-  .main { padding: 20px 16px 40px; }
-  .topbar { flex-direction: column; align-items: flex-start; }
-  .info-grid { grid-template-columns: 1fr; }
-  .form-grid { grid-template-columns: 1fr; }
-  .modal-actions { grid-template-columns: 1fr; }
-  .modal-overlay { padding: 16px; align-items: flex-end; }
-  .modal-card { border-radius: 14px 14px 0 0; width: 100%; }
+  .detail-grid,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
-
