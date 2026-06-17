@@ -9,54 +9,54 @@
     />
 
     <div class="main">
-    <div class="top-bar">
-        <div class="page-intro">
-        <div class="page-title-row">
-            <div class="page-title">Customers</div>
-            <span class="page-chip">
-            {{
-                activeTab === "all"
-                ? `${filteredCustomers.length} customer${filteredCustomers.length === 1 ? "" : "s"}`
-                : `${filteredCustomers.length} ${activeTab}`
-            }}
-            </span>
-        </div>
+      <div class="page-header">
+          <div class="page-intro">
+            <div class="page-title-row">
+                <div class="page-title">Customers</div>
+                <span class="page-chip">
+                {{
+                    activeTab === "all"
+                    ? `${filteredCustomers.length} customer${filteredCustomers.length === 1 ? "" : "s"}`
+                    : `${filteredCustomers.length} ${activeTab}`
+                }}
+                </span>
+            </div>
 
-        <div class="page-date">
-            View customer records, vehicles, and recent workshop activity
-        </div>
-        </div>
+            <div class="page-subtitle">
+                View customer records, vehicles, and recent workshop activity
+            </div>
+          </div>
 
-        <div class="top-right">
-        <input
-            class="search"
-            v-model.trim="searchQuery"
-            placeholder="Search customer..."
-        />
-        <button
-          class="btn btn-secondary btn-pill"
-          type="button"
-          :disabled="exporting"
-          @click="exportCustomers"
-        >
-          {{ exporting ? "Exporting..." : "Export" }}
-        </button>
-        <button class="btn btn-primary btn-pill" type="button" @click="openFormModal()">
-            + Add Customer
-        </button>
-        </div>
-    </div>
+          <div class="page-actions">
+          <input
+              class="search-input"
+              v-model.trim="searchQuery"
+              placeholder="Search customer..."
+          />
+          <button
+            class="btn btn-secondary btn-pill"
+            type="button"
+            :disabled="exporting"
+            @click="exportCustomers"
+          >
+            {{ exporting ? "Exporting..." : "Export" }}
+          </button>
+          <button class="btn btn-primary btn-pill" type="button" @click="openFormModal()">
+              + Add Customer
+          </button>
+          </div>
+      </div>
 
-    <div class="tabs">
-        <button
-        v-for="tab in tabs"
-        :key="tab.value"
-        :class="['tab', { active: activeTab === tab.value }]"
-        @click="changeTab(tab.value)"
-        >
-        {{ tab.label }}
-        </button>
-    </div>
+      <div class="tabs">
+          <button
+          v-for="tab in tabs"
+          :key="tab.value"
+          :class="['tab', { active: activeTab === tab.value }]"
+          @click="changeTab(tab.value)"
+          >
+          {{ tab.label }}
+          </button>
+      </div>
 
       <div class="card">
         <div v-if="loading" class="empty-state">Loading customers...</div>
@@ -303,111 +303,111 @@
       </div>
     </div>
   </div>
-</Teleport>
+  </Teleport>
 
-<Teleport to="body">
-  <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
-    <div class="modal-card large">
-      <div class="modal-header">
-        <span>{{ editingCustomerId ? "Edit Customer" : "Add Customer" }}</span>
-        <button type="button" class="btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
-      </div>
+  <Teleport to="body">
+    <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
+      <div class="modal-card large">
+        <div class="modal-header">
+          <span>{{ editingCustomerId ? "Edit Customer" : "Add Customer" }}</span>
+          <button type="button" class="btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
+        </div>
 
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="field">
-            <label>Name</label>
-            <input v-model="form.name" type="text" placeholder="Customer name" />
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="field">
+              <label>Name</label>
+              <input v-model="form.name" type="text" placeholder="Customer name" />
+            </div>
+
+            <div class="field">
+              <label>Phone</label>
+              <input v-model="form.phone" type="text" placeholder="Phone number" />
+            </div>
+
+            <div class="field">
+              <label>Email</label>
+              <input v-model="form.email" type="email" placeholder="Email address" />
+            </div>
+
+            <div class="field full">
+              <label>Address</label>
+              <textarea
+                v-model="form.address"
+                rows="3"
+                placeholder="Customer address"
+              ></textarea>
+            </div>
           </div>
 
-          <div class="field">
-            <label>Phone</label>
-            <input v-model="form.phone" type="text" placeholder="Phone number" />
+          <div v-if="!editingCustomerId" class="vehicle-form-box">
+            <div class="section-title">Vehicle Information</div>
+
+            <label class="checkbox-row">
+              <input v-model="form.add_vehicle" type="checkbox" />
+              <span>Add vehicle now</span>
+            </label>
+
+            <div v-if="form.add_vehicle" class="form-grid" style="margin-top:12px;">
+              <div class="field">
+                <label>License Plate</label>
+                <input
+                  v-model="form.vehicle_license_plate"
+                  type="text"
+                  placeholder="e.g. ABC1234"
+                />
+              </div>
+
+              <div class="field">
+                <label>Make</label>
+                <input
+                  v-model="form.vehicle_make"
+                  type="text"
+                  placeholder="e.g. Toyota"
+                />
+              </div>
+
+              <div class="field">
+                <label>Model</label>
+                <input
+                  v-model="form.vehicle_model"
+                  type="text"
+                  placeholder="e.g. Vios"
+                />
+              </div>
+
+              <div class="field">
+                <label>Year</label>
+                <input
+                  v-model="form.vehicle_year"
+                  type="number"
+                  min="1950"
+                  max="2100"
+                  placeholder="e.g. 2020"
+                />
+              </div>
+            </div>
           </div>
 
-          <div class="field">
-            <label>Email</label>
-            <input v-model="form.email" type="email" placeholder="Email address" />
-          </div>
-
-          <div class="field full">
-            <label>Address</label>
-            <textarea
-              v-model="form.address"
-              rows="3"
-              placeholder="Customer address"
-            ></textarea>
+          <div v-if="formError" class="page-error" style="margin-top:12px;">
+            {{ formError }}
           </div>
         </div>
 
-        <div v-if="!editingCustomerId" class="vehicle-form-box">
-          <div class="section-title">Vehicle Information</div>
-
-          <label class="checkbox-row">
-            <input v-model="form.add_vehicle" type="checkbox" />
-            <span>Add vehicle now</span>
-          </label>
-
-          <div v-if="form.add_vehicle" class="form-grid" style="margin-top:12px;">
-            <div class="field">
-              <label>License Plate</label>
-              <input
-                v-model="form.vehicle_license_plate"
-                type="text"
-                placeholder="e.g. ABC1234"
-              />
-            </div>
-
-            <div class="field">
-              <label>Make</label>
-              <input
-                v-model="form.vehicle_make"
-                type="text"
-                placeholder="e.g. Toyota"
-              />
-            </div>
-
-            <div class="field">
-              <label>Model</label>
-              <input
-                v-model="form.vehicle_model"
-                type="text"
-                placeholder="e.g. Vios"
-              />
-            </div>
-
-            <div class="field">
-              <label>Year</label>
-              <input
-                v-model="form.vehicle_year"
-                type="number"
-                min="1950"
-                max="2100"
-                placeholder="e.g. 2020"
-              />
-            </div>
-          </div>
+        <div class="modal-actions">
+          <button type="button" @click="closeFormModal">Cancel</button>
+          <button
+            type="button"
+            class="btn-primary"
+            :disabled="savingForm"
+            @click="submitCustomer"
+          >
+            {{ savingForm ? "Saving..." : (editingCustomerId ? "Update" : "Create") }}
+          </button>
         </div>
-
-        <div v-if="formError" class="page-error" style="margin-top:12px;">
-          {{ formError }}
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" @click="closeFormModal">Cancel</button>
-        <button
-          type="button"
-          class="btn-primary"
-          :disabled="savingForm"
-          @click="submitCustomer"
-        >
-          {{ savingForm ? "Saving..." : (editingCustomerId ? "Update" : "Create") }}
-        </button>
       </div>
     </div>
-  </div>
-</Teleport>
+  </Teleport>
 </template>
 
 <script>

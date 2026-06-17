@@ -9,21 +9,21 @@
     />
 
     <div class="main">
-      <div class="top-bar">
+      <div class="page-header">
         <div class="page-intro">
           <div class="page-title-row">
             <div class="page-title">Reports</div>
             <span class="page-chip">{{ periodChartRaw.length || 0 }} period records</span>
           </div>
 
-          <div class="page-date">
+          <div class="page-subtitle">
             Financial overview and business analytics
           </div>
         </div>
 
-        <div class="top-right">
+        <div class="page-actions">
           <input
-            class="search"
+            class="search-input"
             v-model.trim="searchQuery"
             placeholder="Search customer / plate / make / model..."
           />

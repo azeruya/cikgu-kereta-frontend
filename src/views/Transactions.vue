@@ -9,27 +9,27 @@
     />
 
     <div class="main">
-    <div class="top-bar">
+    <div class="page-header">
         <div class="page-intro">
-        <div class="page-title-row">
-            <div class="page-title">Transactions</div>
-            <span class="page-chip">
-            {{
-                activeTab === "all"
-                ? `${transactions.length} records`
-                : `${transactions.length} ${activeTab}`
-            }}
-            </span>
-        </div>
+          <div class="page-title-row">
+              <div class="page-title">Transactions</div>
+              <span class="page-chip">
+              {{
+                  activeTab === "all"
+                  ? `${transactions.length} records`
+                  : `${transactions.length} ${activeTab}`
+              }}
+              </span>
+          </div>
 
-        <div class="page-date">
+          <div class="page-subtitle">
             Track customer billing and service progress
-        </div>
+          </div>
         </div>
 
-        <div class="top-right">
+        <div class="page-actions">
         <input
-            class="search"
+            class="search-input"
             v-model.trim="searchQuery"
             placeholder="Search doc no / customer / plate..."
         />
@@ -669,30 +669,6 @@ export default {
 </script>
 
 <style scoped>
-.status-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  text-transform: capitalize;
-  border: 1px solid #ddd;
-}
-
-.status-badge.quotation {
-  background: #fff8e1;
-  color: #8a5a00;
-}
-
-.status-badge.invoice {
-  background: #eef4ff;
-  color: #1565c0;
-}
-
-.status-badge.receipt {
-  background: #f0faf0;
-  color: #2e7d32;
-}
-
 .jobs-section {
   margin-top: 14px;
 }

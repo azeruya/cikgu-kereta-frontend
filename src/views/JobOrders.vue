@@ -3,15 +3,15 @@
     <Sidebar :collapsed="collapsed" :menu="menu" @toggle="toggleSidebar" />
 
     <div class="main">
-      <div class="top-bar">
+      <div class="page-header">
         <div>
           <div class="page-title">Job Orders</div>
-          <div class="page-date">Manage currently active workshop jobs</div>
+          <div class="page-subtitle">Manage currently active workshop jobs</div>
         </div>
 
-        <div class="top-right">
+        <div class="page-actions">
           <input
-            class="search"
+            class="search-input"
             v-model="searchQuery"
             placeholder="Search customer / plate / doc no..."
           />

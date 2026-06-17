@@ -9,17 +9,17 @@
     />
 
     <div class="main">
-      <div class="top-bar">
-        <div>
+      <div class="page-header">
+        <div class="page-intro">
           <div class="page-title">
             {{ transaction?.document_number || "Transaction Detail" }}
           </div>
-          <div class="page-date">
+          <div class="page-subtitle">
             Review quotation, invoice, receipt, and transaction items
           </div>
         </div>
 
-        <div class="top-right">
+        <div class="page-actions">
           <router-link to="/transactions" class="btn btn-secondary btn-pill link-btn">
             Back
           </router-link>
@@ -53,7 +53,7 @@
           <Card>
             <template #header>
               <span class="card-title">Transaction Summary</span>
-              <span :class="['status-badge', transaction.status]">
+              <span :class="['badge', `badge-${transaction.status}`]">
                 {{ transaction.status }}
               </span>
             </template>
@@ -801,30 +801,6 @@ export default {
   flex-direction: column;
   gap: 10px;
   margin-bottom: 14px;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  text-transform: capitalize;
-  border: 1px solid #ddd;
-}
-
-.status-badge.quotation {
-  background: #fff8e1;
-  color: #8a5a00;
-}
-
-.status-badge.invoice {
-  background: #eef4ff;
-  color: #1565c0;
-}
-
-.status-badge.receipt {
-  background: #f0faf0;
-  color: #2e7d32;
 }
 
 .summary-box {

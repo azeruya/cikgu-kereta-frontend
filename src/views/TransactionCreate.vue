@@ -9,21 +9,21 @@
     />
 
     <div class="main">
-      <div class="top-bar">
-        <div>
-        <div class="page-title">
-        {{ isEditMode ? "Edit Transaction" : "New Transaction" }}
-        </div>
-        <div class="page-date">
-          {{
-            isEditMode
-              ? "Update transaction details, items, discount, and notes"
-              : "Create quotation for customer vehicle service"
-          }}
-        </div>
+      <div class="page-header">
+        <div class="page-intro">
+          <div class="page-title">
+          {{ isEditMode ? "Edit Transaction" : "New Transaction" }}
+          </div>
+          <div class="page-subtitle">
+            {{
+              isEditMode
+                ? "Update transaction details, items, discount, and notes"
+                : "Create quotation for customer vehicle service"
+            }}
+          </div>
         </div>
 
-        <div class="top-right">
+        <div class="page-actions">
           <router-link to="/transactions" class="btn btn-secondary btn-pill link-btn">
             Back
           </router-link>

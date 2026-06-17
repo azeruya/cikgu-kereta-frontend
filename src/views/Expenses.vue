@@ -9,21 +9,21 @@
     />
 
     <div class="main">
-      <div class="top-bar">
+      <div class="page-header">
         <div class="page-intro">
           <div class="page-title-row">
             <div class="page-title">Expenses</div>
             <span class="page-chip">{{ expenses.length }} records</span>
           </div>
 
-          <div class="page-date">
+          <div class="page-subtitle">
             Track operating expenses and bookkeeping records
           </div>
         </div>
 
-        <div class="top-right">
+        <div class="page-actions">
           <input
-            class="search"
+            class="search-input"
             v-model.trim="searchQuery"
             placeholder="Search category / description..."
           />

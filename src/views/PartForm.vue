@@ -9,17 +9,17 @@
     />
 
     <div class="main">
-      <div class="top-bar">
-        <div>
+      <div class="page-header">
+        <div class="page-intro">
           <div class="page-title">
             {{ isEditMode ? "Edit Part" : "Add Part" }}
           </div>
-          <div class="page-date">
+          <div class="page-subtitle">
             {{ isEditMode ? "Update inventory part details" : "Create a new inventory part" }}
           </div>
         </div>
 
-        <div class="top-right">
+        <div class="page-actions">
           <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
             Back
           </router-link>

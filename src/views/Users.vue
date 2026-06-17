@@ -9,13 +9,13 @@
     />
 
     <div class="main">
-      <div class="top-bar">
+      <div class="page-header">
         <div class="page-intro">
           <div class="page-title-row">
             <div class="page-title">Users</div>
             <span class="page-chip">{{ filteredUsers.length }} users</span>
           </div>
-          <div class="page-date">Manage staff and admin accounts for this branch</div>
+          <div class="page-subtitle">Manage staff and admin accounts for this branch</div>
         </div>
 
         <div class="page-actions">
@@ -850,18 +850,6 @@ export default {
   color: #999;
 }
 
-.self-badge {
-  height: 19px;
-  padding: 0 7px;
-  border-radius: 999px;
-  background: #eef7e9;
-  color: #2f6b1f;
-  font-size: 10.5px;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-}
-
 .email-text {
   font-size: 13px;
   color: #333;
@@ -877,20 +865,6 @@ export default {
 }
 
 @media (max-width: 900px) {
-  .top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-
-  .page-actions {
-    width: 100%;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-
   .users-table {
     min-width: 760px;
   }

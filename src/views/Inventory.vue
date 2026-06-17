@@ -9,64 +9,64 @@
     />
 
     <div class="main">
-    <div class="top-bar">
-        <div class="page-intro">
-        <div class="page-title-row">
-            <div class="page-title">Inventory</div>
-            <span class="page-chip">
-  {{
-    activeTab === "all"
-      ? `${totalRecords} item${totalRecords === 1 ? "" : "s"}`
-      : activeTab === "low_stock"
-          ? `${filteredParts.length} low stock`
-          : `${filteredParts.length} ${activeTab}`
-  }}
-</span>
-        </div>
+      <div class="page-header">
+          <div class="page-intro">
+            <div class="page-title-row">
+                <div class="page-title">Inventory</div>
+                <span class="page-chip">
+                {{
+                  activeTab === "all"
+                    ? `${totalRecords} item${totalRecords === 1 ? "" : "s"}`
+                    : activeTab === "low_stock"
+                        ? `${filteredParts.length} low stock`
+                        : `${filteredParts.length} ${activeTab}`
+                }}
+              </span>
+            </div>
 
-        <div class="page-date">
-            Review parts, compatibility coverage, and stock movement
-        </div>
-        </div>
+            <div class="page-subtitle">
+                Review parts, compatibility coverage, and stock movement
+            </div>
+          </div>
 
-        <div class="top-right">
-        <input
-            class="search"
-            v-model.trim="searchQuery"
-            placeholder="Search part / SKU / variant..."
-        />
-        <button
-          class="btn btn-secondary btn-pill"
-          type="button"
-          :disabled="exporting"
-          @click="exportInventory"
-        >
-          {{ exporting ? "Exporting..." : "Export" }}
-        </button>
-        <router-link to="/inventory/new" class="btn btn-primary btn-pill link-btn">
-            + Add Part
-        </router-link>
-        </div>
-    </div>
+          <div class="page-actions">
+            <input
+                class="search-input"
+                v-model.trim="searchQuery"
+                placeholder="Search part / SKU / variant..."
+            />
+            <button
+              class="btn btn-secondary btn-pill"
+              type="button"
+              :disabled="exporting"
+              @click="exportInventory"
+            >
+              {{ exporting ? "Exporting..." : "Export" }}
+            </button>
+            <router-link to="/inventory/new" class="btn btn-primary btn-pill link-btn">
+                + Add Part
+            </router-link>
+          </div>
+      </div>
 
-    <div class="tabs">
-        <button
-        v-for="tab in tabs"
-        :key="tab.value"
-        :class="['tab', { active: activeTab === tab.value }]"
-        @click="changeTab(tab.value)"
-        >
-        {{ tab.label }}
-        </button>
-    </div>
+      <div class="tabs">
+          <button
+          v-for="tab in tabs"
+          :key="tab.value"
+          :class="['tab', { active: activeTab === tab.value }]"
+          @click="changeTab(tab.value)"
+          >
+          {{ tab.label }}
+          </button>
+      </div>
 
       <div class="inventory-grid">
         <Card>
           <template #header>
             <span class="card-title">Parts List</span>
             <span class="card-link">
-  {{ totalRecords }} item(s)
-</span>
+              {{ totalRecords }} item(s)
+            </span>
           </template>
 
           <div v-if="loading" class="empty-state">Loading inventory...</div>
