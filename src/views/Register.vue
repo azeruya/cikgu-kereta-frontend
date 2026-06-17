@@ -39,22 +39,22 @@
           <span class="status-txt">Registration available</span>
         </div>
 
-        <div class="field">
+        <div class="form-field">
           <label>Name</label>
           <input v-model="name" placeholder="Your name" />
         </div>
 
-        <div class="field">
+        <div class="form-field">
           <label>Email address</label>
           <input v-model="email" type="email" placeholder="name@workshop.com" />
         </div>
 
-        <div class="field">
+        <div class="form-field">
           <label>Password</label>
           <input v-model="password" type="password" placeholder="Create password" />
         </div>
 
-        <div class="field">
+        <div class="form-field">
           <label>Confirm Password</label>
           <input v-model="password_confirmation" type="password" placeholder="Confirm password" />
         </div>

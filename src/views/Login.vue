@@ -30,7 +30,7 @@
           </div>
 
           <form @submit.prevent="login">
-            <div class="field">
+            <div class="form-field">
               <label>Email address</label>
               <input
                 v-model.trim="email"
@@ -40,8 +40,8 @@
               />
             </div>
 
-            <div class="field">
-              <div class="field-row">
+            <div class="form-field">
+              <div class="form-field-row">
                 <label>Password</label>
 
                 <button

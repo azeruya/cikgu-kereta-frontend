@@ -186,8 +186,8 @@
                   <strong>RM {{ formatMoney(paymentTransactionTotal) }}</strong>
                 </div>
 
-                <div class="form-grid payment-form-grid">
-                  <div class="field">
+                <div class="form-grid">
+                  <div class="form-field">
                     <label>Amount Paid</label>
                     <input
                       v-model.number="paymentForm.amount_paid"
@@ -197,7 +197,7 @@
                     />
                   </div>
 
-                  <div class="field">
+                  <div class="form-field">
                     <label>Payment Method</label>
                     <select v-model="paymentForm.payment_method">
                       <option value="cash">Cash</option>
@@ -207,7 +207,7 @@
                     </select>
                   </div>
 
-                  <div class="field">
+                  <div class="form-field">
                     <label>Payment Reference</label>
                     <input
                       v-model="paymentForm.payment_reference"
@@ -216,7 +216,7 @@
                     />
                   </div>
 
-                  <div class="field">
+                  <div class="form-field">
                     <label>Payment Date</label>
                     <input v-model="paymentForm.payment_date" type="date" />
                   </div>

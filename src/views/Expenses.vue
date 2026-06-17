@@ -405,13 +405,13 @@
                 <div class="form-section">
                   <div class="section-title">Expense Information</div>
 
-                  <div class="form-grid expense-form-grid">
-                    <div class="field">
+                  <div class="form-grid">
+                    <div class="form-field">
                       <label>Date</label>
                       <input v-model="form.expense_date" type="date" />
                     </div>
 
-                    <div class="field">
+                    <div class="form-field">
                       <label>Category</label>
                       <select v-model="form.category">
                         <option value="">Select category</option>
@@ -423,7 +423,7 @@
                       </select>
                     </div>
 
-                    <div class="field">
+                    <div class="form-field">
                       <label>Amount</label>
                       <input
                         v-model.number="form.amount"
@@ -434,12 +434,12 @@
                       />
                     </div>
 
-                    <div class="field">
+                    <div class="form-field">
                       <label>Receipt</label>
 
-                      <label class="upload-field">
-                        <span class="upload-button">Choose file</span>
-                        <span class="upload-name">
+                      <label class="file-upload">
+                        <span class="file-upload-button">Choose file</span>
+                        <span class="file-upload-name">
                           {{ receiptFileName || "No file selected" }}
                         </span>
 
@@ -451,7 +451,7 @@
                       </label>
                     </div>
 
-                    <div class="field full">
+                    <div class="form-field full">
                       <label>Description</label>
                       <textarea
                         v-model="form.description"
@@ -496,7 +496,7 @@
                 <button type="button" @click="closeFormModal">Cancel</button>
                 <button
                   type="button"
-                  class="btn-primary"
+                  class="btn btn-primary"
                   :disabled="savingForm"
                   @click="submitExpense"
                 >
@@ -1653,45 +1653,6 @@ export default {
   font-size: 11.5px;
   color: #888;
   margin-top: 2px;
-}
-
-.upload-field {
-  height: 38px;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.upload-field input[type="file"] {
-  display: none;
-}
-
-.upload-button {
-  height: 100%;
-  padding: 0 12px;
-  border-right: 1px solid #e5e5e5;
-  background: #f8f8f7;
-  color: #333;
-  display: inline-flex;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.upload-name {
-  flex: 1;
-  min-width: 0;
-  padding: 0 12px;
-  color: #777;
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .receipt-chip {

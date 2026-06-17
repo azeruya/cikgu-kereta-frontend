@@ -1013,50 +1013,342 @@ textarea {
   border-bottom: none;
 }
 
-/* =========================
+/* ================================
    FORMS
-========================= */
+================================ */
+
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
 }
 
+.form-grid-1 {
+  grid-template-columns: 1fr;
+}
+
+.form-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.form-field,
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
+.form-field.full,
 .field.full {
   grid-column: 1 / -1;
 }
 
+.form-field label,
 .field label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
 }
 
+.form-field input,
+.form-field select,
+.form-field textarea,
 .field input,
 .field select,
 .field textarea {
   width: 100%;
-  background: #fafaf9;
-  border: 1px solid #e4e4e2;
+  border: 1px solid #e5e5e2;
   border-radius: 12px;
-  padding: 10px 12px;
+  background: #ffffff;
+  color: #222;
   font-size: 13px;
-  color: var(--text);
   outline: none;
+  box-sizing: border-box;
   transition: all 0.15s ease;
 }
 
+.form-field input,
+.form-field select,
+.field input,
+.field select {
+  height: 40px;
+  padding: 0 13px;
+}
+
+.form-field textarea,
+.field textarea {
+  min-height: 88px;
+  padding: 11px 13px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder,
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #999;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus,
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: #cbcbc6;
+  border-color: #cfcfca;
   background: #fff;
+}
+
+/* Small/compact form fields */
+.form-field-sm input,
+.form-field-sm select,
+.form-field-sm textarea,
+.compact-field input,
+.compact-field select {
+  height: 34px;
+  border-radius: 10px;
+  font-size: 12px;
+  padding: 0 10px;
+}
+
+.form-field-sm label,
+.compact-field label {
+  font-size: 10.5px;
+}
+
+
+/* ================================
+   FORM SECTIONS
+================================ */
+
+.form-section,
+.form-subsection,
+.vehicle-form-box {
+  border: 1px solid #eeeeee;
+  border-radius: 15px;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.form-subsection,
+.vehicle-form-box {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #eeeeee;
+}
+
+.section-title {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.45;
+}
+
+
+/* ================================
+   FORM ACTIONS
+================================ */
+
+.form-actions,
+.action-row,
+.page-form-actions,
+.page-bottom-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-bottom-actions,
+.page-form-actions {
+  margin-top: 22px;
+}
+
+
+/* ================================
+   FORM ERROR
+================================ */
+
+.form-error,
+.error-text {
+  margin-top: 12px;
+  color: #b42318;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ================================
+   FILE UPLOAD
+================================ */
+
+.file-upload,
+.upload-field {
+  height: 40px;
+  border: 1px solid #e5e5e2;
+  border-radius: 12px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.file-upload input,
+.upload-field input {
+  display: none;
+}
+
+.file-upload-button,
+.upload-button {
+  height: 100%;
+  padding: 0 14px;
+  border-right: 1px solid #e5e5e2;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #333;
+  background: #fafafa;
+}
+
+.file-upload-name,
+.upload-name {
+  flex: 1;
+  min-width: 0;
+  padding: 0 12px;
+  font-size: 12.5px;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ================================
+   CHECKBOX / TOGGLE
+================================ */
+
+.checkbox-row,
+.toggle-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+}
+
+.checkbox-row input,
+.toggle-row input {
+  width: 16px;
+  height: 16px;
+  accent-color: #111;
+}
+
+.toggle-card,
+.generic-toggle-card {
+  width: 100%;
+  min-height: 58px;
+  padding: 12px 14px;
+  border: 1px solid #eeeeee;
+  border-radius: 13px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.toggle-content,
+.toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #222;
+}
+
+.toggle-subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #777;
+  line-height: 1.35;
+}
+
+.toggle-badge,
+.toggle-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f2f2f0;
+  color: #777;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+/* ================================
+   INLINE / COMPACT ITEM FORM
+================================ */
+
+.inline-form-grid,
+.compact-inputs {
+  display: grid;
+  grid-template-columns: 90px 130px minmax(180px, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.line-total,
+.compact-total,
+.item-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  min-height: 40px;
+}
+
+.line-total span,
+.compact-total span,
+.item-total span {
+  font-size: 11px;
+  color: #888;
+  font-weight: 700;
+}
+
+.line-total strong,
+.compact-total strong,
+.item-total strong {
+  font-size: 13px;
+  color: #111;
+  font-weight: 800;
+}
+
+.item-grid {
+  grid-template-columns: 1.3fr 0.7fr 0.7fr;
 }
 
 /* =========================

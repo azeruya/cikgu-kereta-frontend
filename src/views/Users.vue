@@ -136,18 +136,18 @@
               <div class="form-section">
                 <div class="section-title">User Information</div>
 
-                <div class="form-grid user-form-grid">
-                  <div class="field">
+                <div class="form-grid">
+                  <div class="form-field">
                     <label>Name</label>
                     <input v-model="form.name" type="text" placeholder="Full name" />
                   </div>
 
-                  <div class="field">
+                  <div class="form-field">
                     <label>Email</label>
                     <input v-model="form.email" type="email" placeholder="Email address" />
                   </div>
 
-                  <div class="field">
+                  <div class="form-field">
                     <label>Role</label>
                     <select v-model="form.role">
                       <option value="staff">Staff</option>
@@ -155,7 +155,7 @@
                     </select>
                   </div>
 
-                  <div class="field">
+                  <div class="form-field">
                     <label>{{ editingUserId ? "New Password" : "Password" }}</label>
                     <input
                       v-model="form.password"
@@ -601,12 +601,6 @@ export default {
   border-radius: 15px;
   padding: 16px;
   background: #fff;
-}
-
-.user-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 18px;
 }
 
 .field {

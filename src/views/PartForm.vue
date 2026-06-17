@@ -32,85 +32,85 @@
 
       <template v-else>
         <div class="part-form-grid single">
-  <Card>
-    <template #header>
-      <span class="card-title">Part Information</span>
-    </template>
+          <Card>
+            <template #header>
+              <span class="card-title">Part Information</span>
+            </template>
 
-    <div class="form-grid">
-      <div class="field">
-                <label>Name</label>
-                <input v-model="form.name" type="text" placeholder="e.g. Oil Filter" />
-              </div>
+            <div class="form-grid">
+              <div class="form-field">
+                  <label>Name</label>
+                  <input v-model="form.name" type="text" placeholder="e.g. Oil Filter" />
+                </div>
 
-              <div class="field">
-                <label>Variant</label>
-                <input v-model="form.variant" type="text" placeholder="e.g. Regional" />
-              </div>
+                <div class="form-field">
+                  <label>Variant</label>
+                  <input v-model="form.variant" type="text" placeholder="e.g. Regional" />
+                </div>
 
-              <div class="field">
-                <label>SKU</label>
-                <input v-model="form.sku" type="text" placeholder="e.g. OF-TY-001" />
-              </div>
+                <div class="form-field">
+                  <label>SKU</label>
+                  <input v-model="form.sku" type="text" placeholder="e.g. OF-TY-001" />
+                </div>
 
-              <div class="field">
-                <label>Image URL</label>
-                <input v-model="form.image" type="text" placeholder="Optional image URL" />
-              </div>
+                <div class="form-field">
+                  <label>Image URL</label>
+                  <input v-model="form.image" type="text" placeholder="Optional image URL" />
+                </div>
 
-              <div class="field full">
-                <label>Description</label>
-                <textarea
-                  v-model="form.description"
-                  rows="4"
-                  placeholder="Optional description"
-                ></textarea>
-              </div>
+                <div class="form-field full">
+                  <label>Description</label>
+                  <textarea
+                    v-model="form.description"
+                    rows="4"
+                    placeholder="Optional description"
+                  ></textarea>
+                </div>
 
-              <div class="field">
-                <label>Cost Price</label>
-                <input v-model.number="form.cost_price" type="number" min="0" step="0.01" />
-              </div>
+                <div class="form-field">
+                  <label>Cost Price</label>
+                  <input v-model.number="form.cost_price" type="number" min="0" step="0.01" />
+                </div>
 
-              <div class="field">
-                <label>Selling Price</label>
-                <input v-model.number="form.selling_price" type="number" min="0" step="0.01" />
-              </div>
+                <div class="form-field">
+                  <label>Selling Price</label>
+                  <input v-model.number="form.selling_price" type="number" min="0" step="0.01" />
+                </div>
 
-              <div class="field">
-                <label>Stock</label>
-                <input v-model.number="form.stock" type="number" min="0" />
-              </div>
+                <div class="form-field">
+                  <label>Stock</label>
+                  <input v-model.number="form.stock" type="number" min="0" />
+                </div>
 
-              <div class="field">
-                <label>Minimum Stock Threshold</label>
-                <input v-model.number="form.min_stock_threshold" type="number" min="0" />
-              </div>
+                <div class="form-field">
+                  <label>Minimum Stock Threshold</label>
+                  <input v-model.number="form.min_stock_threshold" type="number" min="0" />
+                </div>
 
-              <div class="field full">
-                <label class="generic-toggle-card">
-                  <div class="toggle-left">
-                    <input v-model="form.is_generic" type="checkbox" />
-                    <div>
-                      <div class="toggle-title">Generic part</div>
-                      <div class="toggle-subtitle">
-                        Usable across all vehicles. Compatibility rows are not required.
+                <div class="form-field full">
+                  <label class="generic-toggle-card">
+                    <div class="toggle-left">
+                      <input v-model="form.is_generic" type="checkbox" />
+                      <div>
+                        <div class="toggle-title">Generic part</div>
+                        <div class="toggle-subtitle">
+                          Usable across all vehicles. Compatibility rows are not required.
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <span class="toggle-status">
-                    {{ form.is_generic ? "Generic" : "Specific" }}
-                  </span>
-                </label>
-              </div>
-    </div>
+                    <span class="toggle-status">
+                      {{ form.is_generic ? "Generic" : "Specific" }}
+                    </span>
+                  </label>
+                </div>
+            </div>
 
-    <div v-if="error" class="page-error" style="margin-top:12px;">
-      {{ error }}
-    </div>
-</Card>
-</div>
+            <div v-if="error" class="page-error" style="margin-top:12px;">
+              {{ error }}
+            </div>
+          </Card>
+        </div>
 
         <div class="compatibility-wrapper">
           <Card v-if="!form.is_generic">
@@ -145,22 +145,22 @@
               </div>
 
               <div class="form-grid">
-                <div class="field">
+                <div class="form-field">
                   <label>Make</label>
                   <input v-model="compat.make" type="text" placeholder="e.g. Toyota" />
                 </div>
 
-                <div class="field">
+                <div class="form-field">
                   <label>Model</label>
                   <input v-model="compat.model" type="text" placeholder="e.g. Vios" />
                 </div>
 
-                <div class="field">
+                <div class="form-field">
                   <label>Year From</label>
                   <input v-model.number="compat.year_from" type="number" min="1950" max="2100" />
                 </div>
 
-                <div class="field">
+                <div class="form-field">
                   <label>Year To</label>
                   <input v-model.number="compat.year_to" type="number" min="1950" max="2100" />
                 </div>
@@ -171,19 +171,19 @@
         </div>
 
         <div class="page-form-actions">
-  <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
-    Cancel
-  </router-link>
+          <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
+            Cancel
+          </router-link>
 
-  <button
-    class="btn btn-primary btn-pill"
-    type="button"
-    :disabled="saving || !canSubmit"
-    @click="submitForm"
-  >
-    {{ saving ? "Saving..." : isEditMode ? "Update Part" : "Create Part" }}
-  </button>
-</div>
+          <button
+            class="btn btn-primary btn-pill"
+            type="button"
+            :disabled="saving || !canSubmit"
+            @click="submitForm"
+          >
+            {{ saving ? "Saving..." : isEditMode ? "Update Part" : "Create Part" }}
+          </button>
+        </div>
       </template>
     </div>
   </div>
@@ -439,7 +439,7 @@ export default {
   margin-bottom: 10px;
 }
 
-/* genereic toggle card */
+/* generic toggle card */
 .generic-toggle-card {
   display: flex;
   align-items: center;

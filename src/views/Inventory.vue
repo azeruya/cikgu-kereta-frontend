@@ -389,7 +389,7 @@
                 Add stock for <strong>{{ activePart?.name || "this part" }}</strong>.
               </div>
 
-              <div class="field">
+              <div class="form-field">
                 <label>Quantity to add</label>
                 <input
                   v-model.number="restockForm.quantity"

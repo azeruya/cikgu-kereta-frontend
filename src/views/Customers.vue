@@ -315,22 +315,22 @@
 
         <div class="modal-body">
           <div class="form-grid">
-            <div class="field">
+            <div class="form-field">
               <label>Name</label>
               <input v-model="form.name" type="text" placeholder="Customer name" />
             </div>
 
-            <div class="field">
+            <div class="form-field">
               <label>Phone</label>
               <input v-model="form.phone" type="text" placeholder="Phone number" />
             </div>
 
-            <div class="field">
+            <div class="form-field">
               <label>Email</label>
               <input v-model="form.email" type="email" placeholder="Email address" />
             </div>
 
-            <div class="field full">
+            <div class="form-field full">
               <label>Address</label>
               <textarea
                 v-model="form.address"
@@ -349,7 +349,7 @@
             </label>
 
             <div v-if="form.add_vehicle" class="form-grid" style="margin-top:12px;">
-              <div class="field">
+              <div class="form-field">
                 <label>License Plate</label>
                 <input
                   v-model="form.vehicle_license_plate"
@@ -358,7 +358,7 @@
                 />
               </div>
 
-              <div class="field">
+              <div class="form-field">
                 <label>Make</label>
                 <input
                   v-model="form.vehicle_make"
@@ -367,7 +367,7 @@
                 />
               </div>
 
-              <div class="field">
+              <div class="form-field">
                 <label>Model</label>
                 <input
                   v-model="form.vehicle_model"
@@ -376,7 +376,7 @@
                 />
               </div>
 
-              <div class="field">
+              <div class="form-field">
                 <label>Year</label>
                 <input
                   v-model="form.vehicle_year"
