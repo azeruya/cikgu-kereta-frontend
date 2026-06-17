@@ -736,14 +736,6 @@ th.center {
   margin-top: 2px;
 }
 
-.money-text,
-.money-cell,
-.job-price {
-  font-size: 12.8px;
-  font-weight: 750;
-  color: var(--text);
-}
-
 .empty-text,
 .empty-inline,
 .description-cell.empty {
@@ -2245,7 +2237,7 @@ th.center {
 .money-cell,
 .job-price {
   font-size: 12.6px;
-  font-weight: 800;
+  font-weight: 450;
   color: #0f172a;
 }
 
