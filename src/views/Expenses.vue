@@ -254,11 +254,10 @@
                 class="category-row"
               >
               <div class="category-name-wrap">
-                  <span class="dot-indicator" :class="categoryClass(row.category)"></span>
-                  <span class="item-name">{{ row.category }}</span>
-                </div>
-                <div class="job-price">RM {{ formatMoney(row.total) }}</div>
+                <span class="dot-indicator" :class="categoryDotClass(row.category)"></span>
+                <span class="item-name">{{ row.category }}</span>
               </div>
+              <div class="job-price">RM {{ formatMoney(row.total) }}</div>
             </div>
           </Card>
         </div>
@@ -868,7 +867,7 @@ export default {
       return new Date(value).toLocaleDateString("en-GB");
     },
 
-    categoryClass(category) {
+    categoryBadgeClass(category) {
       const c = (category || "").toLowerCase();
 
       if (c.includes("salary")) return "badge-category-salary";
@@ -876,7 +875,20 @@ export default {
       if (c.includes("purchase")) return "badge-category-purchase";
       if (c.includes("maintenance")) return "badge-category-maintenance";
       if (c.includes("misc")) return "badge-category-misc";
-      return "empty-inline";
+
+      return "badge-muted";
+    },
+
+    categoryDotClass(category) {
+      const c = (category || "").toLowerCase();
+
+      if (c.includes("salary")) return "dot-info";
+      if (c.includes("utility")) return "dot-warning";
+      if (c.includes("purchase")) return "dot-success";
+      if (c.includes("maintenance")) return "dot-purple";
+      if (c.includes("misc")) return "dot-muted";
+
+      return "dot-muted";
     },
     
     getExpenseCacheKey(page = 1) {
