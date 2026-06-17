@@ -30,7 +30,7 @@
           <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="exportCsv">
             Export CSV
           </button>
-          <button class="pill-btn primary btn btn-primary btn-pill" type="button" @click="openFormModal()">
+          <button class="btn btn-primary btn-pill" type="button" @click="openFormModal()">
             + Add Expense
           </button>
         </div>
@@ -169,7 +169,7 @@
             <div v-else class="empty-state">
               No expenses found.
               <div style="margin-top:10px;">
-                <button class="pill-btn primary btn btn-primary btn-pill" @click="openFormModal()">+ Add Expense</button>
+                <button class="btn btn-primary btn-pill" @click="openFormModal()">+ Add Expense</button>
               </div>
             </div>
 

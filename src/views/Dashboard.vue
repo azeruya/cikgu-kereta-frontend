@@ -45,7 +45,7 @@
             Today
           </button>
 
-          <router-link to="/transactions/new" class="pill-btn primary btn btn-primary btn-pill link-btn">
+          <router-link to="/transactions/new" class="btn btn-primary btn-pill link-btn">
             + New transaction
           </router-link>
         </div>

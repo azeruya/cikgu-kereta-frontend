@@ -176,7 +176,7 @@
   </router-link>
 
   <button
-    class="pill-btn primary btn btn-primary btn-pill"
+    class="btn btn-primary btn-pill"
     type="button"
     :disabled="saving || !canSubmit"
     @click="submitForm"

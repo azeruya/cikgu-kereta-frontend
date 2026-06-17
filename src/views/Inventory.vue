@@ -43,7 +43,7 @@
         >
           {{ exporting ? "Exporting..." : "Export" }}
         </button>
-        <router-link to="/inventory/new" class="pill-btn primary btn btn-primary btn-pill link-btn">
+        <router-link to="/inventory/new" class="btn btn-primary btn-pill link-btn">
             + Add Part
         </router-link>
         </div>

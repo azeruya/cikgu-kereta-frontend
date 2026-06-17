@@ -33,7 +33,7 @@
             v-model.trim="searchQuery"
             placeholder="Search doc no / customer / plate..."
         />
-        <router-link to="/transactions/new" class="pill-btn primary link-btn">
+        <router-link to="/transactions/new" class="btn btn-primary btn-pill link-btn">
             + New Transaction
         </router-link>
         </div>

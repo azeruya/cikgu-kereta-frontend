@@ -41,7 +41,7 @@
         >
           {{ exporting ? "Exporting..." : "Export" }}
         </button>
-        <button class="pill-btn primary btn btn-primary btn-pill" type="button" @click="openFormModal()">
+        <button class="btn btn-primary btn-pill" type="button" @click="openFormModal()">
             + Add Customer
         </button>
         </div>

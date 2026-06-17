@@ -26,7 +26,7 @@
             placeholder="Search user..."
           />
 
-          <button class="pill-btn primary btn btn-primary btn-pill" @click="openModal()">+ Add User</button>
+          <button class="btn btn-primary btn-pill" @click="openModal()">+ Add User</button>
         </div>
       </div>
 

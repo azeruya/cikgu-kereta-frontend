@@ -26,7 +26,7 @@
 
           <button
             v-if="transaction?.status === 'quotation'"
-            class="pill-btn primary btn btn-primary btn-pill"
+            class="btn btn-primary btn-pill"
             :disabled="actionLoading"
             @click="confirmQuotation"
           >
@@ -35,7 +35,7 @@
 
           <button
             v-if="transaction?.status === 'invoice' && balanceDue > 0"
-            class="pill-btn primary btn btn-primary btn-pill"
+            class="btn btn-primary btn-pill"
             :disabled="actionLoading"
             @click="openPaymentModal"
           >
@@ -158,7 +158,7 @@
 
               <button
                 v-if="transaction.status === 'quotation'"
-                class="pill-btn primary btn btn-primary btn-pill"
+                class="btn btn-primary btn-pill"
                 :disabled="actionLoading"
                 @click="confirmQuotation"
               >
@@ -167,7 +167,7 @@
 
               <button
                 v-if="transaction.status === 'invoice'"
-                class="pill-btn primary btn btn-primary btn-pill"
+                class="btn btn-primary btn-pill"
                 :disabled="actionLoading"
                 @click="openPaymentModal"
               >
@@ -290,7 +290,7 @@
             Close
           </button>
 
-          <button class="pill-btn primary btn btn-primary btn-pill" type="button" @click="downloadDocument(currentDocType)">
+          <button class="btn btn-primary btn-pill" type="button" @click="downloadDocument(currentDocType)">
             Download
           </button>
         </div>
