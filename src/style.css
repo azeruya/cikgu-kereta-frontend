@@ -749,14 +749,10 @@ th.center {
 /* =========================
    TEXT HIERARCHY
 ========================= */
-/* ================================
-   TABLE CELL TEXT
-================================ */
-
 .money-text,
 .money-cell {
   color: #222;
-  font-weight: 700;
+  font-weight: 500;
   white-space: nowrap;
 }
 

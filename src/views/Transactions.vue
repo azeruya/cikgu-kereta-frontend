@@ -72,15 +72,15 @@
                 <td>{{ trx.document_number || "-" }}</td>
 
                 <td>
-                  <div>{{ trx.customer?.name || "-" }}</div>
-                  <small>{{ trx.customer?.phone || "-" }}</small>
+                  <div class="item-name">{{ trx.customer?.name || "-" }}</div>
+                  <div class="item-sub">{{ trx.customer?.phone || "-" }}</div>
                 </td>
 
                 <td>
-                  <div>{{ trx.vehicle?.license_plate || "-" }}</div>
-                  <small>
+                  <div class="item-name">{{ trx.vehicle?.license_plate || "-" }}</div>
+                  <div class="item-sub">
                     {{ trx.vehicle?.make || "" }} {{ trx.vehicle?.model || "" }}
-                  </small>
+                  </div>
                 </td>
 
                 <td>
@@ -89,7 +89,9 @@
                   </span>
                 </td>
 
-                <td>RM {{ formatMoney(trx.total_amount) }}</td>
+                <td>
+                  <span class="money-text">RM {{ formatMoney(trx.total_amount) }}</span>
+                </td>
                 <td>{{ formatDate(trx.created_at) }}</td>
 
                 <td class="right">
@@ -671,48 +673,6 @@ export default {
 </script>
 
 <style scoped>
-.jobs-section {
-  margin-top: 14px;
-}
-
-.job-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.item-name {
-  font-weight: 500;
-  color: #111;
-}
-
-.job-price {
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 16px;
-  font-size: 12px;
-  color: #555;
-}
-
-.detail-notes {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #555;
-}
-
-/* action buttons */
-.right {
-  text-align: right;
-}
-
 .icon-loading {
   font-size: 11px;
   font-weight: 700;
