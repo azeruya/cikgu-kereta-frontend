@@ -985,21 +985,6 @@ nextPage() {
   color: #d24b4b;
 }
 
-/* Low stock meter */
-.stock-meter {
-  height: 3px;
-  margin-top: 7px;
-  border-radius: 999px;
-  background: #eeeeee;
-  overflow: hidden;
-}
-
-.stock-meter-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: #f06b6b;
-}
-
 /* Skeleton loading */
 .skeleton-line {
   height: 13px;

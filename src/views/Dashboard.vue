@@ -122,7 +122,7 @@
                     </td>
 
                     <td class="right">
-                      {{ job.total }}
+                      <span class="money-text">{{ job.total }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -370,7 +370,7 @@
                 </div>
 
                 <div class="or-actions">
-                  <span class="or-status">
+                  <span class="badge badge-muted">
                     {{ request.status }}
                   </span>
 
@@ -714,22 +714,6 @@ export default {
     var(--bg);
 }
 
-.right {
-  text-align: right;
-}
-
-.btn-link {
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-}
-
-.btn-link:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 /* =========================
    HERO / GREETING
 ========================= */
@@ -1013,20 +997,6 @@ export default {
   width: 18%;
 }
 
-.item-name {
-  font-size: 13.5px;
-  font-weight: 750;
-  color: #222;
-  line-height: 1.3;
-}
-
-.item-sub {
-  margin-top: 4px;
-  font-size: 11.5px;
-  color: #999;
-  line-height: 1.25;
-}
-
 /* =========================
    QUICK ACTIONS
 ========================= */
@@ -1184,24 +1154,6 @@ export default {
   font-weight: 850;
   color: #d24b4b;
   line-height: 1.2;
-}
-
-.stock-meter {
-  height: 4px;
-  margin-top: 11px;
-  border-radius: 999px;
-  background: #ededeb;
-  overflow: hidden;
-}
-
-.stock-meter-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: #f0a33a;
-}
-
-.stock-meter-fill.critical {
-  background: #ef5b5b;
 }
 
 /* =========================

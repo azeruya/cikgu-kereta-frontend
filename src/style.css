@@ -797,6 +797,24 @@ th.center {
   margin-top: 2px;
 }
 
+.stock-meter {
+  height: 4px;
+  margin-top: 11px;
+  border-radius: 999px;
+  background: #ededeb;
+  overflow: hidden;
+}
+
+.stock-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #f0a33a;
+}
+
+.stock-meter-fill.critical {
+  background: #ef5b5b;
+}
+
 /* ================================
    BADGES / STATUS refactored
 ================================ */
