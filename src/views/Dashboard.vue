@@ -26,7 +26,7 @@
         </div>
 
         <div class="hero-actions">
-          <button class="pill-btn btn btn-secondary btn-pill" type="button">
+          <button class="btn btn-secondary btn-pill" type="button">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <circle
                 cx="6"

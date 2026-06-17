@@ -20,7 +20,7 @@
         </div>
 
         <div class="top-right">
-          <router-link to="/inventory" class="pill-btn btn btn-secondary btn-pill link-btn">
+          <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
             Back
           </router-link>
         </div>
@@ -116,7 +116,7 @@
           <Card v-if="!form.is_generic">
           <template #header>
             <span class="card-title">Compatibility</span>
-            <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="addCompatibility">
+            <button class="btn btn-secondary btn-pill" type="button" @click="addCompatibility">
               + Add Compatibility
             </button>
           </template>
@@ -126,7 +126,7 @@
             <div class="compat-empty-sub">
               Add make, model, and year range for vehicle-specific parts.
             </div>
-            <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="addCompatibility">
+            <button class="btn btn-secondary btn-pill" type="button" @click="addCompatibility">
               + Add Compatibility
             </button>
           </div>
@@ -171,7 +171,7 @@
         </div>
 
         <div class="page-form-actions">
-  <router-link to="/inventory" class="pill-btn btn btn-secondary btn-pill link-btn">
+  <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
     Cancel
   </router-link>
 

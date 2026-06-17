@@ -34,7 +34,7 @@
             placeholder="Search customer..."
         />
         <button
-          class="pill-btn btn btn-secondary btn-pill"
+          class="btn btn-secondary btn-pill"
           type="button"
           :disabled="exporting"
           @click="exportCustomers"

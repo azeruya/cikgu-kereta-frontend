@@ -27,7 +27,7 @@
             v-model.trim="searchQuery"
             placeholder="Search customer / plate / make / model..."
           />
-          <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="applyFilters">
+          <button class="btn btn-secondary btn-pill" type="button" @click="applyFilters">
             Refresh
           </button>
         </div>

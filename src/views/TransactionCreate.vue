@@ -24,7 +24,7 @@
         </div>
 
         <div class="top-right">
-          <router-link to="/transactions" class="pill-btn btn btn-secondary btn-pill link-btn">
+          <router-link to="/transactions" class="btn btn-secondary btn-pill link-btn">
             Back
           </router-link>
         </div>
@@ -166,7 +166,7 @@
       <Card>
   <template #header>
     <span class="card-title">Transaction Items</span>
-    <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="addServiceItem">
+    <button class="btn btn-secondary btn-pill" type="button" @click="addServiceItem">
       + Add Service
     </button>
   </template>
@@ -333,7 +333,7 @@
           </div>
 
           <div class="action-row">
-            <button class="pill-btn btn btn-secondary btn-pill" type="button" @click="resetForm">
+            <button class="btn btn-secondary btn-pill" type="button" @click="resetForm">
               Reset
             </button>
 
