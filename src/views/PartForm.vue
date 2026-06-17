@@ -31,7 +31,7 @@
       </div>
 
       <template v-else>
-        <div class="part-form-grid single">
+        <div class="form-page-grid">
           <Card>
             <template #header>
               <span class="card-title">Part Information</span>
@@ -88,8 +88,8 @@
                 </div>
 
                 <div class="form-field full">
-                  <label class="generic-toggle-card">
-                    <div class="toggle-left">
+                  <label class="toggle-card">
+                    <div class="toggle-content">
                       <input v-model="form.is_generic" type="checkbox" />
                       <div>
                         <div class="toggle-title">Generic part</div>
@@ -99,7 +99,7 @@
                       </div>
                     </div>
 
-                    <span class="toggle-status">
+                    <span class="toggle-badge">
                       {{ form.is_generic ? "Generic" : "Specific" }}
                     </span>
                   </label>
@@ -170,7 +170,7 @@
         </Card>
         </div>
 
-        <div class="page-form-actions">
+        <div class="page-bottom-actions form-actions">
           <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
             Cancel
           </router-link>
@@ -440,24 +440,6 @@ export default {
 }
 
 /* generic toggle card */
-.generic-toggle-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 14px 16px;
-  border: 1px solid #eeeeee;
-  border-radius: 14px;
-  background: #fafafa;
-  cursor: pointer;
-}
-
-.toggle-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 .toggle-title {
   font-size: 13px;
   font-weight: 700;
@@ -471,27 +453,12 @@ export default {
   line-height: 1.35;
 }
 
-.toggle-status {
-  height: 24px;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: #f0f0f0;
-  color: #666;
-  font-size: 11.5px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
-/* form layout */
+/* Page-specific layout only */
+.form-page-grid,
 .part-form-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 18px;
-}
-
-.part-form-grid.single {
   width: 100%;
   max-width: 1180px;
 }
@@ -502,82 +469,15 @@ export default {
   margin-top: 18px;
 }
 
+.page-bottom-actions,
 .page-form-actions {
   width: 100%;
   max-width: 1180px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 22px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.field.full {
-  grid-column: 1 / -1;
-}
-
-.field label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #777;
-}
-
-.field input,
-.field textarea {
-  width: 100%;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  background: #fff;
-  font-size: 13px;
-  color: #222;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.field input {
-  height: 40px;
-  padding: 0 13px;
-}
-
-.field textarea {
-  padding: 11px 13px;
-  resize: vertical;
-  min-height: 82px;
-}
-
-.field input:focus,
-.field textarea:focus {
-  border-color: #111;
-}
-
-.part-form-grid > .card:nth-child(2) {
-  position: sticky;
-  top: 20px;
-}
-
-.generic-toggle-card input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
-  padding: 0;
-  accent-color: #111;
-}
-
-.page-form-actions {
   margin-top: 16px;
   padding: 16px 0 0;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
 }
 
+/* Compatibility empty state */
 .compat-empty {
   min-height: 105px;
   border: 1px dashed #dddddd;
@@ -617,7 +517,7 @@ export default {
     grid-template-columns: 1fr;
   }
 
-  .generic-toggle-card {
+  .toggle-card {
     align-items: flex-start;
     flex-direction: column;
   }
