@@ -1023,14 +1023,6 @@ th.center {
     background 0.15s ease;
 }
 
-.form-field input,
-.form-field select {
-  height: 39px;
-  border-radius: 11px;
-  font-size: 13px;
-  padding: 0 13px;
-}
-
 .form-field textarea {
   min-height: 86px;
   border-radius: 11px;
@@ -2328,6 +2320,11 @@ th.center {
   border-color: #dfe5ee;
 }
 
+.form-field select {
+  appearance: auto;
+  background-color: #ffffff;
+}
+
 /* Modals */
 .modal,
 .modal-overlay,
@@ -2417,12 +2414,18 @@ th.center {
 }
 
 .modal-header .btn-sm {
-  width: 34px;
-  height: 34px;
-  min-height: 34px;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
   padding: 0;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 9px;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.modal-header .btn-sm:hover {
+  background: #f8fafc;
+  color: #0f172a;
 }
 
 .modal-body {
