@@ -71,9 +71,9 @@
           </div>
 
           <div class="workspace-meta">
-            <div class="workspace-branch">Johor Bahru</div>
+            <div class="workspace-branch">{{ branchName }}</div>
             <div class="workspace-user">
-              {{ user?.name || "User" }} · {{ user?.role || "Staff" }}
+              {{ user?.name || "User" }} · {{ prettyRole }}
             </div>
           </div>
 
@@ -136,47 +136,43 @@ export default {
 
 <style scoped>
 .sidebar {
-  width: 248px;
+  width: 236px;
   display: flex;
   flex-direction: column;
   height: 100vh;
   background: #ffffff;
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid #e0e6ef;
   transition: width 0.2s ease;
-  box-shadow: 1px 0 0 rgba(16, 24, 40, 0.02);
 }
 
 .sidebar.collapsed {
-  width: 76px;
+  width: 72px;
 }
 
-/* =========================
-   BRAND
-========================= */
-
+/* Brand */
 .brand-row {
   position: relative;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 20px 20px 16px;
-  min-height: 88px;
+  padding: 18px 16px 14px;
+  min-height: 78px;
 }
 
 .brand-lockup {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
 }
 
 .brand-logo-only {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
   object-fit: contain;
   opacity: 0.98;
-  filter: drop-shadow(0 8px 16px rgba(16, 24, 40, 0.12));
+  filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.12));
 }
 
 .brand-text {
@@ -184,18 +180,20 @@ export default {
 }
 
 .brand-name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 850;
-  color: #111827;
+  color: #0f172a;
   letter-spacing: -0.035em;
   line-height: 1.1;
 }
 
 .brand-sub {
-  margin-top: 3px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #8b95a1;
+  margin-top: 2px;
+  font-size: 10.5px;
+  font-weight: 650;
+  color: #8a94a6;
+  line-height: 1.1;
+  font-style: italic;
 }
 
 .collapse-edge-btn {
@@ -203,31 +201,27 @@ export default {
   right: -13px;
   top: 50%;
   transform: translateY(-50%);
-  width: 27px;
-  height: 27px;
+  width: 26px;
+  height: 26px;
   border-radius: 999px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dfe5ee;
   background: #ffffff;
-  color: #6b7280;
+  color: #64748b;
   cursor: pointer;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 5;
-  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.1);
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.12s ease;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  transition: all 0.15s ease;
 }
 
 .collapse-edge-btn:hover {
-  color: #111827;
+  color: #0f172a;
   background: #f8fafc;
-  border-color: #d1d5db;
+  border-color: #cbd5e1;
 }
 
 .collapse-edge-btn:active {
@@ -236,20 +230,17 @@ export default {
 
 .nav-divider {
   height: 1px;
-  background: #eef0f3;
-  margin: 0 18px 16px;
+  background: #edf1f6;
+  margin: 0 16px 14px;
 }
 
-/* =========================
-   NAVIGATION
-========================= */
-
+/* Nav */
 .sidebar-nav {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 0 14px;
+  gap: 4px;
+  padding: 0 12px;
   overflow-y: auto;
 }
 
@@ -263,26 +254,22 @@ export default {
 }
 
 .nav-item {
-  height: 42px;
-  border-radius: 12px;
-  padding: 0 14px;
+  height: 40px;
+  border-radius: 10px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: #6b7280;
+  gap: 11px;
+  color: #667085;
   text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 700;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    transform 0.12s ease,
-    box-shadow 0.15s ease;
+  font-size: 13px;
+  font-weight: 760;
+  transition: all 0.15s ease;
 }
 
 .nav-item:hover {
-  background: #f5f6f8;
-  color: #111827;
+  background: #f4f6f9;
+  color: #0f172a;
 }
 
 .nav-item:active {
@@ -292,62 +279,60 @@ export default {
 .router-link-active {
   background: #111827;
   color: #ffffff;
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.14);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
 }
 
 .nav-icon {
-  width: 17px;
-  height: 17px;
+  width: 16.5px;
+  height: 16.5px;
   flex-shrink: 0;
-  opacity: 0.9;
+  opacity: 0.88;
 }
 
 .nav-text {
   white-space: nowrap;
 }
 
-/* =========================
-   FOOTER USER AREA
-========================= */
+/* Footer */
 .sidebar-foot {
-  padding: 14px 14px 16px;
-  border-top: 1px solid #eef0f3;
+  padding: 12px;
+  border-top: 1px solid #edf1f6;
   background: #ffffff;
 }
 
 .workspace-card {
-  padding: 12px;
-  border-radius: 16px;
+  padding: 11px;
+  border-radius: 13px;
   background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dfe5ee;
 }
 
 .workspace-label {
-  font-size: 9px;
+  font-size: 8.8px;
   font-weight: 850;
   color: #9aa3af;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 10px;
+  letter-spacing: 0.11em;
+  margin-bottom: 9px;
 }
 
 .workspace-main {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
 }
 
 .workspace-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   background: #111827;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11.5px;
+  font-weight: 850;
   flex-shrink: 0;
 }
 
@@ -357,43 +342,39 @@ export default {
 }
 
 .workspace-branch {
-  font-size: 12.8px;
-  font-weight: 800;
-  color: #111827;
+  font-size: 12.4px;
+  font-weight: 850;
+  color: #0f172a;
   line-height: 1.2;
 }
 
 .workspace-user {
-  margin-top: 3px;
-  font-size: 10.8px;
-  color: #8b95a1;
+  margin-top: 2px;
+  font-size: 10.5px;
+  color: #8a94a6;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .logout-icon-btn {
-  width: 31px;
-  height: 31px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #dfe5ee;
+  border-radius: 9px;
   background: #ffffff;
-  color: #8b95a1;
+  color: #94a3b8;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.12s ease;
+  transition: all 0.15s ease;
 }
 
 .logout-icon-btn:hover {
   background: #fff1f0;
-  border-color: #f1b8b2;
+  border-color: #efb5ad;
   color: #b42318;
 }
 
@@ -402,23 +383,20 @@ export default {
 }
 
 .logout-icon {
-  width: 15px;
-  height: 15px;
+  width: 14.5px;
+  height: 14.5px;
 }
 
-/* =========================
-   COLLAPSED STATE
-========================= */
-
+/* Collapsed */
 .sidebar.collapsed .brand-row {
-  padding: 16px 0 12px;
-  min-height: 74px;
+  padding: 15px 0 12px;
+  min-height: 68px;
   justify-content: center;
 }
 
 .sidebar.collapsed .brand-logo-only {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
 }
 
 .sidebar.collapsed .brand-text {
@@ -426,13 +404,13 @@ export default {
 }
 
 .sidebar.collapsed .nav-divider {
-  margin: 0 14px 14px;
+  margin: 0 12px 12px;
 }
 
 .sidebar.collapsed .sidebar-nav {
   align-items: center;
   padding: 0 8px;
-  gap: 8px;
+  gap: 7px;
   overflow: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -443,47 +421,19 @@ export default {
 }
 
 .sidebar.collapsed .sidebar-foot {
-  padding: 14px 8px 16px;
-  border-top: none;
-}
-
-.sidebar.collapsed .branch-card {
   display: none;
 }
 
 .sidebar.collapsed .nav-item {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   padding: 0;
   justify-content: center;
-  border-radius: 14px;
+  border-radius: 12px;
 }
 
 .sidebar.collapsed .nav-icon {
-  width: 17px;
-  height: 17px;
-}
-
-.sidebar.collapsed .user-row {
-  flex-direction: column;
-  gap: 10px;
-  padding: 8px 0;
-  background: transparent;
-  border: none;
-}
-
-.sidebar.collapsed .avatar,
-.sidebar.collapsed .logout-icon-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 13px;
-}
-
-.sidebar.collapsed .avatar {
-  background: #111827;
-}
-
-.sidebar.collapsed .logout-icon-btn {
-  background: #ffffff;
+  width: 16.5px;
+  height: 16.5px;
 }
 </style>
