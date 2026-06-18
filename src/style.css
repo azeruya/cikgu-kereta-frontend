@@ -3144,7 +3144,7 @@ th.center {
 ========================================================= */
 
 .action-modal-card {
-  width: min(440px, calc(100vw - 32px));
+  width: min(420px, calc(100vw - 32px));
 }
 
 .action-modal-header {
@@ -3171,6 +3171,12 @@ th.center {
 
 .action-modal-body {
   padding: 0 24px 22px;
+}
+
+.action-modal-body .form-field label {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #64748b;
 }
 
 .action-summary-box {
@@ -3205,7 +3211,7 @@ th.center {
 }
 
 .action-modal-footer {
-  padding: 16px 24px 20px;
+  padding: 14px 24px 20px;
   border-top: 1px solid #e5eaf1;
   display: grid;
   grid-template-columns: 1fr 1fr;

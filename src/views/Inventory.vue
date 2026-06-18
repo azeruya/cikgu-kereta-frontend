@@ -202,7 +202,7 @@
               <div class="stock-alert-info">
                 <div class="stock-alert-name">{{ part.name }}</div>
                 <div class="stock-alert-meta">
-                  Stock {{ part.stock }} · Minimum {{ part.min_stock_threshold }}
+                  {{ part.stock }} in stock · Minimum {{ part.min_stock_threshold }}
                 </div>
               </div>
 
@@ -1097,8 +1097,8 @@ nextPage() {
 
 /* low stock alert */
 .stock-alert-card.compact {
-  min-height: 70px;
-  padding: 13px 14px;
+  min-height: 58px;
+  padding: 11px 13px;
   border: 1px solid #e1e7ef;
   border-radius: 14px;
   background: #ffffff;
@@ -1124,28 +1124,28 @@ nextPage() {
 }
 
 .stock-alert-name {
-  font-size: 12.8px;
+  font-size: 12.6px;
   font-weight: 820;
   color: #0f172a;
   line-height: 1.25;
 }
 
 .stock-alert-meta {
-  margin-top: 4px;
-  font-size: 11.7px;
+  margin-top: 3px;
+  font-size: 11.3px;
   font-weight: 520;
   color: #8a96a8;
   line-height: 1.3;
 }
 
 .stock-alert-quick-btn {
-  min-height: 30px;
-  padding: 0 13px;
+  min-height: 28px;
+  padding: 0 12px;
   border: 1px solid #dfe5ee;
   border-radius: 999px;
   background: #ffffff;
   color: #334155;
-  font-size: 11.5px;
+  font-size: 11.2px;
   font-weight: 850;
   white-space: nowrap;
   cursor: pointer;
