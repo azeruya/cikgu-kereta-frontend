@@ -348,7 +348,7 @@
 
             <div v-else class="online-request-list">
               <div
-                v-for="request in onlineRequests"
+                v-for="request in onlineRequests.slice(0,3)"
                 :key="request.id"
                 class="online-request-item"
               >
@@ -1447,5 +1447,360 @@ export default {
   .quick-actions {
     grid-template-columns: 1fr;
   }
+}
+
+/* =========================================================
+   DASHBOARD — TIGHTER SAAS LAYOUT OVERRIDE
+========================================================= */
+
+/* Overall layout */
+.main {
+  padding: 30px 38px 40px;
+}
+
+.dashboard-hero {
+  margin-bottom: 18px;
+}
+
+.hero-title {
+  font-size: 27px;
+  letter-spacing: -0.055em;
+}
+
+.hero-meta {
+  margin-top: 8px;
+  font-size: 10.5px;
+}
+
+.hero-subtitle {
+  margin-top: 7px;
+  font-size: 13px;
+}
+
+/* Main shell */
+.dashboard-shell {
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 18px;
+}
+
+.dashboard-main-panel {
+  gap: 14px;
+}
+
+.dashboard-right-panel {
+  gap: 12px;
+}
+
+/* KPI cards */
+.dashboard-kpi-grid {
+  gap: 10px;
+}
+
+.dashboard-kpi-card {
+  min-height: 78px;
+  padding: 12px 14px;
+  border-radius: 15px;
+  box-shadow: 0 7px 20px rgba(15, 23, 42, 0.025);
+}
+
+.kpi-top {
+  margin-bottom: 8px;
+}
+
+.kpi-label {
+  max-width: 110px;
+  font-size: 9.5px;
+  line-height: 1.18;
+  letter-spacing: 0.105em;
+}
+
+.kpi-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+}
+
+.kpi-value {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.kpi-sub {
+  margin-top: 5px;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+/* Work grid */
+.dashboard-work-grid {
+  grid-template-columns: minmax(0, 1.15fr) minmax(310px, 0.85fr);
+  gap: 14px;
+  align-items: start;
+}
+
+/* General dashboard card tightening */
+.dashboard-card :deep(.card-header),
+.dashboard-card :deep(.card-head) {
+  margin-bottom: 10px;
+}
+
+.dashboard-card :deep(.card-body),
+.dashboard-card :deep(.card-content) {
+  padding-top: 0;
+}
+
+.card-title {
+  font-size: 13.2px;
+}
+
+.card-subtitle {
+  margin-top: 3px;
+  font-size: 11.8px;
+}
+
+/* Remove over-tall cards */
+.today-card,
+.activity-card {
+  min-height: 0;
+}
+
+.today-body {
+  min-height: 0;
+}
+
+/* Today's transactions card */
+.today-card {
+  min-height: 300px;
+}
+
+.dashboard-table {
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.dashboard-table th {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 10px;
+  letter-spacing: 0.105em;
+}
+
+.dashboard-table td {
+  padding: 12px 14px;
+  vertical-align: top;
+}
+
+.dashboard-table .item-name {
+  font-size: 12.6px;
+  font-weight: 850;
+}
+
+.dashboard-table .item-sub {
+  margin-top: 3px;
+  font-size: 11.3px;
+  color: #8a96a8;
+}
+
+.money-text {
+  font-size: 12.6px;
+  font-weight: 800;
+}
+
+/* Empty state should not be huge */
+.dashboard-empty-state {
+  min-height: 205px;
+  padding: 22px;
+  gap: 8px;
+  border-radius: 15px;
+}
+
+.dashboard-empty-state .empty-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  font-size: 18px;
+}
+
+.dashboard-empty-state strong {
+  font-size: 13.2px;
+}
+
+.dashboard-empty-state span {
+  max-width: 285px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Recent activity */
+.activity-card {
+  min-height: 300px;
+}
+
+.activity-list {
+  max-height: 255px;
+  padding-right: 5px;
+}
+
+.activity-item {
+  gap: 9px;
+  padding: 10px 2px;
+}
+
+.act-dot-wrap {
+  padding-top: 5px;
+}
+
+.act-dot {
+  width: 7px;
+  height: 7px;
+}
+
+.act-line {
+  min-height: 18px;
+  margin-top: 5px;
+}
+
+.act-text {
+  font-size: 12.15px;
+  line-height: 1.38;
+}
+
+.act-time {
+  margin-top: 3px;
+  font-size: 10.8px;
+}
+
+/* Quick actions */
+.quick-card {
+  padding-bottom: 2px;
+}
+
+.quick-actions {
+  gap: 7px;
+}
+
+.qa-btn {
+  min-height: 48px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  gap: 10px;
+}
+
+.qa-icon {
+  width: 29px;
+  height: 29px;
+  border-radius: 10px;
+}
+
+.qa-label {
+  font-size: 12.4px;
+}
+
+.qa-desc {
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+/* Low stock */
+.low-stock-card {
+  min-height: 0;
+}
+
+.stock-list {
+  max-height: none;
+  gap: 8px;
+}
+
+.stock-alert-item {
+  padding: 10px;
+  border-radius: 13px;
+}
+
+.stock-alert-name {
+  font-size: 12.8px;
+}
+
+.stock-alert-meta {
+  margin-top: 3px;
+  font-size: 11.4px;
+}
+
+.stock-alert-pill {
+  height: 22px;
+  padding: 0 9px;
+  font-size: 10.5px;
+}
+
+.stock-alert-action {
+  height: 30px;
+  margin-top: 9px;
+  font-size: 11.4px;
+}
+
+/* Online requests: make it a compact inbox preview */
+.online-card {
+  min-height: 0;
+}
+
+.online-request-list {
+  max-height: none;
+  overflow: visible;
+  gap: 7px;
+  padding-right: 0;
+}
+
+.online-request-item {
+  padding: 10px 11px;
+  border-radius: 13px;
+  align-items: center;
+}
+
+.or-name {
+  font-size: 12.7px;
+}
+
+.or-meta {
+  margin-top: 2px;
+  font-size: 11.2px;
+}
+
+.or-actions {
+  gap: 0;
+}
+
+.or-actions .badge {
+  font-size: 10.5px;
+  padding: 4px 9px;
+}
+
+.or-convert-btn {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 10.5px;
+}
+
+/* Optional mini footer link inside online card */
+.online-card-footer {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid #edf1f6;
+  display: flex;
+  justify-content: center;
+}
+
+.online-card-footer a,
+.online-card-footer button {
+  font-size: 11.8px;
+  font-weight: 800;
+  color: #64748b;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.online-card-footer a:hover,
+.online-card-footer button:hover {
+  color: #0f172a;
 }
 </style>
