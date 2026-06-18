@@ -232,51 +232,51 @@
               </div>
             </div>
 
-            <!-- LOW STOCK -->
+            <!-- LOW STOCK COMPACT -->
             <div class="ops-section">
-              <div class="attention-title-row">
-                <span>Low stock</span>
-
-                <router-link to="/inventory" class="panel-link">
-                  Inventory
-                </router-link>
-              </div>
-
-              <div v-if="lowStockItems.length > 0" class="stock-summary-card">
-                <div class="stock-summary-top">
-                  <div>
-                    <strong>{{ lowStockItems[0].name }}</strong>
-                    <p>
-                      {{ lowStockItems[0].left }} in stock · Minimum {{ lowStockItems[0].min }}
-                    </p>
-                  </div>
-
-                  <span
-                    class="attention-pill"
-                    :class="lowStockItems[0].level === 'critical' ? 'danger' : 'warning'"
-                  >
-                    {{ lowStockItems[0].level === "critical" ? "Critical" : "Low" }}
-                  </span>
+              <div class="ops-section-header">
+                <div>
+                  <div class="ops-section-title">Low stock alerts</div>
+                  <p>
+                    {{ lowStockItems.length }}
+                    {{ lowStockItems.length === 1 ? "item needs" : "items need" }}
+                    attention
+                  </p>
                 </div>
 
-                <div
-                  v-if="lowStockItems.length > 1"
-                  class="stock-extra-line"
+                <span
+                  v-if="summary.critical_stock_count > 0"
+                  class="attention-pill danger"
                 >
-                  +{{ lowStockItems.length - 1 }} more item(s) need restock
-                </div>
-
-                <router-link
-                  to="/inventory"
-                  class="btn btn-secondary btn-pill attention-btn"
-                >
-                  Manage stock
-                </router-link>
+                  {{ summary.critical_stock_count }} critical
+                </span>
               </div>
 
-              <div v-else class="attention-empty">
+              <div v-if="lowStockItems.length > 0" class="stock-chip-list">
+                <span
+                  v-for="item in lowStockItems.slice(0, 4)"
+                  :key="item.id"
+                  class="stock-chip"
+                  :class="{ critical: item.level === 'critical' }"
+                >
+                  {{ item.name }}
+                </span>
+
+                <span v-if="lowStockItems.length > 4" class="stock-chip muted">
+                  +{{ lowStockItems.length - 4 }} more
+                </span>
+              </div>
+
+              <div v-else class="attention-empty compact">
                 Stock levels look okay.
               </div>
+
+              <router-link
+                to="/inventory"
+                class="btn btn-secondary btn-pill ops-full-btn"
+              >
+                Manage inventory
+              </router-link>
             </div>
 
             <!-- ONLINE REQUESTS -->
@@ -371,6 +371,7 @@ export default {
       },
 
       todayTransactionsRaw: [],
+      latestTransactionsRaw: [],
       weeklyRevenueRaw: [],
       lowStockItemsRaw: [],
       recentActivity: [],
@@ -513,28 +514,27 @@ export default {
     },
 
     latestTransactions() {
-      return this.todayTransactions;
-    },
+      return this.latestTransactionsRaw.map((trx) => {
+        const items = Array.isArray(trx.items) ? trx.items : [];
+        const firstItem = items.length > 0 ? items[0] : null;
 
-    activityItems() {
-      return this.recentActivity.map((activity) => ({
-        message: activity.message || activity.description || "-",
-        time: activity.time || activity.created_at || "",
-        type: activity.type || "default",
-      }));
-    },
-
-    lowStockItems() {
-      return this.lowStockItemsRaw.map((item) => {
-        const threshold = Number(item.min_stock_threshold || 0);
-        const stock = Number(item.stock || 0);
+        const work =
+          (firstItem && firstItem.service_name) ||
+          (firstItem && firstItem.part && firstItem.part.name) ||
+          (firstItem && firstItem.note) ||
+          "Workshop service";
 
         return {
-          id: item.id,
-          name: item.variant ? item.name + " — " + item.variant : item.name,
-          min: threshold,
-          left: stock,
-          level: stock <= threshold ? "critical" : "low",
+          id: trx.id,
+          customer: trx.customer && trx.customer.name ? trx.customer.name : "-",
+          plate:
+            trx.vehicle && trx.vehicle.license_plate
+              ? trx.vehicle.license_plate
+              : "-",
+          work,
+          status: this.capitalize(trx.status),
+          badgeClass: this.statusClass(trx.status),
+          total: "RM " + this.formatMoney(trx.total_amount),
         };
       });
     },
@@ -548,6 +548,22 @@ export default {
         };
       });
     },
+
+    lowStockItems() {
+      return this.lowStockItemsRaw.map((item) => {
+        const threshold = Number(item.min_stock_threshold || 0);
+        const stock = Number(item.stock || 0);
+
+        return {
+          id: item.id,
+          name: item.variant ? item.name + " — " + item.variant : item.name,
+          min: threshold,
+          left: stock,
+          level: stock <= 3 ? "critical" : "low",
+        };
+      });
+    },
+
   },
 
   mounted() {
@@ -594,6 +610,9 @@ export default {
       this.todayTransactionsRaw = Array.isArray(data.today_transactions)
         ? data.today_transactions
         : [];
+      this.latestTransactionsRaw = Array.isArray(data.latest_transactions)
+        ? data.latest_transactions
+        : [];
       this.weeklyRevenueRaw = Array.isArray(data.weekly_revenue)
         ? data.weekly_revenue
         : [];
@@ -608,36 +627,6 @@ export default {
     toggleSidebar() {
       this.collapsed = !this.collapsed;
       localStorage.setItem("sidebar-collapsed", String(this.collapsed));
-    },
-
-    goToTransaction(id) {
-      if (!id) return;
-      this.$router.push(`/transactions/${id}`);
-    },
-
-    requestCustomerName(request) {
-      return (
-        request.customer?.name ||
-        request.customer_name ||
-        request.name ||
-        "Unknown customer"
-      );
-    },
-
-    requestVehiclePlate(request) {
-      return (
-        request.vehicle?.license_plate ||
-        request.license_plate ||
-        request.plate_number ||
-        "-"
-      );
-    },
-
-    requestVehicleText(request) {
-      const make = request.vehicle?.make || request.vehicle_make || request.make || "";
-      const model = request.vehicle?.model || request.vehicle_model || request.model || "";
-
-      return `${make} ${model}`.trim();
     },
 
     async handleLogout() {
@@ -708,6 +697,7 @@ export default {
     },
 
     goToTransaction(id) {
+      if (!id) return;
       this.$router.push("/transactions/" + id);
     },
 
@@ -731,12 +721,12 @@ export default {
       const make =
         request.vehicle && request.vehicle.make
           ? request.vehicle.make
-          : request.vehicle_make || "";
+          : request.vehicle_make || request.make || "";
 
       const model =
         request.vehicle && request.vehicle.model
           ? request.vehicle.model
-          : request.vehicle_model || request.car_model || "";
+          : request.vehicle_model || request.car_model || request.model || "";
 
       return (make + " " + model).trim();
     },
@@ -989,7 +979,7 @@ export default {
 ========================================================= */
 
 .latest-panel {
-  min-height: 255px;
+  min-height: 210px;
 }
 
 .mini-table-wrap {
@@ -1015,7 +1005,7 @@ export default {
 }
 
 .mini-table td {
-  padding: 13px 14px;
+  padding: 11px 14px;
   border-top: 1px solid #edf1f6;
   font-size: 12.8px;
   color: #526173;
@@ -1098,6 +1088,21 @@ export default {
    OPERATIONS CARD
 ========================================================= */
 
+.ops-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.ops-section-header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #8a96a8;
+  line-height: 1.35;
+}
+
 .operations-panel {
   position: sticky;
   top: 28px;
@@ -1143,14 +1148,14 @@ export default {
 }
 
 .quick-action-clean {
-  min-height: 54px;
-  padding: 10px 11px;
+  min-height: 50px;
+  padding: 9px 10px;
   border: 1px solid #dfe5ee;
-  border-radius: 14px;
+  border-radius: 13px;
   background: #ffffff;
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 10px;
   text-align: left;
   text-decoration: none;
   cursor: pointer;
@@ -1163,29 +1168,29 @@ export default {
 }
 
 .quick-action-clean span {
-  width: 30px;
-  height: 30px;
-  border-radius: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 11px;
   background: #f0f4fa;
   color: #64748b;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 850;
   flex-shrink: 0;
 }
 
 .quick-action-clean strong {
   display: block;
-  font-size: 12.8px;
+  font-size: 12.5px;
   font-weight: 850;
   color: #0f172a;
 }
 
 .quick-action-clean p {
   margin: 2px 0 0;
-  font-size: 11.8px;
+  font-size: 11.5px;
   color: #8a96a8;
   line-height: 1.25;
 }
@@ -1245,6 +1250,32 @@ export default {
   color: #64748b;
 }
 
+.stock-chip {
+  max-width: 100%;
+  height: 27px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid #e1e7ef;
+  background: #ffffff;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.stock-chip.critical {
+  color: #dc2626;
+  background: #fff7f7;
+  border-color: #fecaca;
+}
+
+.stock-chip.muted {
+  color: #8a96a8;
+  background: #f5f7fa;
+}
+
 .attention-pill {
   height: 25px;
   padding: 0 10px;
@@ -1283,6 +1314,18 @@ export default {
   border: 1px dashed #dfe5ee;
   font-size: 12.5px;
   color: #8a96a8;
+}
+
+.ops-full-btn {
+  width: 100%;
+  height: 34px;
+  margin-top: 11px;
+  justify-content: center;
+}
+
+.attention-empty.compact {
+  padding: 10px 11px;
+  font-size: 12px;
 }
 
 /* ONLINE REQUESTS */
