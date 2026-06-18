@@ -885,8 +885,8 @@ export default {
 }
 
 .overview-cell {
-  min-height: 66px;
-  padding: 13px 14px;
+  min-height: 62px;
+  padding: 12px 14px;
   border-right: 1px solid #e5eaf1;
   border-bottom: 1px solid #e5eaf1;
   background: #ffffff;
@@ -913,18 +913,20 @@ export default {
 .overview-cell strong {
   display: block;
   font-size: 13px;
-  font-weight: 850;
+  font-weight: 680;
   color: #0f172a;
   line-height: 1.35;
   word-break: break-word;
 }
 
 .overview-cell.important strong {
+  font-weight: 820;
   letter-spacing: -0.01em;
 }
 
 .notes-cell strong {
-  font-weight: 760;
+  font-weight: 650;
+  color: #1e293b;
 }
 
 /* ================================
@@ -946,8 +948,10 @@ export default {
   margin-bottom: 14px;
 }
 
-.action-list .btn {
-  width: 100%;
+.action-list .btn,
+.primary-action-block > .btn {
+  min-height: 38px;
+  font-size: 12.5px;
 }
 
 .completed-panel {
@@ -1040,7 +1044,7 @@ export default {
 
 .detail-item-name {
   font-size: 13.5px;
-  font-weight: 850;
+  font-weight: 780;
   color: #0f172a;
   line-height: 1.25;
 }
