@@ -1,19 +1,21 @@
 <template>
   <div class="dash">
     <Sidebar
-    :collapsed="collapsed"
-    :menu="menu"
-    :user="currentUser"
-    @toggle="toggleSidebar"
-    @logout="handleLogout"
+      :collapsed="collapsed"
+      :menu="menu"
+      :user="currentUser"
+      @toggle="toggleSidebar"
+      @logout="handleLogout"
     />
 
     <div class="main">
-      <div class="page-header">
+      <!-- HEADER -->
+      <div class="page-header transaction-page-header">
         <div class="page-intro">
           <div class="page-title">
-          {{ isEditMode ? "Edit Transaction" : "New Transaction" }}
+            {{ isEditMode ? "Edit Transaction" : "New Transaction" }}
           </div>
+
           <div class="page-subtitle">
             {{
               isEditMode
@@ -30,6 +32,7 @@
         </div>
       </div>
 
+      <!-- STEPPER -->
       <div v-if="!isEditMode" class="flow-steps">
         <div
           class="flow-step"
@@ -75,123 +78,157 @@
         </span>
       </div>
 
+      <!-- WORKSPACE -->
       <div class="transaction-workspace">
+        <!-- MAIN COLUMN -->
         <div class="transaction-main">
-          <div class="create-grid">
-            <Card>
-              <template #header>
-                <span class="card-title">Customer & Vehicle</span>
-              </template>
+          <!-- CUSTOMER & VEHICLE -->
+          <Card class="workflow-card">
+            <template #header>
+              <span class="card-title">Customer & Vehicle</span>
+            </template>
 
-              <div class="form-grid">
-                <div class="form-field">
-                  <label>Customer</label>
-                  <select v-model="form.customer_id" @change="handleCustomerChange">
-                    <option value="">Select customer</option>
-                    <option
-                      v-for="customer in customers"
-                      :key="customer.id"
-                      :value="customer.id"
-                    >
-                      {{ customer.name }}
-                    </option>
-                  </select>
-                </div>
-
-                <div class="form-field">
-                  <label>Vehicle</label>
-                  <select v-model="form.vehicle_id" @change="handleVehicleChange" :disabled="!form.customer_id">
-                    <option value="">Select vehicle</option>
-                    <option
-                      v-for="vehicle in vehicles"
-                      :key="vehicle.id"
-                      :value="vehicle.id"
-                    >
-                      {{ vehicle.license_plate }} — {{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <div v-if="selectedVehicle" class="vehicle-summary">
-                <div><b>Plate:</b> {{ selectedVehicle.license_plate }}</div>
-                <div><b>Make / Model:</b> {{ selectedVehicle.make }} {{ selectedVehicle.model }}</div>
-                <div><b>Year:</b> {{ selectedVehicle.year }}</div>
-              </div>
-            </Card>
-
-            <Card class="compatible-parts-card">
-              <template #header>
-                <span class="card-title">Available Compatible Parts</span>
-                <span class="card-link">{{ compatibleParts.length }} items</span>
-              </template>
-
-              <div class="compatible-parts-body">
-                <div
-                  v-if="!form.vehicle_id"
-                  class="empty-state-panel empty-state-centered"
-                >
-                  <div class="empty-state-icon">□</div>
-                  <div class="empty-state-text">
-                    <strong>Select a vehicle first</strong>
-                    <p>Compatible parts will appear based on vehicle make, model, and year.</p>
-                  </div>
-                </div>
-
-                <div
-                  v-else-if="compatibleParts.length === 0"
-                  class="empty-state-panel empty-state-centered"
-                >
-                  <div class="empty-state-icon">!</div>
-                  <div class="empty-state-text">
-                    <strong>No compatible parts found</strong>
-                    <p>You can still add a service manually using the button below.</p>
-                  </div>
-                </div>
-
-                <div v-else class="parts-list">
-                  <button
-                    v-for="part in compatibleParts"
-                    :key="part.id"
-                    type="button"
-                    class="part-row"
-                    @click="addPartItem(part)"
+            <div class="customer-vehicle-grid">
+              <div class="form-field">
+                <label>Customer</label>
+                <select v-model="form.customer_id" @change="handleCustomerChange">
+                  <option value="">Select customer</option>
+                  <option
+                    v-for="customer in customers"
+                    :key="customer.id"
+                    :value="customer.id"
                   >
-                    <div>
-                      <div class="part-name">
-                        {{ part.name }}
-                        <span v-if="part.variant">— {{ part.variant }}</span>
-                      </div>
+                    {{ customer.name }}
+                  </option>
+                </select>
+              </div>
 
-                      <div class="part-meta">
-                        {{ part.sku || "-" }} · Stock: {{ part.stock }} ·
-                        {{ part.is_generic ? "Generic" : "Specific" }}
-                      </div>
-                    </div>
+              <div class="form-field">
+                <label>Vehicle</label>
+                <select
+                  v-model="form.vehicle_id"
+                  :disabled="!form.customer_id"
+                  @change="handleVehicleChange"
+                >
+                  <option value="">Select vehicle</option>
+                  <option
+                    v-for="vehicle in vehicles"
+                    :key="vehicle.id"
+                    :value="vehicle.id"
+                  >
+                    {{ vehicle.license_plate }} — {{ vehicle.make }} {{ vehicle.model }}
+                    <span v-if="vehicle.year">({{ vehicle.year }})</span>
+                  </option>
+                </select>
+              </div>
+            </div>
 
-                    <div class="part-price">
-                      RM {{ formatMoney(part.selling_price) }}
-                    </div>
-                  </button>
+            <div v-if="selectedVehicle" class="vehicle-summary">
+              <div class="vehicle-summary-item">
+                <span>Plate</span>
+                <strong>{{ selectedVehicle.license_plate }}</strong>
+              </div>
+
+              <div class="vehicle-summary-item">
+                <span>Make / Model</span>
+                <strong>{{ selectedVehicle.make }} {{ selectedVehicle.model }}</strong>
+              </div>
+
+              <div class="vehicle-summary-item">
+                <span>Year</span>
+                <strong>{{ selectedVehicle.year || "-" }}</strong>
+              </div>
+            </div>
+          </Card>
+
+          <!-- COMPATIBLE PARTS -->
+          <Card class="workflow-card compatible-parts-card">
+            <template #header>
+              <span class="card-title">Available Compatible Parts</span>
+              <span class="card-link">{{ compatibleParts.length }} items</span>
+            </template>
+
+            <div class="compatible-parts-body">
+              <div
+                v-if="!form.vehicle_id"
+                class="empty-state-panel empty-state-centered"
+              >
+                <div class="empty-state-icon">□</div>
+                <div class="empty-state-text">
+                  <strong>Select a vehicle first</strong>
+                  <p>
+                    Compatible parts will appear here based on the selected
+                    vehicle make, model, and year.
+                  </p>
                 </div>
               </div>
-            </Card>
-          </div>
 
-          <Card>
+              <div
+                v-else-if="compatibleParts.length === 0"
+                class="empty-state-panel empty-state-centered"
+              >
+                <div class="empty-state-icon">!</div>
+                <div class="empty-state-text">
+                  <strong>No compatible parts found</strong>
+                  <p>
+                    You can still continue by adding a manual service item.
+                  </p>
+                </div>
+              </div>
+
+              <div v-else class="parts-list">
+                <button
+                  v-for="part in compatibleParts"
+                  :key="part.id"
+                  type="button"
+                  class="part-row"
+                  @click="addPartItem(part)"
+                >
+                  <div class="part-copy">
+                    <div class="part-name">
+                      {{ part.name }}
+                      <span v-if="part.variant">— {{ part.variant }}</span>
+                    </div>
+
+                    <div class="part-meta">
+                      {{ part.sku || "-" }} · Stock: {{ part.stock }} ·
+                      {{ part.is_generic ? "Generic" : "Specific" }}
+                    </div>
+                  </div>
+
+                  <div class="part-price">
+                    RM {{ formatMoney(part.selling_price) }}
+                  </div>
+                </button>
+              </div>
+            </div>
+          </Card>
+
+          <!-- TRANSACTION ITEMS -->
+          <Card class="workflow-card">
             <template #header>
               <span class="card-title">Transaction Items</span>
-              <button class="btn btn-secondary btn-pill" type="button" @click="addServiceItem">
+              <button
+                class="btn btn-secondary btn-pill"
+                type="button"
+                @click="addServiceItem"
+              >
                 + Add Service
               </button>
             </template>
 
-            <div v-if="form.items.length === 0" class="empty-state-panel empty-state-inline">
+            <div
+              v-if="form.items.length === 0"
+              class="empty-state-panel empty-state-inline"
+            >
               <div class="empty-state-icon">+</div>
 
               <div class="empty-state-text">
                 <strong>No items added yet</strong>
-                <p>Add a compatible part from the list above or click “Add Service” to begin.</p>
+                <p>
+                  Add a compatible part from the list above or click “Add Service”
+                  to create a manual labour/service item.
+                </p>
               </div>
             </div>
 
@@ -200,24 +237,33 @@
                 v-for="(item, index) in form.items"
                 :key="index"
                 class="item-card"
-                :class="item.item_type === 'part' ? 'part-card compact-item-card' : 'service-card'"
+                :class="item.item_type === 'part' ? 'part-card' : 'service-card'"
               >
-                <div class="item-top clean-item-top">
+                <div class="item-top">
                   <div>
                     <div class="item-title">
-                      {{ item.item_type === "part" ? item.part_label : (item.service_name || "Unnamed service") }}
+                      {{
+                        item.item_type === "part"
+                          ? item.part_label
+                          : (item.service_name || "Unnamed service")
+                      }}
                     </div>
+
                     <div class="item-sub">
                       {{ item.item_type === "part" ? "Part" : "Service" }}
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-sm btn-ghost" @click="removeItem(index)">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-ghost"
+                    @click="removeItem(index)"
+                  >
                     Remove
                   </button>
                 </div>
 
-                <!-- PART UI: compact -->
+                <!-- PART ITEM -->
                 <div v-if="item.item_type === 'part'" class="part-compact-layout">
                   <div class="compact-inputs">
                     <div class="form-field form-field-sm">
@@ -240,7 +286,7 @@
                       />
                     </div>
 
-                    <div class="form-field compact-note">
+                    <div class="form-field form-field-sm compact-note">
                       <label>Note</label>
                       <input
                         v-model="item.note"
@@ -249,17 +295,17 @@
                       />
                     </div>
 
-                    <div class="compact-total">
+                    <div class="compact-total-card">
                       <span>Total</span>
                       <strong>RM {{ formatMoney(lineTotal(item)) }}</strong>
                     </div>
                   </div>
                 </div>
 
-                <!-- SERVICE UI: descriptive -->
+                <!-- SERVICE ITEM -->
                 <div v-else class="service-item-layout">
-                  <div class="form-grid item-grid">
-                    <div class="form-field full">
+                  <div class="service-grid">
+                    <div class="form-field form-field-sm full">
                       <label>Service name</label>
                       <input
                         v-model="item.service_name"
@@ -268,7 +314,7 @@
                       />
                     </div>
 
-                    <div class="form-field">
+                    <div class="form-field form-field-sm">
                       <label>Duration (hrs)</label>
                       <input
                         v-model.number="item.quantity"
@@ -279,7 +325,7 @@
                       />
                     </div>
 
-                    <div class="form-field">
+                    <div class="form-field form-field-sm">
                       <label>Rate (RM/hr)</label>
                       <input
                         v-model.number="item.selling_price"
@@ -290,7 +336,7 @@
                       />
                     </div>
 
-                    <div class="form-field full">
+                    <div class="form-field form-field-sm full">
                       <label>Note</label>
                       <input
                         v-model="item.note"
@@ -309,73 +355,82 @@
             </div>
           </Card>
 
-          <Card>
-          <template #header>
-            <span class="card-title">Notes</span>
-          </template>
+          <!-- NOTES -->
+          <Card class="workflow-card">
+            <template #header>
+              <span class="card-title">Notes</span>
+            </template>
 
-          <div class="form-field">
-            <label>Transaction notes</label>
-            <textarea
-              v-model="form.notes"
-              rows="4"
-              placeholder="Optional remarks for quotation"
-            ></textarea>
-          </div>
+            <div class="form-field">
+              <label>Transaction notes</label>
+              <textarea
+                v-model="form.notes"
+                rows="4"
+                placeholder="Optional remarks for quotation"
+              ></textarea>
+            </div>
           </Card>
         </div>
 
-        <div class="transaction-side">
-        <Card class="sticky-summary-card">
-          <template #header>
-            <span class="card-title">Summary</span>
-          </template>
+        <!-- RIGHT SUMMARY -->
+        <aside class="transaction-side">
+          <Card class="sticky-summary-card">
+            <template #header>
+              <span class="card-title">Summary</span>
+            </template>
 
-          <div class="summary-box">
-            <div v-if="form.items.length === 0" class="summary-helper">
-              Add items to calculate the quotation total.
+            <div class="summary-box">
+              <div v-if="form.items.length === 0" class="summary-helper">
+                Add parts or services to calculate the quotation total.
+              </div>
+
+              <div class="summary-box-row">
+                <span>Subtotal</span>
+                <strong>RM {{ formatMoney(subtotal) }}</strong>
+              </div>
+
+              <div class="summary-discount-row">
+                <label>Discount amount</label>
+                <input
+                  v-model.number="form.discount_amount"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+              <div class="summary-box-row summary-box-total">
+                <span>Total</span>
+                <strong>RM {{ formatMoney(totalAfterDiscount) }}</strong>
+              </div>
             </div>
 
-            <div class="summary-box-row">
-              <span>Subtotal</span>
-              <strong>RM {{ formatMoney(subtotal) }}</strong>
+            <div class="summary-actions">
+              <button
+                type="button"
+                class="btn btn-secondary btn-pill"
+                @click="resetForm"
+              >
+                Reset
+              </button>
+
+              <button
+                class="btn btn-primary btn-pill"
+                type="button"
+                :disabled="saving || !canSubmit"
+                @click="submitTransaction"
+              >
+                {{
+                  saving
+                    ? "Saving..."
+                    : (isEditMode ? "Update Transaction" : "Save Quotation")
+                }}
+              </button>
             </div>
 
-            <div class="summary-discount-row">
-              <label>Discount amount</label>
-              <input
-                v-model.number="form.discount_amount"
-                type="number"
-                min="0"
-                step="0.01"
-              />
-            </div>
-
-            <div class="summary-box-row summary-box-total">
-              <span>Total</span>
-              <strong>RM {{ formatMoney(totalAfterDiscount) }}</strong>
-            </div>
-          </div>
-
-          <div class="summary-actions">
-            <button type="button" class="btn btn-secondary btn-pill" @click="resetForm">
-              Reset
-            </button>
-
-            <button
-              class="btn btn-primary btn-pill"
-              type="button"
-              :disabled="saving || !canSubmit"
-              @click="submitTransaction"
-            >
-              {{ saving ? "Saving..." : (isEditMode ? "Update Transaction" : "Save Quotation") }}
-            </button>
-          </div>
-
-          <p v-if="error" class="error-text">{{ error }}</p>
-        </Card>
-        </div>
-
+            <p v-if="error" class="error-text">{{ error }}</p>
+          </Card>
+        </aside>
       </div>
     </div>
   </div>
@@ -751,6 +806,14 @@ export default {
 </script>
 
 <style scoped>
+/* ================================
+   TRANSACTION CREATE / EDIT
+================================ */
+
+.transaction-page-header {
+  margin-bottom: 10px;
+}
+
 .transaction-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
@@ -771,299 +834,14 @@ export default {
   align-self: start;
 }
 
-.create-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-/* compatible parts */
-.compatible-parts-card {
-  min-height: 265px;
-}
-
-.compatible-parts-body {
-  max-height: 265px;
-  min-height: 165px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.compatible-parts-body::-webkit-scrollbar,
-.parts-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.compatible-parts-body::-webkit-scrollbar-thumb,
-.parts-list::-webkit-scrollbar-thumb {
-  background: #d8dee8;
-  border-radius: 999px;
-}
-
-.compatible-parts-body::-webkit-scrollbar-track,
-.parts-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* part list */
-.parts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.part-row {
-  width: 100%;
-  min-height: 58px;
-  padding: 11px 13px;
-  border: 1px solid #e1e7ef;
-  border-radius: 12px;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease,
-    transform 0.12s ease,
-    box-shadow 0.15s ease;
-}
-
-.part-row:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
-}
-
-.part-name {
-  font-size: 13px;
-  font-weight: 750;
-  color: #0f172a;
-}
-
-.part-meta {
-  margin-top: 3px;
-  font-size: 11.5px;
-  color: #8a96a8;
-}
-
-.part-price {
-  font-size: 13px;
-  font-weight: 800;
-  color: #0f172a;
-  white-space: nowrap;
-}
-
-/* selected items */
-.items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item-card {
-  border: 1px solid #e1e7ef;
-  border-radius: 13px;
-  padding: 14px 16px;
-  background: #ffffff;
-}
-
-.item-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.item-title {
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-.item-sub {
-  margin-top: 3px;
-  font-size: 11.5px;
-  color: #8a96a8;
-}
-
-.compact-inputs {
-  display: grid;
-  grid-template-columns: 90px 140px minmax(220px, 1fr) 120px;
-  gap: 12px;
-  align-items: end;
-}
-
-/* vehicle summary */
-.vehicle-summary {
-  margin-top: 14px;
-  padding: 13px 14px;
-  border: 1px solid #e1e7ef;
-  border-radius: 12px;
-  background: #f8fafc;
-  display: grid;
-  gap: 6px;
-  font-size: 12.5px;
-  color: #526173;
-}
-
-.vehicle-summary strong {
-  color: #0f172a;
-}
-
-/* empty states */
-.empty-state-panel {
-  border: 1px dashed #d9e1ea;
-  border-radius: 12px;
-  background: #fbfcfe;
-  color: #8a96a8;
-}
-
-.empty-state-centered {
-  min-height: 148px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 11px;
-  text-align: center;
-}
-
-.empty-state-inline {
-  min-height: 72px;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-  text-align: left;
-}
-
-.empty-state-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: #eef2f7;
-  color: #64748b;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.empty-state-text strong {
-  display: block;
-  font-size: 13px;
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1.25;
-}
-
-.empty-state-text p {
-  max-width: 390px;
-  margin: 4px 0 0;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: #8a96a8;
-}
-
-/* summary */
-.sticky-summary-card {
-  min-height: 220px;
-}
-
-.summary-box {
-  padding: 0;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background: #f8fafc;
+.workflow-card {
   overflow: hidden;
 }
 
-.summary-helper {
-  padding: 11px 14px;
-  border-bottom: 1px solid #e5eaf1;
-  background: #ffffff;
-  font-size: 12px;
-  line-height: 1.4;
-  color: #8a96a8;
-}
+/* ================================
+   STEPPER
+================================ */
 
-.summary-box-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 13px 14px;
-  font-size: 13px;
-  color: #526173;
-  border-bottom: 1px solid #e5eaf1;
-}
-
-.summary-box-row strong {
-  font-size: 13.5px;
-  font-weight: 850;
-  color: #0f172a;
-}
-
-.summary-discount-row {
-  padding: 10px 14px 12px;
-  border-bottom: 1px solid #e5eaf1;
-}
-
-.summary-discount-row label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 11.5px;
-  font-weight: 750;
-  color: #64748b;
-}
-
-.summary-discount-row input {
-  width: 100%;
-  height: 38px;
-  padding: 0 12px;
-  border: 1px solid #dfe5ee;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #0f172a;
-  font-size: 13px;
-  outline: none;
-}
-
-.summary-discount-row input:focus {
-  border-color: #94a3b8;
-  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.14);
-}
-
-.summary-box-total {
-  background: #ffffff;
-  border-bottom: none;
-}
-
-.summary-box-total span,
-.summary-box-total strong {
-  font-size: 14px;
-  font-weight: 850;
-  color: #0f172a;
-}
-
-.summary-actions {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: 10px;
-}
-
-/* stepper */
 .flow-steps {
   display: inline-flex;
   align-items: center;
@@ -1134,7 +912,440 @@ export default {
   background: #dfe5ee;
 }
 
-/* responsive */
+/* Edit mode pill */
+.edit-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 16px;
+  padding: 7px 10px;
+  background: #ffffff;
+  border: 1px solid #dfe5ee;
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
+.edit-pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.edit-note {
+  font-size: 12px;
+  color: #8a96a8;
+  padding-right: 4px;
+}
+
+/* ================================
+   CUSTOMER / VEHICLE
+================================ */
+
+.customer-vehicle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.vehicle-summary {
+  margin-top: 14px;
+  padding: 0;
+  border: 1px solid #e1e7ef;
+  border-radius: 13px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.vehicle-summary-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  font-size: 12.5px;
+}
+
+.vehicle-summary-item:last-child {
+  border-bottom: none;
+}
+
+.vehicle-summary-item span {
+  color: #64748b;
+  font-weight: 650;
+}
+
+.vehicle-summary-item strong {
+  color: #0f172a;
+  font-weight: 800;
+  text-align: right;
+}
+
+/* ================================
+   COMPATIBLE PARTS
+================================ */
+
+.compatible-parts-card {
+  min-height: 260px;
+}
+
+.compatible-parts-body {
+  max-height: 310px;
+  min-height: 160px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.compatible-parts-body::-webkit-scrollbar,
+.parts-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.compatible-parts-body::-webkit-scrollbar-thumb,
+.parts-list::-webkit-scrollbar-thumb {
+  background: #d8dee8;
+  border-radius: 999px;
+}
+
+.compatible-parts-body::-webkit-scrollbar-track,
+.parts-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.parts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.part-row {
+  width: 100%;
+  min-height: 58px;
+  padding: 11px 13px;
+  border: 1px solid #e1e7ef;
+  border-radius: 12px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
+}
+
+.part-row:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+}
+
+.part-copy {
+  min-width: 0;
+}
+
+.part-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.part-meta {
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #8a96a8;
+  line-height: 1.25;
+}
+
+.part-price {
+  font-size: 13px;
+  font-weight: 850;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+/* ================================
+   TRANSACTION ITEMS
+================================ */
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-card {
+  border: 1px solid #e1e7ef;
+  border-radius: 13px;
+  padding: 14px 16px;
+  background: #ffffff;
+}
+
+.part-card {
+  background: #ffffff;
+}
+
+.service-card {
+  background: #ffffff;
+}
+
+.item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.item-title {
+  font-size: 13.5px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.item-sub {
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #8a96a8;
+}
+
+.part-compact-layout,
+.service-item-layout {
+  margin-top: 4px;
+}
+
+.compact-inputs {
+  display: grid;
+  grid-template-columns: 88px 132px minmax(220px, 1fr) 132px;
+  gap: 12px;
+  align-items: end;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.service-grid .full {
+  grid-column: 1 / -1;
+}
+
+.compact-total-card {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid #e1e7ef;
+  border-radius: 11px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.compact-total-card span,
+.line-total-bar span {
+  font-size: 10px;
+  font-weight: 850;
+  color: #8a96a8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.compact-total-card strong,
+.line-total-bar strong {
+  margin-top: 2px;
+  font-size: 13.5px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.line-total-bar {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #e1e7ef;
+  border-radius: 11px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+/* ================================
+   EMPTY STATES
+================================ */
+
+.empty-state-panel {
+  border: 1px dashed #d9e1ea;
+  border-radius: 12px;
+  background: #fbfcfe;
+  color: #8a96a8;
+}
+
+.empty-state-centered {
+  min-height: 150px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  text-align: center;
+}
+
+.empty-state-inline {
+  min-height: 76px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  text-align: left;
+}
+
+.empty-state-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #eef2f7;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.empty-state-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.empty-state-text p {
+  max-width: 420px;
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #8a96a8;
+}
+
+/* ================================
+   SUMMARY
+================================ */
+
+.sticky-summary-card {
+  min-height: 220px;
+}
+
+.summary-box {
+  padding: 0;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.summary-helper {
+  padding: 11px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  background: #ffffff;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #8a96a8;
+}
+
+.summary-box-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 14px;
+  font-size: 13px;
+  color: #526173;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.summary-box-row strong {
+  font-size: 13.5px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.summary-discount-row {
+  padding: 10px 14px 12px;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.summary-discount-row label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.summary-discount-row input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #dfe5ee;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 13px;
+  outline: none;
+}
+
+.summary-discount-row input:focus {
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.14);
+}
+
+.summary-box-total {
+  background: #ffffff;
+  border-bottom: none;
+}
+
+.summary-box-total span,
+.summary-box-total strong {
+  font-size: 14px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.summary-actions {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+}
+
+.error-text {
+  margin-top: 12px;
+  color: #b42318;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
 @media (max-width: 1050px) {
   .transaction-workspace {
     grid-template-columns: 1fr;
@@ -1146,29 +1357,18 @@ export default {
 }
 
 @media (max-width: 900px) {
-  .create-grid {
+  .customer-vehicle-grid,
+  .compact-inputs,
+  .service-grid {
     grid-template-columns: 1fr;
   }
 
-  .compact-inputs {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .compact-total {
-    grid-column: 1 / -1;
-    border-left: none;
-    border-top: 1px solid #e5eaf1;
-    padding-left: 0;
-    padding-top: 12px;
+  .compact-total-card {
     align-items: flex-start;
   }
 }
 
 @media (max-width: 640px) {
-  .compact-inputs {
-    grid-template-columns: 1fr;
-  }
-
   .summary-actions {
     grid-template-columns: 1fr;
   }
@@ -1177,32 +1377,13 @@ export default {
     max-width: 100%;
     overflow-x: auto;
   }
-}
 
-.line-total-bar {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border: 1px solid #e1e7ef;
-  border-radius: 11px;
-  background: #f8fafc;
+  .flow-line {
+    min-width: 28px;
+  }
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.line-total-bar span {
-  font-size: 10.5px;
-  font-weight: 800;
-  color: #8a96a8;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.line-total-bar strong {
-  font-size: 14px;
-  font-weight: 850;
-  color: #0f172a;
+  .empty-state-inline {
+    align-items: flex-start;
+  }
 }
 </style>
