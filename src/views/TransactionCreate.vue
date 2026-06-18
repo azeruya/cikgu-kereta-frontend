@@ -162,7 +162,7 @@
             </template>
 
             <div class="compatible-parts-body">
-              <div v-if="!form.vehicle_id" class="setup-panel">
+              <div v-if="!form.vehicle_id" class="setup-panel setup-panel-sm">
                 <div class="setup-icon">
                   <svg viewBox="0 0 24 24" class="setup-svg">
                     <path d="M4 17h16" />
@@ -1453,70 +1453,40 @@ export default {
   box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.14);
 }
 
-.summary-progress {
-  padding: 12px 14px 10px;
-  border-bottom: 1px solid #e5eaf1;
-  background: #ffffff;
-}
-
-.summary-progress-title {
-  margin-bottom: 9px;
-  font-size: 11.5px;
-  font-weight: 850;
-  color: #0f172a;
-}
-
-.summary-check {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 3px 0;
-}
-
-.summary-check span {
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  border: 1px solid #d5dde8;
-  background: #f8fafc;
-  flex-shrink: 0;
-}
-
-.summary-check p {
-  margin: 0;
-  font-size: 12px;
-  color: #8a96a8;
-  line-height: 1.3;
-}
-
-.summary-check.done span {
-  background: #ecfdf3;
-  border-color: #bbf7d0;
-  position: relative;
-}
-
-.summary-check.done span::before {
-  content: "✓";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #15803d;
-  font-size: 10px;
-  font-weight: 900;
-}
-
-.summary-check.done p {
-  color: #475569;
-  font-weight: 650;
-}
-
 .error-text {
   margin-top: 12px;
   color: #b42318;
   font-size: 12px;
   font-weight: 650;
+}
+
+.setup-panel-sm {
+  min-height: 96px;
+  padding: 14px 16px;
+}
+
+.setup-panel-sm .setup-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+}
+
+.setup-panel-sm .setup-svg {
+  width: 16px;
+  height: 16px;
+}
+
+.setup-panel-sm .setup-content strong {
+  font-size: 13px;
+}
+
+.setup-panel-sm .setup-content p {
+  font-size: 12.2px;
+  line-height: 1.42;
+}
+
+.setup-panel-sm .btn {
+  margin-top: 10px;
 }
 
 /* ================================

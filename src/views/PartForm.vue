@@ -202,7 +202,7 @@
                 </button>
               </template>
 
-              <div v-if="form.compatibilities.length === 0" class="setup-panel compact">
+              <div v-if="form.compatibilities.length === 0" class="setup-panel setup-panel-sm">
                 <div class="setup-icon">
                   <svg viewBox="0 0 24 24" class="setup-svg">
                     <path d="M4 17h16" />
@@ -809,6 +809,35 @@ export default {
   grid-template-columns: 1.1fr 1.1fr 0.7fr 0.7fr;
   gap: 12px;
   align-items: end;
+}
+
+.setup-panel-sm {
+  min-height: 96px;
+  padding: 14px 16px;
+}
+
+.setup-panel-sm .setup-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+}
+
+.setup-panel-sm .setup-svg {
+  width: 16px;
+  height: 16px;
+}
+
+.setup-panel-sm .setup-content strong {
+  font-size: 13px;
+}
+
+.setup-panel-sm .setup-content p {
+  font-size: 12.2px;
+  line-height: 1.42;
+}
+
+.setup-panel-sm .btn {
+  margin-top: 10px;
 }
 
 /* ================================
