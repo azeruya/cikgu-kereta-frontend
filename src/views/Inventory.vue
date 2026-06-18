@@ -196,7 +196,7 @@
               v-for="part in lowStockPreview"
               v-else
               :key="part.id"
-              class="stock-alert-card"
+              class="stock-alert-card compact"
               @click="openDetail(part)"
             >
               <div class="stock-alert-info">
@@ -208,7 +208,7 @@
 
               <button
                 type="button"
-                class="stock-alert-action full"
+                class="stock-alert-quick-btn"
                 @click.stop="openRestockFromList(part)"
               >
                 Restock
@@ -1096,11 +1096,16 @@ nextPage() {
 }
 
 /* low stock alert */
-.stock-alert-card {
+.stock-alert-card.compact {
+  min-height: 70px;
   padding: 13px 14px;
   border: 1px solid #e1e7ef;
   border-radius: 14px;
   background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
   cursor: pointer;
   transition:
     background 0.15s ease,
@@ -1108,7 +1113,7 @@ nextPage() {
     box-shadow 0.15s ease;
 }
 
-.stock-alert-card:hover {
+.stock-alert-card.compact:hover {
   background: #fbfcfe;
   border-color: #d4dce8;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035);
@@ -1133,27 +1138,30 @@ nextPage() {
   line-height: 1.3;
 }
 
-.stock-alert-action.full {
-  width: 100%;
-  min-height: 31px;
-  margin-top: 11px;
+.stock-alert-quick-btn {
+  min-height: 30px;
+  padding: 0 13px;
   border: 1px solid #dfe5ee;
-  border-radius: 10px;
+  border-radius: 999px;
   background: #ffffff;
   color: #334155;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11.5px;
+  font-weight: 850;
+  white-space: nowrap;
   cursor: pointer;
+  flex-shrink: 0;
   transition:
     background 0.15s ease,
+    border-color 0.15s ease,
     color 0.15s ease,
-    border-color 0.15s ease;
+    transform 0.12s ease;
 }
 
-.stock-alert-action.full:hover {
-  background: #fff7f6;
-  border-color: #f3b4ad;
-  color: #dc2626;
+.stock-alert-quick-btn:hover {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .mini-empty-state {
