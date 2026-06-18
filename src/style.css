@@ -3138,3 +3138,82 @@ th.center {
     width: 100%;
   }
 }
+
+/* =========================================================
+   ACTION MODAL
+========================================================= */
+
+.action-modal-card {
+  width: min(440px, calc(100vw - 32px));
+}
+
+.action-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 22px 24px 16px;
+}
+
+.action-modal-title {
+  font-size: 15.5px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.action-modal-subtitle {
+  margin: 5px 0 0;
+  font-size: 12.5px;
+  color: #8a96a8;
+  line-height: 1.4;
+}
+
+.action-modal-body {
+  padding: 0 24px 22px;
+}
+
+.action-summary-box {
+  margin-bottom: 14px;
+  padding: 0;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.action-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  font-size: 12.8px;
+  color: #526173;
+}
+
+.action-summary-row:last-child {
+  border-bottom: none;
+}
+
+.action-summary-row strong {
+  font-size: 13px;
+  font-weight: 850;
+  color: #0f172a;
+  text-align: right;
+}
+
+.action-modal-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid #e5eaf1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  .action-modal-footer {
+    grid-template-columns: 1fr;
+  }
+}

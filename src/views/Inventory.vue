@@ -199,17 +199,11 @@
               class="stock-alert-card"
               @click="openDetail(part)"
             >
-              <div class="stock-alert-main-row">
-                <div class="stock-alert-info">
-                  <div class="stock-alert-name">{{ part.name }}</div>
-                  <div class="stock-alert-meta">
-                    Stock {{ part.stock }} · Minimum {{ part.min_stock_threshold }}
-                  </div>
+              <div class="stock-alert-info">
+                <div class="stock-alert-name">{{ part.name }}</div>
+                <div class="stock-alert-meta">
+                  Stock {{ part.stock }} · Minimum {{ part.min_stock_threshold }}
                 </div>
-
-                <span class="stock-short-pill">
-                  {{ part.min_stock_threshold - part.stock }} short
-                </span>
               </div>
 
               <button
@@ -409,55 +403,52 @@
 
       <!-- RESTOCK MODAL -->
         <Teleport to="body">
-          <div
-            v-if="showRestockModal"
-            class="stacked-modal"
-            @click.self="closeRestockModal"
-          >
-            <div class="confirm-card restock-card">
-              <div class="confirm-title">
-                Restock part
+          <div class="modal" @click.self="closeRestockModal">
+            <div class="modal-card action-modal-card">
+              <div class="action-modal-header">
+                <div>
+                  <div class="action-modal-title">Restock part</div>
+                  <p class="action-modal-subtitle">
+                    Add stock quantity for <strong>{{ restockPart?.name }}</strong>.
+                  </p>
+                </div>
+
+                <button class="btn btn-sm btn-ghost" type="button" @click="closeRestockModal">
+                  ✕
+                </button>
               </div>
 
-              <div class="confirm-message left">
-                Add stock for <strong>{{ activePart?.name || "this part" }}</strong>.
+              <div class="action-modal-body">
+                <div class="action-summary-box">
+                  <div class="action-summary-row">
+                    <span>Current stock</span>
+                    <strong>{{ restockPart?.stock ?? 0 }}</strong>
+                  </div>
+
+                  <div class="action-summary-row">
+                    <span>Minimum stock</span>
+                    <strong>{{ restockPart?.min_stock_threshold ?? 0 }}</strong>
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <label>Quantity to add</label>
+                  <input
+                    v-model.number="restockQuantity"
+                    type="number"
+                    min="1"
+                    step="1"
+                  />
+                </div>
               </div>
 
-              <div class="form-field">
-                <label>Quantity to add</label>
-                <input
-                  v-model.number="restockForm.quantity"
-                  type="number"
-                  min="1"
-                  step="1"
-                />
-              </div>
-
-              <div v-if="activePart" class="summary-highlight">
-                Current stock: <strong>{{ activePart.stock }}</strong>
-              </div>
-
-              <div v-if="restockError" class="page-error" style="margin-top: 12px;">
-                {{ restockError }}
-              </div>
-
-              <div class="confirm-actions">
-                <button
-                  type="button"
-                  class="btn btn-secondary btn-pill"
-                  :disabled="restockLoading"
-                  @click="closeRestockModal"
-                >
+              <div class="action-modal-footer">
+                <button class="btn btn-secondary btn-pill" type="button" @click="closeRestockModal">
                   Cancel
                 </button>
 
-                <button
-                  type="button"
-                  class="btn btn-primary btn-pill"
-                  :disabled="restockLoading"
-                  @click="submitRestock"
-                >
-                  {{ restockLoading ? "Saving..." : "Confirm" }}
+                <button class="btn btn-primary btn-pill" type="button" @click="confirmRestock">
+                  Confirm
                 </button>
               </div>
             </div>
@@ -1100,13 +1091,6 @@ nextPage() {
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035);
 }
 
-.stock-alert-main-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
 .stock-alert-info {
   min-width: 0;
 }
@@ -1126,22 +1110,10 @@ nextPage() {
   line-height: 1.3;
 }
 
-.stock-short-pill {
-  min-height: 24px;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: #fff1f0;
-  border: 1px solid #ffd6d2;
-  color: #dc2626;
-  font-size: 11px;
-  font-weight: 850;
-  white-space: nowrap;
-}
-
 .stock-alert-action.full {
   width: 100%;
-  min-height: 32px;
-  margin-top: 12px;
+  min-height: 31px;
+  margin-top: 11px;
   border: 1px solid #dfe5ee;
   border-radius: 10px;
   background: #ffffff;
