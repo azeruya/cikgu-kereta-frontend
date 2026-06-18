@@ -1260,7 +1260,7 @@ th.center {
 .compact-total span {
   font-size: 10px;
   font-weight: 800;
-  color: #8a96a8;
+  padding: 5px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
