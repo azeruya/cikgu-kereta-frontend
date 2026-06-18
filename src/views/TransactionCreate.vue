@@ -120,47 +120,60 @@
               </div>
             </Card>
 
-            <Card>
+            <Card class="compatible-parts-card">
               <template #header>
                 <span class="card-title">Available Compatible Parts</span>
                 <span class="card-link">{{ compatibleParts.length }} items</span>
               </template>
 
-              <div v-if="!form.vehicle_id" class="empty-box">
-                  <div class="empty-icon">▣</div>
-                  <strong>Select a vehicle first</strong>
-                  <p>Compatible parts will appear here based on vehicle make, model, and year.</p>
-              </div>
-
-              <div v-else-if="compatibleParts.length === 0" class="empty-box compatible-empty">
-                <div class="empty-icon">▣</div>
-                <strong>No compatible parts found</strong>
-                <p>Add a service manually, or update inventory compatibility for this vehicle.</p>
-              </div>
-
-              <div v-else class="parts-list">
-                <button
-                  v-for="part in compatibleParts"
-                  :key="part.id"
-                  type="button"
-                  class="part-row"
-                  @click="addPartItem(part)"
+              <div class="compatible-parts-body">
+                <div
+                  v-if="!form.vehicle_id"
+                  class="empty-state-panel empty-state-centered"
                 >
-                  <div>
-                    <div class="part-name">
-                      {{ part.name }}
-                      <span v-if="part.variant">— {{ part.variant }}</span>
-                    </div>
-                    <div class="part-meta">
-                      {{ part.sku || 'No SKU' }} · Stock: {{ part.stock }}
-                      <span v-if="part.is_generic">· Generic</span>
-                    </div>
+                  <div class="empty-state-icon">□</div>
+                  <div class="empty-state-text">
+                    <strong>Select a vehicle first</strong>
+                    <p>Compatible parts will appear based on vehicle make, model, and year.</p>
                   </div>
+                </div>
 
-                  <div class="part-price">
-                    RM {{ formatMoney(part.selling_price) }}
+                <div
+                  v-else-if="compatibleParts.length === 0"
+                  class="empty-state-panel empty-state-centered"
+                >
+                  <div class="empty-state-icon">!</div>
+                  <div class="empty-state-text">
+                    <strong>No compatible parts found</strong>
+                    <p>You can still add a service manually using the button below.</p>
                   </div>
-                </button>
+                </div>
+
+                <div v-else class="parts-list">
+                  <button
+                    v-for="part in compatibleParts"
+                    :key="part.id"
+                    type="button"
+                    class="part-row"
+                    @click="addPartItem(part)"
+                  >
+                    <div>
+                      <div class="part-name">
+                        {{ part.name }}
+                        <span v-if="part.variant">— {{ part.variant }}</span>
+                      </div>
+
+                      <div class="part-meta">
+                        {{ part.sku || "-" }} · Stock: {{ part.stock }} ·
+                        {{ part.is_generic ? "Generic" : "Specific" }}
+                      </div>
+                    </div>
+
+                    <div class="part-price">
+                      RM {{ formatMoney(part.selling_price) }}
+                    </div>
+                  </button>
+                </div>
               </div>
             </Card>
           </div>
@@ -173,11 +186,12 @@
               </button>
             </template>
 
-            <div v-if="form.items.length === 0" class="empty-box empty-box-horizontal">
-              <div class="empty-icon">＋</div>
-              <div>
+            <div v-if="form.items.length === 0" class="empty-state-panel empty-state-inline">
+              <div class="empty-state-icon">+</div>
+
+              <div class="empty-state-text">
                 <strong>No items added yet</strong>
-                <p>Add a compatible part or service to begin.</p>
+                <p>Add a compatible part from the list above or click “Add Service” to begin.</p>
               </div>
             </div>
 
@@ -318,12 +332,16 @@
           </template>
 
           <div class="summary-box">
+            <div v-if="items.length === 0" class="summary-helper">
+              Add items to calculate the quotation total.
+            </div>
+
             <div class="summary-box-row">
               <span>Subtotal</span>
               <strong>RM {{ formatMoney(subtotal) }}</strong>
             </div>
 
-            <div class="form-field">
+            <div class="summary-discount-row">
               <label>Discount amount</label>
               <input
                 v-model.number="form.discount_amount"
@@ -339,8 +357,8 @@
             </div>
           </div>
 
-          <div class="page-bottom-actions form-actions">
-            <button class="btn btn-secondary btn-pill" type="button" @click="resetForm">
+          <div class="summary-actions">
+            <button type="button" class="btn btn-secondary btn-pill" @click="resetForm">
               Reset
             </button>
 
@@ -759,26 +777,39 @@ export default {
   gap: 16px;
 }
 
-/* Vehicle preview */
-.vehicle-summary {
-  margin-top: 14px;
-  padding: 12px 14px;
-  border: 1px solid #e1e7ef;
-  border-radius: 12px;
-  background: #f8fafc;
-  display: grid;
-  gap: 6px;
-  font-size: 12.5px;
-  color: #526173;
+/* compatible parts */
+.compatible-parts-card {
+  min-height: 265px;
 }
 
-/* Compatible parts */
+.compatible-parts-body {
+  max-height: 265px;
+  min-height: 165px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.compatible-parts-body::-webkit-scrollbar,
+.parts-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.compatible-parts-body::-webkit-scrollbar-thumb,
+.parts-list::-webkit-scrollbar-thumb {
+  background: #d8dee8;
+  border-radius: 999px;
+}
+
+.compatible-parts-body::-webkit-scrollbar-track,
+.parts-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* part list */
 .parts-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 290px;
-  overflow: auto;
 }
 
 .part-row {
@@ -794,13 +825,18 @@ export default {
   gap: 14px;
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
 }
 
 .part-row:hover {
   background: #f8fafc;
   border-color: #cbd5e1;
   transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
 }
 
 .part-name {
@@ -822,7 +858,7 @@ export default {
   white-space: nowrap;
 }
 
-/* Transaction items */
+/* selected items */
 .items-list {
   display: flex;
   flex-direction: column;
@@ -856,15 +892,6 @@ export default {
   color: #8a96a8;
 }
 
-.part-card {
-  background: #ffffff;
-}
-
-.service-card {
-  background: #ffffff;
-}
-
-/* Compact item editor */
 .compact-inputs {
   display: grid;
   grid-template-columns: 90px 140px minmax(220px, 1fr) 120px;
@@ -897,69 +924,85 @@ export default {
   color: #0f172a;
 }
 
-/* Empty states */
-.empty-box {
-  min-height: 86px;
-  border: 1px dashed #d8dee8;
+/* vehicle summary */
+.vehicle-summary {
+  margin-top: 14px;
+  padding: 13px 14px;
+  border: 1px solid #e1e7ef;
   border-radius: 12px;
   background: #f8fafc;
-  color: #8a96a8;
+  display: grid;
+  gap: 6px;
   font-size: 12.5px;
-  line-height: 1.45;
+  color: #526173;
+}
+
+.vehicle-summary strong {
+  color: #0f172a;
+}
+
+/* empty states */
+.empty-state-panel {
+  border: 1px dashed #d9e1ea;
+  border-radius: 12px;
+  background: #fbfcfe;
+  color: #8a96a8;
+}
+
+.empty-state-centered {
+  min-height: 148px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 11px;
   text-align: center;
-  padding: 16px;
 }
 
-.empty-box-horizontal {
-  min-height: 74px;
-  flex-direction: row;
-  justify-content: center;
+.empty-state-inline {
+  min-height: 72px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
   text-align: left;
 }
 
-.empty-icon {
-  width: 30px;
-  height: 30px;
+.empty-state-icon {
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   background: #eef2f7;
-  color: #6b7280;
-  display: flex;
+  color: #64748b;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
   flex-shrink: 0;
-}
-
-.empty-box strong {
   font-size: 13px;
-  font-weight: 750;
-  color: #111827;
+  font-weight: 800;
 }
 
-.empty-box p {
-  max-width: 360px;
-  margin: 0;
+.empty-state-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.empty-state-text p {
+  max-width: 390px;
+  margin: 4px 0 0;
   font-size: 12.5px;
+  line-height: 1.45;
   color: #8a96a8;
 }
 
-.compatible-empty {
-  min-height: 118px;
-}
-
-/* Summary side panel */
+/* summary */
 .sticky-summary-card {
-  position: relative;
   min-height: 220px;
-}
-
-.sticky-summary-card .card-title {
-  font-size: 14px;
 }
 
 .summary-box {
@@ -968,6 +1011,15 @@ export default {
   border-radius: 14px;
   background: #f8fafc;
   overflow: hidden;
+}
+
+.summary-helper {
+  padding: 11px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  background: #ffffff;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #8a96a8;
 }
 
 .summary-box-row {
@@ -987,14 +1039,39 @@ export default {
   color: #0f172a;
 }
 
-.summary-box .form-field {
+.summary-discount-row {
   padding: 10px 14px 12px;
   border-bottom: 1px solid #e5eaf1;
 }
 
-.summary-box-total {
+.summary-discount-row label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 750;
+  color: #64748b;
+}
+
+.summary-discount-row input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #dfe5ee;
+  border-radius: 10px;
   background: #ffffff;
   color: #0f172a;
+  font-size: 13px;
+  outline: none;
+}
+
+.summary-discount-row input:focus {
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.14);
+}
+
+.summary-box-total {
+  background: #ffffff;
+  border-bottom: none;
 }
 
 .summary-box-total span,
@@ -1004,14 +1081,14 @@ export default {
   color: #0f172a;
 }
 
-.sticky-summary-card .page-bottom-actions {
+.summary-actions {
   margin-top: 16px;
   display: grid;
   grid-template-columns: 92px 1fr;
   gap: 10px;
 }
 
-/* Stepper */
+/* stepper */
 .flow-steps {
   display: inline-flex;
   align-items: center;
@@ -1082,36 +1159,7 @@ export default {
   background: #dfe5ee;
 }
 
-/* Edit context */
-.edit-context {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-  margin-bottom: 16px;
-  padding: 7px 10px;
-  background: #ffffff;
-  border: 1px solid #dfe5ee;
-  border-radius: 999px;
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
-}
-
-.edit-pill {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #0f172a;
-  color: #ffffff;
-  font-size: 11.5px;
-  font-weight: 750;
-}
-
-.edit-note {
-  font-size: 12px;
-  color: #8a96a8;
-  padding-right: 4px;
-}
-
-/* Responsive */
+/* responsive */
 @media (max-width: 1200px) {
   .transaction-workspace {
     grid-template-columns: 1fr;
@@ -1123,20 +1171,30 @@ export default {
 }
 
 @media (max-width: 900px) {
-  .create-grid,
-  .compact-inputs {
+  .create-grid {
     grid-template-columns: 1fr;
   }
 
+  .compact-inputs {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .compact-total {
+    grid-column: 1 / -1;
     border-left: none;
     border-top: 1px solid #e5eaf1;
     padding-left: 0;
     padding-top: 12px;
     align-items: flex-start;
   }
+}
 
-  .sticky-summary-card .page-bottom-actions {
+@media (max-width: 640px) {
+  .compact-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-actions {
     grid-template-columns: 1fr;
   }
 
