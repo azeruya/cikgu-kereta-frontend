@@ -127,62 +127,94 @@
       <!-- ADD/EDIT USER FORM MODAL -->
       <Teleport to="body">
         <div v-if="showModal" class="modal" @click.self="closeModal">
-          <div class="modal-card large form-modal-card">
-            <div class="modal-header">
-              <span>{{ editingUserId ? "Edit User" : "Add User" }}</span>
-              <button type="button" class="btn btn-sm btn-ghost" @click="closeModal">✕</button>
+          <div class="modal-card form-dialog-card">
+            <div class="form-dialog-header">
+              <div>
+                <div class="form-dialog-title">
+                  {{ editingUserId ? "Edit user" : "Add user" }}
+                </div>
+                <p class="form-dialog-subtitle">
+                  {{ editingUserId ? "Update account details and access role." : "Create a new workshop user account." }}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-sm btn-ghost"
+                @click="closeModal"
+              >
+                ✕
+              </button>
             </div>
 
-            <div class="modal-body form-modal-body">
-  <div class="form-data-panel">
-    <div class="form-data-header">
-      <span>User Information</span>
-    </div>
+            <div class="form-dialog-body">
+              <div class="form-dialog-section">
+                <div class="form-dialog-section-title">User Information</div>
 
-    <div class="form-grid form-grid-compact">
-      <div class="form-field">
-        <label>Name</label>
-        <input v-model="form.name" type="text" placeholder="Full name" />
-      </div>
+                <div class="form-grid form-grid-compact">
+                  <div class="form-field">
+                    <label>Name</label>
+                    <input
+                      v-model="form.name"
+                      type="text"
+                      placeholder="Full name"
+                    />
+                  </div>
 
-      <div class="form-field">
-        <label>Email</label>
-        <input v-model="form.email" type="email" placeholder="Email address" />
-      </div>
+                  <div class="form-field">
+                    <label>Email</label>
+                    <input
+                      v-model="form.email"
+                      type="email"
+                      placeholder="Email address"
+                    />
+                  </div>
 
-      <div class="form-field">
-        <label>Role</label>
-        <select v-model="form.role">
-          <option value="staff">Staff</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
+                  <div class="form-field">
+                    <label>Role</label>
+                    <select v-model="form.role">
+                      <option value="staff">Staff</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
 
-      <div class="form-field">
-        <label>{{ editingUserId ? "New Password" : "Password" }}</label>
-        <input
-          v-model="form.password"
-          type="password"
-          :placeholder="editingUserId ? 'Leave blank to keep current' : 'Password'"
-        />
-      </div>
-    </div>
-  </div>
+                  <div class="form-field">
+                    <label>{{ editingUserId ? "New Password" : "Password" }}</label>
+                    <input
+                      v-model="form.password"
+                      type="password"
+                      :placeholder="editingUserId ? 'Leave blank to keep current' : 'Password'"
+                    />
+                  </div>
+                </div>
+              </div>
 
-  <div v-if="formError" class="page-error" style="margin-top:12px;">
-    {{ formError }}
-  </div>
-</div>
+              <div
+                v-if="formError"
+                class="page-error"
+                style="margin-top: 12px;"
+              >
+                {{ formError }}
+              </div>
+            </div>
 
-            <div class="modal-footer form-actions">
-              <button type="button" class="btn btn-secondary btn-pill" @click="closeModal">Cancel</button>
+            <div class="form-dialog-footer">
+              <button
+                type="button"
+                class="btn btn-secondary btn-pill"
+                :disabled="saving"
+                @click="closeModal"
+              >
+                Cancel
+              </button>
+
               <button
                 type="button"
                 class="btn btn-primary btn-pill"
                 :disabled="saving"
                 @click="saveUser"
               >
-                {{ saving ? "Saving..." : (editingUserId ? "Update" : "Create") }}
+                {{ saving ? "Saving..." : editingUserId ? "Update" : "Create" }}
               </button>
             </div>
           </div>
@@ -193,21 +225,23 @@
       <Teleport to="body">
         <div
           v-if="showDeleteModal"
-          class="modal-overlay"
+          class="modal"
           @click.self="closeDeleteModal"
         >
-          <div class="confirm-card">
-            <div class="confirm-icon confirm-icon-danger">!</div>
+          <div class="modal-card danger-confirm-card">
+            <div class="danger-confirm-body">
+              <div class="danger-confirm-icon">!</div>
 
-            <div class="confirm-title">Delete user?</div>
+              <div class="danger-confirm-title">Delete user?</div>
 
-            <div class="confirm-message">
-              Are you sure you want to delete
-              <strong>{{ userToDelete?.name }}</strong>?
-              This action cannot be undone.
+              <div class="danger-confirm-message">
+                Are you sure you want to delete
+                <strong>{{ userToDelete?.name || "this user" }}</strong>?
+                This action cannot be undone.
+              </div>
             </div>
 
-            <div class="confirm-actions">
+            <div class="danger-confirm-footer">
               <button
                 type="button"
                 class="btn btn-secondary btn-pill"
