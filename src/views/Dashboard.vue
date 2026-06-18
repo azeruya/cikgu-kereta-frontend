@@ -1,14 +1,14 @@
 <template>
-  <div class="app-shell" :class="{ collapsed }">
+  <div class="dash">
     <Sidebar
       :collapsed="collapsed"
       :menu="menu"
-      :current-user="currentUser"
+      :user="currentUser"
       @toggle="toggleSidebar"
       @logout="handleLogout"
     />
 
-    <main class="page-content dashboard-page">
+    <div class="main">
       <!-- HEADER -->
       <div class="dashboard-header">
         <div>
@@ -28,7 +28,7 @@
             ◷ Today
           </button>
 
-          <router-link to="/transactions/new" class="btn btn-primary btn-pill">
+          <router-link to="/transactions/new" class="btn btn-primary btn-pill link-btn">
             + New transaction
           </router-link>
         </div>
@@ -39,7 +39,7 @@
       </div>
 
       <!-- KPI STRIP -->
-      <section class="metric-strip">
+      <section class="metric-strip" :class="{ 'staff-metrics': !isAdmin }">
         <div
           v-for="metric in metrics"
           :key="metric.label"
@@ -47,11 +47,13 @@
         >
           <div class="metric-top">
             <span>{{ metric.label }}</span>
-            <div class="metric-icon">{{ metric.icon }}</div>
+
+            <div class="metric-icon" :class="metric.iconClass">
+              {{ metric.icon }}
+            </div>
           </div>
 
           <strong>{{ metric.value }}</strong>
-
           <p v-html="metric.sub"></p>
         </div>
       </section>
@@ -60,16 +62,18 @@
       <section class="dashboard-grid-clean">
         <!-- TODAY TRANSACTIONS -->
         <Card class="dashboard-panel today-panel">
-          <div class="panel-head">
-            <div>
-              <h3>Today's transactions</h3>
-              <p>Jobs created or updated today.</p>
-            </div>
+          <template #header>
+            <div class="panel-head">
+              <div>
+                <h3>Today's transactions</h3>
+                <p>Jobs created or updated today.</p>
+              </div>
 
-            <router-link to="/transactions" class="panel-link">
-              View all
-            </router-link>
-          </div>
+              <router-link to="/transactions" class="panel-link">
+                View all
+              </router-link>
+            </div>
+          </template>
 
           <div v-if="todayTransactions.length > 0" class="mini-table-wrap">
             <table class="mini-table">
@@ -86,7 +90,7 @@
                 <tr
                   v-for="trx in todayTransactions"
                   :key="trx.id"
-                  @click="$router.push(`/transactions/${trx.id}`)"
+                  @click="goToTransaction(trx.id)"
                 >
                   <td>
                     <strong>{{ trx.customer }}</strong>
@@ -98,7 +102,7 @@
                   </td>
 
                   <td>
-                    <span class="status-badge" :class="trx.badgeClass">
+                    <span class="badge" :class="trx.badgeClass">
                       {{ trx.status }}
                     </span>
                   </td>
@@ -124,12 +128,14 @@
 
         <!-- NEEDS ATTENTION -->
         <Card class="dashboard-panel attention-panel">
-          <div class="panel-head">
-            <div>
-              <h3>Needs attention</h3>
-              <p>Stock and online requests to review.</p>
+          <template #header>
+            <div class="panel-head">
+              <div>
+                <h3>Needs attention</h3>
+                <p>Stock and online requests to review.</p>
+              </div>
             </div>
-          </div>
+          </template>
 
           <div class="attention-section">
             <div class="attention-title-row">
@@ -188,26 +194,42 @@
               </button>
             </div>
 
+            <div v-if="importMessage" class="import-message compact">
+              {{ importMessage }}
+            </div>
+
             <div v-if="onlineRequests.length > 0" class="request-list-clean">
               <div
                 v-for="request in onlineRequests.slice(0, 3)"
                 :key="request.id"
                 class="request-item-clean"
-                @click="convertOnlineRequest(request)"
               >
-                <div>
-                  <strong>{{ request.customer?.name || request.name || "-" }}</strong>
+                <div class="request-copy">
+                  <strong>{{ requestCustomerName(request) }}</strong>
+
                   <p>
-                    {{ request.vehicle?.license_plate || request.plate_number || "-" }}
-                    <span v-if="request.vehicle?.model || request.car_model">
-                      · {{ request.vehicle?.model || request.car_model }}
+                    {{ requestVehiclePlate(request) }}
+
+                    <span v-if="requestVehicleText(request)">
+                      · {{ requestVehicleText(request) }}
                     </span>
                   </p>
                 </div>
 
-                <span class="small-pill">
-                  {{ request.status || "Pending" }}
-                </span>
+                <div class="request-actions">
+                  <span class="small-pill">
+                    {{ request.status || "Pending" }}
+                  </span>
+
+                  <button
+                    v-if="request.status !== 'converted'"
+                    type="button"
+                    class="convert-btn"
+                    @click="convertOnlineRequest(request)"
+                  >
+                    Convert
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -219,27 +241,29 @@
 
         <!-- RECENT ACTIVITY -->
         <Card class="dashboard-panel activity-panel">
-          <div class="panel-head">
-            <div>
-              <h3>Recent activity</h3>
-              <p>Latest workshop updates.</p>
+          <template #header>
+            <div class="panel-head">
+              <div>
+                <h3>Recent activity</h3>
+                <p>Latest workshop updates.</p>
+              </div>
             </div>
-          </div>
+          </template>
 
-          <div v-if="recentActivity.length > 0" class="activity-list-clean">
+          <div v-if="activityItems.length > 0" class="activity-list-clean">
             <div
-              v-for="(activity, index) in recentActivity.slice(0, 6)"
+              v-for="(activity, index) in activityItems.slice(0, 6)"
               :key="index"
               class="activity-row-clean"
             >
               <span
                 class="activity-dot"
-                :class="activity.type || 'default'"
+                :class="activity.type"
               ></span>
 
               <div>
-                <p>{{ activity.message }}</p>
-                <small>{{ activity.time || activity.created_at || "-" }}</small>
+                <p v-html="activity.message"></p>
+                <small>{{ activity.time }}</small>
               </div>
             </div>
           </div>
@@ -251,12 +275,14 @@
 
         <!-- QUICK ACTIONS -->
         <Card class="dashboard-panel quick-panel">
-          <div class="panel-head">
-            <div>
-              <h3>Quick actions</h3>
-              <p>Common workshop shortcuts.</p>
+          <template #header>
+            <div class="panel-head">
+              <div>
+                <h3>Quick actions</h3>
+                <p>Common workshop shortcuts.</p>
+              </div>
             </div>
-          </div>
+          </template>
 
           <div class="quick-grid-clean">
             <router-link to="/transactions/new" class="quick-action-clean primary">
@@ -284,7 +310,7 @@
               <span>⇧</span>
               <div>
                 <strong>Import requests</strong>
-                <p>From online form</p>
+                <p>{{ importingRequests ? "Importing..." : "From online form" }}</p>
               </div>
             </button>
 
@@ -299,10 +325,22 @@
                 <p>View business summary</p>
               </div>
             </router-link>
+
+            <router-link
+              v-else
+              to="/customers"
+              class="quick-action-clean"
+            >
+              <span>☻</span>
+              <div>
+                <strong>Customers</strong>
+                <p>View customer list</p>
+              </div>
+            </router-link>
           </div>
         </Card>
       </section>
-    </main>
+    </div>
   </div>
 </template>
 
@@ -347,13 +385,13 @@ export default {
     currentUser() {
       try {
         return JSON.parse(localStorage.getItem("user")) || null;
-      } catch {
+      } catch (error) {
         return null;
       }
     },
 
     isAdmin() {
-      return this.currentUser?.role === "admin";
+      return this.currentUser && this.currentUser.role === "admin";
     },
 
     menu() {
@@ -365,7 +403,7 @@ export default {
         { name: "Expenses", path: "/expenses", icon: "alert" },
       ];
 
-      if (this.currentUser?.role === "admin") {
+      if (this.currentUser && this.currentUser.role === "admin") {
         baseMenu.push(
           { name: "Reports", path: "/reports", icon: "chart" },
           { name: "Users", path: "/users", icon: "user" }
@@ -376,12 +414,17 @@ export default {
     },
 
     firstName() {
-      const fullName = this.currentUser?.name || "there";
+      const fullName =
+        this.currentUser && this.currentUser.name
+          ? this.currentUser.name
+          : "there";
+
       return fullName.split(" ")[0];
     },
 
     greeting() {
       const hour = new Date().getHours();
+
       if (hour < 12) return "morning";
       if (hour < 18) return "afternoon";
       return "evening";
@@ -402,7 +445,7 @@ export default {
       if (this.isAdmin) {
         baseMetrics.push({
           label: "TODAY'S REVENUE",
-          value: `RM ${this.formatMoney(this.summary.today_revenue)}`,
+          value: "RM " + this.formatMoney(this.summary.today_revenue),
           sub: "From paid receipts today",
           iconClass: "mi-soft",
           icon: "↗",
@@ -420,10 +463,10 @@ export default {
         {
           label: "PENDING RECEIPTS",
           value: this.isAdmin
-            ? `RM ${this.formatMoney(this.summary.pending_receipts_amount)}`
+            ? "RM " + this.formatMoney(this.summary.pending_receipts_amount)
             : this.summary.pending_receipts_count,
           sub: this.isAdmin
-            ? `From ${this.summary.pending_receipts_count} transaction(s)`
+            ? "From " + this.summary.pending_receipts_count + " transaction(s)"
             : "Transaction(s) awaiting receipt",
           iconClass: "mi-soft",
           icon: "◔",
@@ -431,7 +474,10 @@ export default {
         {
           label: "LOW STOCK ALERTS",
           value: this.summary.low_stock_count,
-          sub: `<span class="metric-down">${this.summary.critical_stock_count} critical</span>`,
+          sub:
+            '<span class="metric-down">' +
+            this.summary.critical_stock_count +
+            " critical</span>",
           iconClass: "mi-soft",
           icon: "!",
         }
@@ -442,58 +488,53 @@ export default {
 
     todayTransactions() {
       return this.todayTransactionsRaw.map((trx) => {
-        const firstItem = trx.items?.[0];
+        const items = Array.isArray(trx.items) ? trx.items : [];
+        const firstItem = items.length > 0 ? items[0] : null;
+
         const work =
-        firstItem?.service_name ||
-        firstItem?.part?.name ||
-        firstItem?.note ||
-        "Workshop service";
+          (firstItem && firstItem.service_name) ||
+          (firstItem && firstItem.part && firstItem.part.name) ||
+          (firstItem && firstItem.note) ||
+          "Workshop service";
 
         return {
           id: trx.id,
-          customer: trx.customer?.name || "-",
-          plate: trx.vehicle?.license_plate || "-",
+          customer: trx.customer && trx.customer.name ? trx.customer.name : "-",
+          plate:
+            trx.vehicle && trx.vehicle.license_plate
+              ? trx.vehicle.license_plate
+              : "-",
           work,
           status: this.capitalize(trx.status),
           badgeClass: this.statusClass(trx.status),
-          total: `RM ${this.formatMoney(trx.total_amount)}`,
+          total: "RM " + this.formatMoney(trx.total_amount),
         };
       });
     },
 
-    weeklyRevenueTotal() {
-      const total = this.weeklyRevenueRaw.reduce(
-        (sum, day) => sum + Number(day.total || 0),
-        0
-      );
-
-      return `RM ${this.formatMoney(total)} this week`;
-    },
-
-    weeklyRevenue() {
-      const max = Math.max(
-        ...this.weeklyRevenueRaw.map((day) => Number(day.total || 0)),
-        0
-      );
-
-      return this.weeklyRevenueRaw.map((day) => ({
-        label: day.label,
-        isToday: day.is_today,
-        height: max > 0 ? Math.max(8, (Number(day.total || 0) / max) * 72) : 8,
-      }));
-    },
-
     lowStockItems() {
-      return this.lowStockItemsRaw.map((item) => ({
-        id: item.id,
-        name: item.variant ? `${item.name} — ${item.variant}` : item.name,
-        min: item.min_stock_threshold,
-        left: item.stock,
-        level:
-          Number(item.stock || 0) <= Number(item.min_stock_threshold || 0)
-            ? "critical"
-            : "low",
-      }));
+      return this.lowStockItemsRaw.map((item) => {
+        const threshold = Number(item.min_stock_threshold || 0);
+        const stock = Number(item.stock || 0);
+
+        return {
+          id: item.id,
+          name: item.variant ? item.name + " — " + item.variant : item.name,
+          min: threshold,
+          left: stock,
+          level: stock <= threshold ? "critical" : "low",
+        };
+      });
+    },
+
+    activityItems() {
+      return this.recentActivity.map((activity) => {
+        return {
+          message: activity.message || activity.text || "-",
+          time: activity.time || activity.created_at || "-",
+          type: activity.type || activity.dotClass || "default",
+        };
+      });
     },
   },
 
@@ -509,7 +550,11 @@ export default {
       this.error = "";
 
       if (cached) {
-        this.applyDashboardData(JSON.parse(cached));
+        try {
+          this.applyDashboardData(JSON.parse(cached));
+        } catch (error) {
+          sessionStorage.removeItem("dashboard");
+        }
       } else {
         this.loading = true;
       }
@@ -521,18 +566,31 @@ export default {
         sessionStorage.setItem("dashboard", JSON.stringify(res.data));
       } catch (error) {
         console.error("Error loading dashboard:", error);
-        this.error = error.response?.data?.message || "Failed to load dashboard.";
+        this.error =
+          error.response && error.response.data && error.response.data.message
+            ? error.response.data.message
+            : "Failed to load dashboard.";
       } finally {
         this.loading = false;
       }
     },
 
     applyDashboardData(data) {
+      data = data || {};
+
       this.summary = data.summary || this.summary;
-      this.todayTransactionsRaw = data.today_transactions || [];
-      this.weeklyRevenueRaw = data.weekly_revenue || [];
-      this.lowStockItemsRaw = data.low_stock_items || [];
-      this.recentActivity = data.recent_activity || [];
+      this.todayTransactionsRaw = Array.isArray(data.today_transactions)
+        ? data.today_transactions
+        : [];
+      this.weeklyRevenueRaw = Array.isArray(data.weekly_revenue)
+        ? data.weekly_revenue
+        : [];
+      this.lowStockItemsRaw = Array.isArray(data.low_stock_items)
+        ? data.low_stock_items
+        : [];
+      this.recentActivity = Array.isArray(data.recent_activity)
+        ? data.recent_activity
+        : [];
     },
 
     toggleSidebar() {
@@ -556,9 +614,17 @@ export default {
     async fetchOnlineRequests() {
       try {
         const res = await api.get("/online-requests");
-        this.onlineRequests = res.data || [];
+
+        if (Array.isArray(res.data)) {
+          this.onlineRequests = res.data;
+        } else if (res.data && Array.isArray(res.data.data)) {
+          this.onlineRequests = res.data.data;
+        } else {
+          this.onlineRequests = [];
+        }
       } catch (error) {
         console.error("Error loading online requests:", error);
+        this.onlineRequests = [];
       }
     },
 
@@ -570,31 +636,68 @@ export default {
       try {
         const res = await api.post("/online-requests/import");
 
-        this.importMessage = res.data.message || "Import completed.";
+        this.importMessage =
+          res.data && res.data.message ? res.data.message : "Import completed.";
+
+        sessionStorage.removeItem("dashboard");
 
         await this.fetchOnlineRequests();
         await this.fetchDashboard();
-
-        sessionStorage.removeItem("dashboard");
       } catch (error) {
         console.error("Error importing online requests:", error);
         this.error =
-          error.response?.data?.message || "Failed to import online requests.";
+          error.response && error.response.data && error.response.data.message
+            ? error.response.data.message
+            : "Failed to import online requests.";
       } finally {
         this.importingRequests = false;
       }
     },
 
- convertOnlineRequest(request) {
-  this.$router.push({
-    path: "/transactions/new",
-    query: {
-      customer_id: request.customer_id,
-      vehicle_id: request.vehicle_id,
-      request_id: request.id,
+    convertOnlineRequest(request) {
+      this.$router.push({
+        path: "/transactions/new",
+        query: {
+          customer_id: request.customer_id,
+          vehicle_id: request.vehicle_id,
+          request_id: request.id,
+        },
+      });
     },
-  });
-},
+
+    goToTransaction(id) {
+      this.$router.push("/transactions/" + id);
+    },
+
+    requestCustomerName(request) {
+      if (request.customer && request.customer.name) {
+        return request.customer.name;
+      }
+
+      return request.customer_name || request.name || "-";
+    },
+
+    requestVehiclePlate(request) {
+      if (request.vehicle && request.vehicle.license_plate) {
+        return request.vehicle.license_plate;
+      }
+
+      return request.license_plate || request.plate_number || "-";
+    },
+
+    requestVehicleText(request) {
+      const make =
+        request.vehicle && request.vehicle.make
+          ? request.vehicle.make
+          : request.vehicle_make || "";
+
+      const model =
+        request.vehicle && request.vehicle.model
+          ? request.vehicle.model
+          : request.vehicle_model || request.car_model || "";
+
+      return (make + " " + model).trim();
+    },
 
     formatMoney(value) {
       return Number(value || 0).toFixed(2);
@@ -609,31 +712,36 @@ export default {
       if (status === "receipt") return "badge-receipt";
       if (status === "invoice") return "badge-invoice";
       if (status === "quotation") return "badge-quotation";
-      return "empty-inline";
+      return "badge-muted";
     },
   },
 };
 </script>
 
 <style scoped>
-.dashboard-page {
-  padding-bottom: 42px;
+.main {
+  min-height: 100vh;
+  padding: 30px 38px 42px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.92), transparent 34%),
+    var(--bg);
 }
 
 /* HEADER */
 .dashboard-header {
+  max-width: 1380px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .dashboard-header h1 {
   margin: 0;
   font-size: 27px;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   color: #0f172a;
 }
 
@@ -642,16 +750,20 @@ export default {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 850;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: #748195;
 }
 
+.dashboard-meta span:nth-child(2) {
+  color: #c3cad5;
+}
+
 .dashboard-header p {
   margin: 7px 0 0;
-  font-size: 13.5px;
+  font-size: 13px;
   color: #8a96a8;
 }
 
@@ -664,6 +776,7 @@ export default {
 
 /* KPI STRIP */
 .metric-strip {
+  max-width: 1380px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-bottom: 14px;
@@ -674,9 +787,13 @@ export default {
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
 }
 
+.metric-strip.staff-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .metric-cell {
-  min-height: 96px;
-  padding: 16px 18px;
+  min-height: 92px;
+  padding: 15px 17px;
   border-right: 1px solid #e5eaf1;
 }
 
@@ -692,7 +809,7 @@ export default {
 }
 
 .metric-top span {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -717,7 +834,7 @@ export default {
 .metric-cell strong {
   display: block;
   margin-top: 11px;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 900;
   letter-spacing: -0.04em;
   color: #0f172a;
@@ -726,7 +843,7 @@ export default {
 
 .metric-cell p {
   margin: 7px 0 0;
-  font-size: 12.5px;
+  font-size: 12px;
   color: #8a96a8;
   line-height: 1.25;
 }
@@ -736,8 +853,14 @@ export default {
   font-weight: 750;
 }
 
+.mi-soft {
+  background: #f4f6f8;
+  color: #475569;
+}
+
 /* MAIN DASHBOARD GRID */
 .dashboard-grid-clean {
+  max-width: 1380px;
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr);
   gap: 14px;
@@ -746,26 +869,38 @@ export default {
 
 .dashboard-panel {
   min-width: 0;
+  overflow: hidden;
+}
+
+.dashboard-panel :deep(.card-header),
+.dashboard-panel :deep(.card-head) {
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.dashboard-panel :deep(.card-body),
+.dashboard-panel :deep(.card-content) {
+  padding-top: 0;
 }
 
 .panel-head {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 14px;
-  margin-bottom: 14px;
 }
 
 .panel-head h3 {
   margin: 0;
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 850;
   color: #0f172a;
 }
 
 .panel-head p {
   margin: 5px 0 0;
-  font-size: 12.5px;
+  font-size: 12px;
   color: #8a96a8;
   line-height: 1.35;
 }
@@ -775,8 +910,8 @@ export default {
   border: 0;
   background: transparent;
   padding: 0;
-  font-size: 12.5px;
-  font-weight: 750;
+  font-size: 12px;
+  font-weight: 800;
   color: #8a96a8;
   text-decoration: none;
   cursor: pointer;
@@ -806,7 +941,7 @@ export default {
 .mini-table th {
   padding: 11px 14px;
   background: #f5f7fa;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -849,13 +984,7 @@ export default {
   text-align: right;
 }
 
-.status-badge {
-  display: inline-flex !important;
-  width: fit-content;
-  margin: 0 !important;
-}
-
-/* EMPTY STATE */
+/* EMPTY */
 .dashboard-empty-state {
   min-height: 205px;
   border: 1px dashed #dfe5ee;
@@ -1001,7 +1130,7 @@ export default {
   color: #8a96a8;
 }
 
-/* ONLINE REQUESTS */
+/* REQUESTS */
 .request-list-clean {
   display: flex;
   flex-direction: column;
@@ -1020,13 +1149,10 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
 }
 
-.request-item-clean:hover {
-  background: #f8fafc;
-  transform: translateY(-1px);
+.request-copy {
+  min-width: 0;
 }
 
 .request-item-clean strong {
@@ -1041,6 +1167,13 @@ export default {
   color: #8a96a8;
 }
 
+.request-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
 .small-pill {
   height: 24px;
   padding: 0 10px;
@@ -1053,7 +1186,30 @@ export default {
   white-space: nowrap;
 }
 
-/* RECENT ACTIVITY */
+.convert-btn {
+  height: 25px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.import-message.compact {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 11.5px;
+  font-weight: 650;
+}
+
+/* ACTIVITY */
 .activity-panel {
   min-height: 245px;
 }
@@ -1087,12 +1243,18 @@ export default {
 
 .activity-dot.payment,
 .activity-dot.receipt,
-.activity-dot.success {
+.activity-dot.success,
+.activity-dot.dot-green {
   background: #16a34a;
 }
 
-.activity-dot.quotation {
+.activity-dot.quotation,
+.activity-dot.dot-amber {
   background: #f59e0b;
+}
+
+.activity-dot.dot-purple {
+  background: #7c3aed;
 }
 
 .activity-row-clean p {
@@ -1184,6 +1346,10 @@ export default {
 
 /* RESPONSIVE */
 @media (max-width: 1200px) {
+  .main {
+    padding: 30px 32px 40px;
+  }
+
   .dashboard-grid-clean {
     grid-template-columns: 1fr;
   }
@@ -1194,7 +1360,8 @@ export default {
 }
 
 @media (max-width: 900px) {
-  .metric-strip {
+  .metric-strip,
+  .metric-strip.staff-metrics {
     grid-template-columns: 1fr 1fr;
   }
 
@@ -1218,13 +1385,20 @@ export default {
     width: 100%;
   }
 
-  .dashboard-header-actions .btn {
+  .dashboard-header-actions .btn,
+  .dashboard-header-actions .link-btn {
     flex: 1;
+    justify-content: center;
   }
 }
 
 @media (max-width: 640px) {
+  .main {
+    padding: 24px 16px;
+  }
+
   .metric-strip,
+  .metric-strip.staff-metrics,
   .quick-grid-clean {
     grid-template-columns: 1fr;
   }
