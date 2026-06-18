@@ -259,129 +259,149 @@
             </div>
           </div>
 
-          <div v-else class="modal-card large">
-            <div class="modal-header">
-              <span>
-                {{ activePart.name }}
-                <span v-if="activePart.variant">— {{ activePart.variant }}</span>
-              </span>
-              <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+         <div v-else class="modal-card large">
+          <div class="modal-header detail-modal-header">
+            <div>
+              <div class="detail-modal-title-row">
+                <span>
+                  {{ activePart.name }}
+                  <span v-if="activePart.variant">— {{ activePart.variant }}</span>
+                </span>
+
+                <span
+                  class="type-badge"
+                  :class="activePart.is_generic ? 'info' : 'warning'"
+                >
+                  {{ activePart.is_generic ? "Generic" : "Specific" }}
+                </span>
+              </div>
+
+              <p class="detail-modal-subtitle">
+                Inventory details, stock level, pricing, and compatibility.
+              </p>
             </div>
 
-            <div class="modal-body modal-detail-body">
-              <div class="detail-section">
-                <div class="section-title">Part Information</div>
+            <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+          </div>
 
-                <div class="info-list">
-                  <div class="info-row">
-                    <div class="info-item">
-                      <span class="info-label">SKU</span>
-                      <span class="info-value">{{ activePart.sku || "-" }}</span>
-                    </div>
+          <div class="modal-body modal-detail-body">
+            <div class="detail-summary-grid">
+              <div class="detail-summary-cell">
+                <span>SKU</span>
+                <strong>{{ activePart.sku || "-" }}</strong>
+              </div>
 
-                    <div class="info-item">
-                      <span class="info-label">Type</span>
-                      <span class="info-value">
-                        {{ activePart.is_generic ? "Generic" : "Vehicle Specific" }}
-                      </span>
-                    </div>
-                  </div>
+              <div class="detail-summary-cell">
+                <span>Type</span>
+                <strong>
+                  {{ activePart.is_generic ? "Generic" : "Vehicle Specific" }}
+                </strong>
+              </div>
 
-                  <div class="info-row">
-                    <div class="info-item">
-                      <span class="info-label">Cost Price</span>
-                      <span class="info-value">
-                        RM {{ formatMoney(activePart.cost_price) }}
-                      </span>
-                    </div>
+              <div class="detail-summary-cell">
+                <span>Cost Price</span>
+                <strong>RM {{ formatMoney(activePart.cost_price) }}</strong>
+              </div>
 
-                    <div class="info-item">
-                      <span class="info-label">Selling Price</span>
-                      <span class="info-value">
-                        RM {{ formatMoney(activePart.selling_price) }}
-                      </span>
-                    </div>
-                  </div>
+              <div class="detail-summary-cell">
+                <span>Selling Price</span>
+                <strong>RM {{ formatMoney(activePart.selling_price) }}</strong>
+              </div>
 
-                  <div class="info-row">
-                    <div class="info-item">
-                      <span class="info-label">Stock</span>
-                      <span :class="['info-value', stockClass(activePart)]">
-                        {{ activePart.stock }} left
-                      </span>
-                    </div>
+              <div class="detail-summary-cell">
+                <span>Stock</span>
+                <strong :class="stockClass(activePart)">
+                  {{ activePart.stock }} left
+                </strong>
+              </div>
 
-                    <div class="info-item">
-                      <span class="info-label">Minimum Stock</span>
-                      <span class="info-value">
-                        {{ activePart.min_stock_threshold }}
-                      </span>
-                    </div>
-                  </div>
+              <div class="detail-summary-cell">
+                <span>Minimum Stock</span>
+                <strong>{{ activePart.min_stock_threshold }}</strong>
+              </div>
+            </div>
 
-                  <div class="info-row last">
-                    <div class="info-item full">
-                      <span class="info-label">Description</span>
-                      <span class="info-value">
-                        {{ activePart.description || "-" }}
-                      </span>
-                    </div>
-                  </div>
+            <div class="detail-section-card">
+              <div class="detail-section-title">Description</div>
+              <p class="detail-description">
+                {{ activePart.description || "No description provided." }}
+              </p>
+            </div>
+
+            <div class="detail-section-card">
+              <div class="detail-section-title">Compatibility</div>
+
+              <div v-if="activePart.is_generic" class="setup-panel compact">
+                <div class="setup-icon">
+                  <svg viewBox="0 0 24 24" class="setup-svg">
+                    <path d="M4 17h16" />
+                    <path d="M6 17l1.3-5.2A3 3 0 0 1 10.2 9h3.6a3 3 0 0 1 2.9 2.8L18 17" />
+                    <path d="M7 17v2" />
+                    <path d="M17 17v2" />
+                    <path d="M9 13h6" />
+                  </svg>
+                </div>
+
+                <div class="setup-content">
+                  <strong>Compatible with all vehicles</strong>
+                  <p>This generic part can be selected for any customer vehicle.</p>
                 </div>
               </div>
 
-              <div class="detail-section">
-                <div class="section-title">Compatibility</div>
-
-                <div v-if="activePart.is_generic" class="empty-small">
-                  This part is generic and can be used for all vehicles.
-                </div>
-
+              <div
+                v-else-if="activePart.compatibilities && activePart.compatibilities.length > 0"
+                class="detail-card-list"
+              >
                 <div
-                  v-else-if="activePart.compatibilities && activePart.compatibilities.length > 0"
+                  v-for="compat in activePart.compatibilities"
+                  :key="compat.id"
+                  class="detail-list-card"
                 >
-                  <div
-                    v-for="compat in activePart.compatibilities"
-                    :key="compat.id"
-                    class="detail-list-item"
-                  >
-                    <div>
-                      <div class="item-name">
-                        {{ compat.make || "-" }} {{ compat.model || "" }}
-                      </div>
-                      <small>
-                        Year:
-                        {{
-                          compat.year_from || compat.year_to
-                            ? `${compat.year_from || "-"} to ${compat.year_to || "-"}`
-                            : "All years"
-                        }}
-                      </small>
-                    </div>
+                  <div class="detail-list-title">
+                    {{ compat.make || "-" }} {{ compat.model || "" }}
+                  </div>
+
+                  <div class="detail-list-meta">
+                    Year:
+                    {{
+                      compat.year_from || compat.year_to
+                        ? `${compat.year_from || "-"} to ${compat.year_to || "-"}`
+                        : "All years"
+                    }}
                   </div>
                 </div>
-
-                <div v-else class="empty-small">
-                  No compatibility rows found.
-                </div>
               </div>
-            </div>
 
-            <div class="modal-footer split">
-              <div class="left-actions">
-                <router-link
-                  :to="`/inventory/${activePart.id}/edit`"
-                  class="btn btn-secondary btn-pill"
-                >
-                  Edit
-                </router-link>
+              <div v-else class="setup-panel compact">
+                <div class="setup-icon">
+                  <svg viewBox="0 0 24 24" class="setup-svg">
+                    <path d="M12 9v4" />
+                    <path d="M12 17h.01" />
+                    <path d="M10.3 4.3L2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" />
+                  </svg>
+                </div>
 
-                <button class="btn btn-primary btn-pill" @click="openRestockModal">
-                  Restock
-                </button>
+                <div class="setup-content">
+                  <strong>No compatibility found</strong>
+                  <p>This specific part does not have any vehicle compatibility rule yet.</p>
+                </div>
               </div>
             </div>
           </div>
+
+          <div class="modal-footer modal-footer-actions">
+            <router-link
+              :to="`/inventory/${activePart.id}/edit`"
+              class="btn btn-secondary btn-pill"
+            >
+              Edit
+            </router-link>
+
+            <button class="btn btn-primary btn-pill" @click="openRestockModal">
+              Restock
+            </button>
+          </div>
+        </div>
         </div>
       </Teleport>
 
