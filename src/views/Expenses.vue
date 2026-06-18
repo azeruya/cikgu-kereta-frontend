@@ -1185,7 +1185,11 @@ export default {
   padding: 13px 14px;
   border-bottom: 1px solid #e5eaf1;
   background: transparent;
+  display: flex;
   border-radius: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
 }
 
 .trend-row:last-child {
