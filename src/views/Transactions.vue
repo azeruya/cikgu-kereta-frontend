@@ -173,70 +173,88 @@
 
       <!-- PAYMENT MODAL -->
       <Teleport to="body">
-        <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
-          <div class="modal-card large form-modal-card">
-            <div class="modal-header">
-              <span>Record Payment</span>
-              <button type="button" class="btn btn-sm btn-ghost" @click="closePaymentModal">✕</button>
+        <div
+          v-if="showPaymentModal"
+          class="modal"
+          @click.self="closePaymentModal"
+        >
+          <div class="modal-card action-modal-card payment-action-card">
+            <div class="action-modal-header">
+              <div>
+                <div class="action-modal-title">Record payment</div>
+                <p class="action-modal-subtitle">
+                  Add payment for
+                  <strong>{{ paymentTransactionDocNo || "this transaction" }}</strong>.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-sm btn-ghost"
+                @click="closePaymentModal"
+              >
+                ✕
+              </button>
             </div>
 
-            <div class="modal-body form-modal-body">
-  <div class="form-data-panel">
-    <div class="form-data-header">
-      <span>{{ paymentTransactionDocNo }}</span>
-    </div>
+            <div class="action-modal-body">
+              <div class="action-summary-box">
+                <div class="action-summary-row">
+                  <span>Amount due</span>
+                  <strong>RM {{ formatMoney(paymentTransactionTotal) }}</strong>
+                </div>
+              </div>
 
-    <div class="payment-panel-content">
-      <div class="summary-highlight">
-        <span>Amount due</span>
-        <strong>RM {{ formatMoney(paymentTransactionTotal) }}</strong>
-      </div>
+              <div class="form-grid form-grid-compact">
+                <div class="form-field">
+                  <label>Amount Paid</label>
+                  <input
+                    v-model.number="paymentForm.amount_paid"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
 
-      <div class="form-grid form-grid-compact">
-        <div class="form-field">
-          <label>Amount Paid</label>
-          <input
-            v-model.number="paymentForm.amount_paid"
-            type="number"
-            min="0"
-            step="0.01"
-          />
-        </div>
+                <div class="form-field">
+                  <label>Payment Method</label>
+                  <select v-model="paymentForm.payment_method">
+                    <option value="cash">Cash</option>
+                    <option value="bank_transfer">Bank Transfer</option>
+                    <option value="card">Card</option>
+                    <option value="ewallet">E-wallet</option>
+                  </select>
+                </div>
 
-        <div class="form-field">
-          <label>Payment Method</label>
-          <select v-model="paymentForm.payment_method">
-            <option value="cash">Cash</option>
-            <option value="bank_transfer">Bank Transfer</option>
-            <option value="card">Card</option>
-            <option value="ewallet">E-wallet</option>
-          </select>
-        </div>
+                <div class="form-field">
+                  <label>Payment Reference</label>
+                  <input
+                    v-model="paymentForm.payment_reference"
+                    type="text"
+                    placeholder="Optional reference"
+                  />
+                </div>
 
-        <div class="form-field">
-          <label>Payment Reference</label>
-          <input
-            v-model="paymentForm.payment_reference"
-            type="text"
-            placeholder="Optional reference"
-          />
-        </div>
+                <div class="form-field">
+                  <label>Payment Date</label>
+                  <input v-model="paymentForm.payment_date" type="date" />
+                </div>
+              </div>
 
-        <div class="form-field">
-          <label>Payment Date</label>
-          <input v-model="paymentForm.payment_date" type="date" />
-        </div>
-      </div>
-    </div>
-  </div>
+              <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
+                {{ paymentFormError }}
+              </div>
+            </div>
 
-  <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
-    {{ paymentFormError }}
-  </div>
-</div>
+            <div class="action-modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary btn-pill"
+                @click="closePaymentModal"
+              >
+                Cancel
+              </button>
 
-            <div class="modal-footer form-actions">
-              <button type="button" class="btn btn-secondary btn-pill" @click="closePaymentModal">Cancel</button>
               <button
                 type="button"
                 class="btn btn-primary btn-pill"
@@ -254,23 +272,46 @@
       <Teleport to="body">
         <div
           v-if="showConfirmQuotationModal"
-          class="modal-overlay"
+          class="modal"
           @click.self="closeConfirmQuotationModal"
         >
-          <div class="confirm-card">
-            <div class="confirm-icon confirm-icon-success">✓</div>
+          <div class="modal-card action-modal-card">
+            <div class="action-modal-header">
+              <div>
+                <div class="action-modal-title">Confirm quotation?</div>
+                <p class="action-modal-subtitle">
+                  Convert this quotation into an invoice.
+                </p>
+              </div>
 
-            <div class="confirm-title">Confirm quotation?</div>
-
-            <div class="confirm-message">
-              This will convert
-              <strong>{{ quotationToConfirm?.document_number || "this quotation" }}</strong>
-              for
-              <strong>{{ quotationToConfirm?.customer?.name || "this customer" }}</strong>
-              into an invoice.
+              <button
+                type="button"
+                class="btn btn-sm btn-ghost"
+                @click="closeConfirmQuotationModal"
+              >
+                ✕
+              </button>
             </div>
 
-            <div class="confirm-actions">
+            <div class="action-modal-body">
+              <div class="action-summary-box">
+                <div class="action-summary-row">
+                  <span>Document no.</span>
+                  <strong>{{ quotationToConfirm?.document_number || "-" }}</strong>
+                </div>
+
+                <div class="action-summary-row">
+                  <span>Customer</span>
+                  <strong>{{ quotationToConfirm?.customer?.name || "-" }}</strong>
+                </div>
+              </div>
+
+              <p class="action-helper-text">
+                Once confirmed, this quotation will become an invoice and can be used for payment tracking.
+              </p>
+            </div>
+
+            <div class="action-modal-footer">
               <button
                 type="button"
                 class="btn btn-secondary btn-pill"
@@ -282,7 +323,7 @@
 
               <button
                 type="button"
-                class="btn btn-success btn-pill"
+                class="btn btn-primary btn-pill"
                 :disabled="actionLoadingId === quotationToConfirm?.id"
                 @click="submitConfirmQuotation"
               >

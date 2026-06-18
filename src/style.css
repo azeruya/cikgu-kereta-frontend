@@ -3349,6 +3349,13 @@ th.center {
   text-align: right;
 }
 
+.action-helper-text {
+  margin: 0;
+  font-size: 12.8px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
 .action-modal-footer {
   padding: 13px 24px 18px;
   border-top: 1px solid #e5eaf1;
