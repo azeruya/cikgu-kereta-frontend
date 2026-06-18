@@ -64,40 +64,40 @@
 
                 <div class="overview-cell">
                   <span>Created At</span>
-                  <strong>{{ formatDateTime(transaction.created_at) }}</strong>
+                  <div class="overview-value">{{ formatDateTime(transaction.created_at) }}</div>
                 </div>
 
                 <div class="overview-cell">
                   <span>Customer</span>
-                  <strong>{{ transaction.customer?.name || "-" }}</strong>
+                  <div class="overview-value">{{ transaction.customer?.name || "-" }}</div>
                 </div>
 
                 <div class="overview-cell">
                   <span>Phone</span>
-                  <strong>{{ transaction.customer?.phone || "-" }}</strong>
+                  <div class="overview-value">{{ transaction.customer?.phone || "-" }}</div>
                 </div>
 
                 <div class="overview-cell">
                   <span>Vehicle</span>
-                  <strong>{{ transaction.vehicle?.license_plate || "-" }}</strong>
+                  <div class="overview-value">{{ transaction.vehicle?.license_plate || "-" }}</div>
                 </div>
 
                 <div class="overview-cell">
                   <span>Make / Model</span>
-                  <strong>
+                  <div class="overview-value">
                     {{ transaction.vehicle?.make || "-" }}
                     {{ transaction.vehicle?.model || "" }}
-                  </strong>
+                  </div>
                 </div>
 
                 <div class="overview-cell">
                   <span>Year</span>
-                  <strong>{{ transaction.vehicle?.year || "-" }}</strong>
+                  <div class="overview-value">{{ transaction.vehicle?.year || "-" }}</div>
                 </div>
 
                 <div class="overview-cell notes-cell">
                   <span>Notes</span>
-                  <strong>{{ transaction.notes || "-" }}</strong>
+                  <div class="overview-value">{{ transaction.notes || "-" }}</div>
                 </div>
               </div>
             </Card>
@@ -910,10 +910,11 @@ export default {
   color: #8a96a8;
 }
 
-.overview-cell strong {
+.overview-cell strong,
+.overview-value {
   display: block;
   font-size: 13px;
-  font-weight: 680;
+  font-weight: 650;
   color: #0f172a;
   line-height: 1.35;
   word-break: break-word;
@@ -922,6 +923,11 @@ export default {
 .overview-cell.important strong {
   font-weight: 820;
   letter-spacing: -0.01em;
+}
+
+.overview-note {
+  font-weight: 620;
+  color: #1e293b;
 }
 
 .notes-cell strong {
