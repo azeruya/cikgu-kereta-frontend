@@ -145,118 +145,160 @@
           </div>
 
           <div v-else class="modal-card large">
-            <div class="modal-header">
-              <span>{{ activeCustomer.name }}</span>
+            <div class="modal-header detail-modal-header">
+              <div>
+                <div class="detail-modal-title-row">
+                  <span>{{ activeCustomer.name }}</span>
+
+                  <span
+                    v-if="activeCustomer.transactions_count > 0"
+                    class="type-badge success"
+                  >
+                    Existing Customer
+                  </span>
+                </div>
+
+                <p class="detail-modal-subtitle">
+                  Customer contact details, vehicles, and recent workshop transactions.
+                </p>
+              </div>
+
               <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
             </div>
 
             <div class="modal-body modal-detail-body">
-              <!-- CUSTOMER INFO -->
-              <div class="detail-section customer-info-section">
-              <div class="section-title">Customer Information</div>
-
-             <div class="info-list">
-                <div class="info-row">
-                  <div class="info-item">
-                    <span class="info-label">Phone</span>
-                    <span class="info-value">{{ activeCustomer.phone || "-" }}</span>
-                  </div>
-
-                  <div class="info-item">
-                    <span class="info-label">Email</span>
-                    <span class="info-value">{{ activeCustomer.email || "-" }}</span>
-                  </div>
+              <div class="part-kpi-grid">
+                <div class="part-kpi-card">
+                  <span>Total Visits</span>
+                  <strong>{{ activeCustomer.transactions_count || 0 }}</strong>
                 </div>
 
-                <div class="info-row">
-                  <div class="info-item">
-                    <span class="info-label">Address</span>
-                    <span class="info-value">{{ activeCustomer.address || "-" }}</span>
-                  </div>
-
-                  <div class="info-item">
-                    <span class="info-label">Total Visits</span>
-                    <span class="info-value">{{ activeCustomer.transactions_count || 0 }}</span>
-                  </div>
+                <div class="part-kpi-card">
+                  <span>Total Spent</span>
+                  <strong>RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}</strong>
                 </div>
 
-                <div class="info-row">
-                  <div class="info-item">
-                    <span class="info-label">Total Spent</span>
-                    <span class="info-value">
-                      RM {{ formatMoney(activeCustomer.transactions_sum_total_amount) }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-          </div>
-
-            <!-- VEHICLES -->
-            <div class="detail-section">
-              <div class="section-title">Vehicles</div>
-
-              <div
-                v-for="vehicle in activeCustomer.vehicles || []"
-                :key="vehicle.id"
-                class="detail-list-item"
-              >
-                <div>
-                  <div class="item-name">{{ vehicle.license_plate }}</div>
-                  <small>
-                    {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
-                    <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
-                  </small>
+                <div class="part-kpi-card">
+                  <span>Vehicles</span>
+                  <strong>{{ activeCustomer.vehicles?.length || 0 }}</strong>
                 </div>
               </div>
 
-              <div
-                v-if="!activeCustomer.vehicles || activeCustomer.vehicles.length === 0"
-                class="empty-small"
-              >
-                No vehicles found
+              <div class="detail-section-card">
+                <div class="detail-section-title">Customer Information</div>
+
+                <div class="compact-detail-list">
+                  <div class="compact-detail-row">
+                    <span>Phone</span>
+                    <strong>{{ activeCustomer.phone || "-" }}</strong>
+                  </div>
+
+                  <div class="compact-detail-row">
+                    <span>Email</span>
+                    <strong>{{ activeCustomer.email || "-" }}</strong>
+                  </div>
+
+                  <div class="compact-detail-row">
+                    <span>Address</span>
+                    <strong>{{ activeCustomer.address || "-" }}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-section-card">
+                <div class="detail-section-title">Vehicles</div>
+
+                <div
+                  v-if="activeCustomer.vehicles && activeCustomer.vehicles.length > 0"
+                  class="detail-card-list"
+                >
+                  <div
+                    v-for="vehicle in activeCustomer.vehicles"
+                    :key="vehicle.id"
+                    class="detail-list-card"
+                  >
+                    <div class="detail-list-title">
+                      {{ vehicle.license_plate || "-" }}
+                    </div>
+
+                    <div class="detail-list-meta">
+                      {{ vehicle.make || "-" }} {{ vehicle.model || "" }}
+                      <span v-if="vehicle.year"> · {{ vehicle.year }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-else class="empty-small">
+                  No vehicles found
+                </div>
+              </div>
+
+              <div class="detail-section-card">
+                <div class="detail-section-title">Recent Transactions</div>
+
+                <div
+                  v-if="activeCustomer.transactions && activeCustomer.transactions.length > 0"
+                  class="detail-card-list"
+                >
+                  <div
+                    v-for="trx in activeCustomer.transactions"
+                    :key="trx.id"
+                    class="detail-list-card customer-trx-card"
+                  >
+                    <div>
+                      <div class="detail-list-title">
+                        {{ trx.document_number || "-" }}
+                      </div>
+
+                      <div class="detail-list-meta">
+                        {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
+                      </div>
+                    </div>
+
+                    <strong class="customer-trx-amount">
+                      RM {{ formatMoney(trx.total_amount) }}
+                    </strong>
+                  </div>
+                </div>
+
+                <div v-else class="empty-small">
+                  No recent transactions
+                </div>
               </div>
             </div>
 
-            <!-- RECENT TRANSACTIONS -->
-            <div class="detail-section">
-              <div class="section-title">Recent Transactions</div>
+            <div class="modal-footer customer-detail-footer">
+              <div class="customer-detail-actions">
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-pill"
+                  @click="openWhatsApp(activeCustomer)"
+                >
+                  WhatsApp
+                </button>
 
-              <div
-                v-for="trx in activeCustomer.transactions || []"
-                :key="trx.id"
-                class="detail-list-item"
-              >
-                <div>
-                  <div class="item-name">{{ trx.document_number || "-" }}</div>
-                  <small>
-                    {{ trx.vehicle?.license_plate || "-" }} · {{ trx.status || "-" }}
-                  </small>
-                </div>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-pill"
+                  @click="openFormModal(activeCustomer)"
+                >
+                  Edit
+                </button>
 
-                <div class="job-price">
-                  RM {{ formatMoney(trx.total_amount) }}
-                </div>
-              </div>
-
-              <div
-                v-if="!activeCustomer.transactions || activeCustomer.transactions.length === 0"
-                class="empty-small"
-              >
-                No recent transactions
-              </div>
-            </div>
-            </div>  
-
-            <div class="modal-footer split">
-              <div class="left-actions">
-                <button @click="openWhatsApp(activeCustomer)" class="btn btn-secondary btn-pill">WhatsApp</button>
-                <button @click="openFormModal(activeCustomer)" class="btn btn-secondary btn-pill">Edit</button>
-                <button class="btn btn-primary btn-pill" @click="viewCustomerTransactions(activeCustomer)">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-pill"
+                  @click="viewCustomerTransactions(activeCustomer)"
+                >
                   View Transactions
                 </button>
               </div>
 
-              <button class="btn btn-danger-light btn-pill" @click="openDeleteModal(activeCustomer)">
+              <button
+                type="button"
+                class="btn btn-danger-light btn-pill"
+                @click="openDeleteModal(activeCustomer)"
+              >
                 Delete
               </button>
             </div>
@@ -272,92 +314,126 @@
 
   <!-- DELETE CONFIRMATION MODAL -->
   <Teleport to="body">
-  <div
-    v-if="showDeleteModal"
-    class="modal-overlay"
-    @click.self="closeDeleteModal"
-  >
-    <div class="confirm-card">
-      <div class="confirm-icon confirm-icon-danger">!</div>
+    <div
+      v-if="showDeleteModal"
+      class="modal"
+      @click.self="closeDeleteModal"
+    >
+      <div class="modal-card danger-confirm-card">
+        <div class="danger-confirm-body">
+          <div class="danger-confirm-icon">!</div>
 
-      <div class="confirm-title">
-        Delete customer?
-      </div>
+          <div class="danger-confirm-title">Delete customer?</div>
 
-      <div class="confirm-message">
-        Are you sure you want to delete
-        <strong>{{ customerToDelete?.name }}</strong>?
-        This action cannot be undone.
-      </div>
+          <div class="danger-confirm-message">
+            Are you sure you want to delete
+            <strong>{{ customerToDelete?.name || "this customer" }}</strong>?
+            This action cannot be undone.
+          </div>
+        </div>
 
-      <div class="confirm-actions">
-        <button
-          type="button"
-          class="btn btn-secondary btn-pill"
-          :disabled="deletingCustomer"
-          @click="closeDeleteModal"
-        >
-          Cancel
-        </button>
+        <div class="danger-confirm-footer">
+          <button
+            type="button"
+            class="btn btn-secondary btn-pill"
+            :disabled="deletingCustomer"
+            @click="closeDeleteModal"
+          >
+            Cancel
+          </button>
 
-        <button
-          type="button"
-          class="btn btn-danger btn-pill"
-          :disabled="deletingCustomer"
-          @click="confirmDeleteCustomer"
-        >
-          {{ deletingCustomer ? "Deleting..." : "Delete" }}
-        </button>
+          <button
+            type="button"
+            class="btn btn-danger btn-pill"
+            :disabled="deletingCustomer"
+            @click="confirmDeleteCustomer"
+          >
+            {{ deletingCustomer ? "Deleting..." : "Delete" }}
+          </button>
+        </div>
       </div>
     </div>
-  </div>
   </Teleport>
 
   <!-- ADD/EDIT CUSTOMER FORM MODAL -->
   <Teleport to="body">
     <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
-      <div class="modal-card large form-modal-card">
-        <div class="modal-header">
-          <span>{{ editingCustomerId ? "Edit Customer" : "Add Customer" }}</span>
-          <button type="button" class="btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
+      <div class="modal-card form-dialog-card">
+        <div class="form-dialog-header">
+          <div>
+            <div class="form-dialog-title">
+              {{ editingCustomerId ? "Edit customer" : "Add customer" }}
+            </div>
+
+            <p class="form-dialog-subtitle">
+              {{ editingCustomerId ? "Update customer contact information." : "Create a new customer profile for workshop transactions." }}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost"
+            @click="closeFormModal"
+          >
+            ✕
+          </button>
         </div>
 
-        <div class="modal-body form-modal-body">
-          <div class="form-grid">
-            <div class="form-field">
-              <label>Name</label>
-              <input v-model="form.name" type="text" placeholder="Customer name" />
-            </div>
+        <div class="form-dialog-body">
+          <div class="form-dialog-section">
+            <div class="form-dialog-section-title">Customer Information</div>
 
-            <div class="form-field">
-              <label>Phone</label>
-              <input v-model="form.phone" type="text" placeholder="Phone number" />
-            </div>
+            <div class="form-grid form-grid-compact">
+              <div class="form-field">
+                <label>Name</label>
+                <input
+                  v-model="form.name"
+                  type="text"
+                  placeholder="Customer name"
+                />
+              </div>
 
-            <div class="form-field">
-              <label>Email</label>
-              <input v-model="form.email" type="email" placeholder="Email address" />
-            </div>
+              <div class="form-field">
+                <label>Phone</label>
+                <input
+                  v-model="form.phone"
+                  type="text"
+                  placeholder="Phone number"
+                />
+              </div>
 
-            <div class="form-field full">
-              <label>Address</label>
-              <textarea
-                v-model="form.address"
-                rows="3"
-                placeholder="Customer address"
-              ></textarea>
+              <div class="form-field">
+                <label>Email</label>
+                <input
+                  v-model="form.email"
+                  type="email"
+                  placeholder="Email address"
+                />
+              </div>
+
+              <div class="form-field full">
+                <label>Address</label>
+                <textarea
+                  v-model="form.address"
+                  rows="3"
+                  placeholder="Customer address"
+                ></textarea>
+              </div>
             </div>
           </div>
 
-          <div v-if="!editingCustomerId" class="form-subsection">
-            <div class="section-title">Vehicle Information</div>
+          <div v-if="!editingCustomerId" class="form-dialog-section customer-vehicle-section">
+            <div class="form-dialog-section-title">Vehicle Information</div>
 
             <label class="checkbox-row">
               <input v-model="form.add_vehicle" type="checkbox" />
               <span>Add vehicle now</span>
             </label>
 
-            <div v-if="form.add_vehicle" class="form-grid" style="margin-top:12px;">
+            <div
+              v-if="form.add_vehicle"
+              class="form-grid form-grid-compact vehicle-form-grid"
+            >
               <div class="form-field">
                 <label>License Plate</label>
                 <input
@@ -398,20 +474,32 @@
             </div>
           </div>
 
-          <div v-if="formError" class="page-error" style="margin-top:12px;">
+          <div
+            v-if="formError"
+            class="page-error"
+            style="margin-top: 12px;"
+          >
             {{ formError }}
           </div>
         </div>
 
-        <div class="modal-footer form-actions">
-          <button type="button" class="btn btn-secondary btn-pill" @click="closeFormModal">Cancel</button>
+        <div class="form-dialog-footer">
+          <button
+            type="button"
+            class="btn btn-secondary btn-pill"
+            :disabled="savingForm"
+            @click="closeFormModal"
+          >
+            Cancel
+          </button>
+
           <button
             type="button"
             class="btn btn-primary btn-pill"
             :disabled="savingForm"
             @click="submitCustomer"
           >
-            {{ savingForm ? "Saving..." : (editingCustomerId ? "Update" : "Create") }}
+            {{ savingForm ? "Saving..." : editingCustomerId ? "Update" : "Create" }}
           </button>
         </div>
       </div>
