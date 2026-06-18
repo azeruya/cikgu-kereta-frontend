@@ -1366,6 +1366,62 @@ export default {
 /* ================================
    SUMMARY
 ================================ */
+.sticky-summary-card {
+  min-height: 220px;
+}
+
+.summary-box {
+  padding: 0;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.summary-helper {
+  padding: 11px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  background: #ffffff;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #8a96a8;
+}
+
+.summary-box-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 14px;
+  font-size: 13px;
+  color: #526173;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.summary-box-row strong {
+  font-size: 13.5px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.summary-box-total {
+  background: #ffffff;
+  border-bottom: none;
+}
+
+.summary-box-total span,
+.summary-box-total strong {
+  font-size: 14px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.summary-actions {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+}
 
 .summary-discount-row {
   padding: 10px 14px 12px;
