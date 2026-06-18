@@ -234,9 +234,10 @@
 
             <!-- LOW STOCK COMPACT -->
             <div class="ops-section low-stock-section-clean">
-              <div class="ops-section-header compact">
+              <div class="low-stock-clean-head">
                 <div>
                   <div class="ops-section-title">Low stock alerts</div>
+
                   <p>
                     {{ lowStockItems.length }}
                     {{ lowStockItems.length === 1 ? "item needs" : "items need" }}
@@ -246,25 +247,25 @@
 
                 <span
                   v-if="summary.critical_stock_count > 0"
-                  class="critical-badge"
+                  class="critical-count-pill"
                 >
                   {{ summary.critical_stock_count }} critical
                 </span>
               </div>
 
-              <div v-if="lowStockItems.length > 0" class="stock-chip-list clean">
+              <div v-if="lowStockItems.length > 0" class="low-stock-chip-area">
                 <span
                   v-for="item in lowStockItems.slice(0, 4)"
                   :key="item.id"
-                  class="stock-name-chip"
-                  :class="{ critical: item.level === 'critical' }"
+                  class="low-stock-name-chip"
+                  :class="{ danger: item.level === 'critical' }"
                 >
                   {{ item.name }}
                 </span>
 
                 <span
                   v-if="lowStockItems.length > 4"
-                  class="stock-name-chip more-chip"
+                  class="low-stock-name-chip muted"
                 >
                   +{{ lowStockItems.length - 4 }} more
                 </span>
@@ -274,7 +275,7 @@
                 Stock levels look okay.
               </div>
 
-              <router-link to="/inventory" class="inline-action-link">
+              <router-link to="/inventory" class="low-stock-link">
                 View inventory →
               </router-link>
             </div>
@@ -1106,11 +1107,6 @@ export default {
   line-height: 1.35;
 }
 
-.operations-panel {
-  position: sticky;
-  top: 28px;
-}
-
 .ops-section {
   padding: 12px;
   border: 1px solid #e1e7ef;
@@ -1217,68 +1213,6 @@ export default {
 }
 
 /* LOW STOCK */
-.stock-summary-card {
-  padding: 11px 12px;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background: #ffffff;
-}
-
-.stock-summary-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.stock-summary-card strong {
-  font-size: 13.2px;
-  font-weight: 850;
-  color: #0f172a;
-}
-
-.stock-summary-card p {
-  margin: 4px 0 0;
-  font-size: 12px;
-  font-weight: 650;
-  color: #8a96a8;
-}
-
-.stock-extra-line {
-  margin-top: 9px;
-  padding-top: 9px;
-  border-top: 1px solid #edf1f6;
-  font-size: 11.8px;
-  font-weight: 700;
-  color: #64748b;
-}
-
-.stock-chip {
-  max-width: 100%;
-  height: 27px;
-  padding: 0 10px;
-  border-radius: 999px;
-  border: 1px solid #e1e7ef;
-  background: #ffffff;
-  color: #475569;
-  display: inline-flex;
-  align-items: center;
-  font-size: 11.5px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.stock-chip.critical {
-  color: #dc2626;
-  background: #fff7f7;
-  border-color: #fecaca;
-}
-
-.stock-chip.muted {
-  color: #8a96a8;
-  background: #f5f7fa;
-}
-
 .attention-pill {
   height: 25px;
   padding: 0 10px;
@@ -1303,13 +1237,6 @@ export default {
   border: 1px solid #fed7aa;
 }
 
-.attention-btn {
-  width: 100%;
-  height: 34px;
-  margin-top: 10px;
-  justify-content: center;
-}
-
 .attention-empty {
   padding: 12px;
   border-radius: 12px;
@@ -1317,13 +1244,6 @@ export default {
   border: 1px dashed #dfe5ee;
   font-size: 12.5px;
   color: #8a96a8;
-}
-
-.ops-full-btn {
-  width: 100%;
-  height: 34px;
-  margin-top: 11px;
-  justify-content: center;
 }
 
 .attention-empty.compact {
@@ -1490,16 +1410,16 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
+  gap: 16px;
 }
 
 .subtle-link {
-  font-size: 13px;
-  font-weight: 700;
-  color: #7c8aa5;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #8a96a8;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.18s ease;
 }
 
 .subtle-link:hover {
@@ -1525,75 +1445,103 @@ export default {
   line-height: 1.35;
 }
 
-.critical-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
+.dashboard-right {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.operations-panel,
+.requests-panel {
+  position: static;
+  min-height: auto;
+}
+
+/* =========================================================
+   LOW STOCK CLEAN SUMMARY
+========================================================= */
+
+.low-stock-section-clean {
+  padding: 12px;
+}
+
+.low-stock-clean-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.low-stock-clean-head p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #8a96a8;
+  line-height: 1.35;
+}
+
+.critical-count-pill {
+  height: 25px;
   padding: 0 10px;
   border-radius: 999px;
   border: 1px solid #fecaca;
   background: #fff5f5;
   color: #dc2626;
-  font-size: 11.5px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.stock-chip-list.clean {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.stock-name-chip {
   display: inline-flex;
   align-items: center;
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: #f6f8fb;
-  border: 1px solid #e2e8f0;
-  color: #475569;
-  font-size: 11.5px;
-  font-weight: 700;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 850;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.stock-name-chip.critical {
-  background: #fff7f7;
+.low-stock-chip-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 8px 0 10px;
+}
+
+.low-stock-name-chip {
+  min-height: 25px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  max-width: 100%;
+}
+
+.low-stock-name-chip.danger {
   border-color: #fecaca;
+  background: #fffafa;
   color: #dc2626;
 }
 
-.stock-name-chip.more-chip {
+.low-stock-name-chip.muted {
+  background: #f6f8fb;
   color: #94a3b8;
 }
 
-.inline-action-link {
+.low-stock-link {
   display: inline-flex;
   align-items: center;
   margin-top: 2px;
-  font-size: 12.5px;
-  font-weight: 700;
+  font-size: 12.3px;
+  font-weight: 800;
   color: #64748b;
   text-decoration: none;
 }
 
-.inline-action-link:hover {
+.low-stock-link:hover {
   color: #0f172a;
-}
-
-.dashboard-right {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.operations-panel,
-.requests-panel {
-  min-height: auto;
 }
 
 /* =========================================================
