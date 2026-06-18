@@ -1165,15 +1165,14 @@ export default {
 }
 
 .payment-due-panel span {
-  font-size: 12.5px;
-  color: #64748b;
+  font-size: 12px;
   font-weight: 700;
+  color: #64748b;
 }
 
 .payment-due-panel strong {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 850;
-  color: #0f172a;
 }
 
 /* ================================

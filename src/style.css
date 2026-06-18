@@ -379,15 +379,13 @@ a {
 }
 
 .btn-ghost {
-  background: #ffffff;
-  color: var(--text-soft);
-  border-color: var(--border);
+  border-color: #e5eaf1;
+  color: #64748b;
 }
 
 .btn-ghost:hover {
-  background: var(--surface-soft);
-  color: var(--text);
-  border-color: var(--border-strong);
+  background: #f8fafc;
+  color: #0f172a;
 }
 
 .btn-link {
