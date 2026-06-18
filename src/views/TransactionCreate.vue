@@ -173,8 +173,12 @@
               </button>
             </template>
 
-            <div v-if="form.items.length === 0" class="empty-box">
-              No items added yet. Add a compatible part or service to begin.
+            <div v-if="form.items.length === 0" class="empty-box empty-box-horizontal">
+              <div class="empty-icon">＋</div>
+              <div>
+                <strong>No items added yet</strong>
+                <p>Add a compatible part or service to begin.</p>
+              </div>
             </div>
 
             <div v-else class="items-list">
@@ -1009,7 +1013,7 @@ export default {
 
 .transaction-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 330px;
   gap: 18px;
   align-items: start;
 }
@@ -1059,5 +1063,289 @@ export default {
   .create-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.empty-box {
+  min-height: 86px;
+  border: 1px dashed #d8dee8;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #8a96a8;
+  font-size: 12.5px;
+  line-height: 1.45;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  padding: 16px;
+}
+
+.empty-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: #eef2f7;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.empty-box strong {
+  font-size: 13px;
+  font-weight: 750;
+  color: #111827;
+}
+
+.empty-box p {
+  max-width: 360px;
+  margin: 0;
+  font-size: 12.5px;
+  color: #8a96a8;
+}
+
+.empty-box-horizontal {
+  min-height: 74px;
+  flex-direction: row;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.parts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 290px;
+  overflow: auto;
+}
+
+.part-row {
+  width: 100%;
+  min-height: 58px;
+  padding: 11px 13px;
+  border: 1px solid #e1e7ef;
+  border-radius: 12px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+}
+
+.part-row:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.part-name {
+  font-size: 13px;
+  font-weight: 750;
+  color: #0f172a;
+}
+
+.part-meta {
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #8a96a8;
+}
+
+.part-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-card {
+  border: 1px solid #e1e7ef;
+  border-radius: 13px;
+  padding: 14px 16px;
+  background: #ffffff;
+}
+
+.item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.item-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.item-sub {
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #8a96a8;
+}
+
+.compact-inputs {
+  display: grid;
+  grid-template-columns: 90px 140px minmax(220px, 1fr) 120px;
+  gap: 12px;
+  align-items: end;
+}
+
+.compact-total {
+  min-height: 38px;
+  padding-left: 14px;
+  border-left: 1px solid #e5eaf1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.compact-total span {
+  font-size: 10px;
+  font-weight: 750;
+  color: #8a96a8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.compact-total strong {
+  margin-top: 3px;
+  font-size: 14px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.sticky-summary-card {
+  position: relative;
+}
+
+.sticky-summary-card .card-title {
+  font-size: 14px;
+}
+
+.summary-box {
+  padding: 0;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.summary-box-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 14px;
+  font-size: 13px;
+  color: #526173;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.summary-box-row strong {
+  font-size: 13.5px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.summary-box .form-field {
+  padding: 10px 14px 12px;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.summary-box-total {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.summary-box-total span,
+.summary-box-total strong {
+  font-size: 14px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.sticky-summary-card .page-bottom-actions {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+}
+
+.flow-steps {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  margin-bottom: 16px;
+  padding: 7px 9px;
+  background: #ffffff;
+  border: 1px solid #dfe5ee;
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+}
+
+.flow-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #9aa4b2;
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.flow-number {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #dfe5ee;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.flow-step.active {
+  color: #0f172a;
+}
+
+.flow-step.active .flow-number {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.flow-step.done {
+  color: #166534;
+}
+
+.flow-step.done .flow-number {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+  color: #15803d;
+}
+
+.flow-line {
+  width: 32px;
+  height: 1px;
+  background: #dfe5ee;
 }
 </style>
