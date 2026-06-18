@@ -12,13 +12,13 @@
       <!-- HERO / GREETING -->
       <div class="dashboard-hero">
         <div class="hero-copy">
-          <div class="hero-meta">
-            {{ todayText }} <span>•</span> Workshop is open
-          </div>
-
           <h1 class="hero-title">
             Good {{ greeting }}, {{ firstName }}
           </h1>
+
+          <div class="hero-meta">
+            {{ todayText }} <span>•</span> Workshop is open
+          </div>
 
           <p class="hero-subtitle">
             Here's what's happening at your workshop today.
@@ -724,22 +724,32 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .hero-copy {
   min-width: 0;
 }
 
+.hero-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+}
+
 .hero-meta {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 7px;
+  margin-top: 8px;
+  margin-bottom: 0;
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 800;
   color: #7c8798;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -747,26 +757,17 @@ export default {
   color: #c4ccd8;
 }
 
-.hero-title {
-  margin: 0;
-  font-size: 30px;
-  font-weight: 850;
-  color: #0f172a;
-  line-height: 1.04;
-  letter-spacing: -0.055em;
-}
-
 .hero-subtitle {
-  margin: 8px 0 0;
-  font-size: 14px;
+  margin: 7px 0 0;
+  font-size: 13.5px;
   color: #8a96a8;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
@@ -776,8 +777,8 @@ export default {
 .dashboard-shell {
   max-width: 1380px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 22px;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 20px;
   align-items: start;
 }
 
@@ -785,16 +786,23 @@ export default {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .dashboard-right-panel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   min-width: 0;
   position: sticky;
-  top: 26px;
+  top: 24px;
+}
+
+.dashboard-work-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  gap: 16px;
+  align-items: stretch;
 }
 
 .dashboard-card {
@@ -844,7 +852,7 @@ export default {
 .dashboard-kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 
 .dashboard-kpi-grid.staff-metrics {
@@ -852,36 +860,36 @@ export default {
 }
 
 .dashboard-kpi-card {
-  min-height: 112px;
-  padding: 16px;
+  min-height: 92px;
+  padding: 14px 15px;
   border: 1px solid #dfe5ee;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #ffffff;
-  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.035);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.032);
 }
 
 .kpi-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .kpi-label {
-  max-width: 120px;
-  font-size: 10.5px;
+  max-width: 118px;
+  font-size: 10px;
   font-weight: 850;
   color: #7c8798;
-  letter-spacing: 0.115em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
   line-height: 1.25;
 }
 
 .kpi-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
+  width: 31px;
+  height: 31px;
+  border-radius: 11px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -889,18 +897,18 @@ export default {
 }
 
 .kpi-value {
-  font-size: 25px;
+  font-size: 22px;
   font-weight: 850;
   color: #0f172a;
   letter-spacing: -0.045em;
-  line-height: 1.02;
+  line-height: 1.05;
 }
 
 .kpi-sub {
-  margin-top: 8px;
-  font-size: 12.2px;
+  margin-top: 7px;
+  font-size: 11.8px;
   color: #8a96a8;
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
 /* Existing metric icon classes */
@@ -941,11 +949,11 @@ export default {
 
 .today-card,
 .activity-card {
-  min-height: 420px;
+  min-height: 365px;
 }
 
 .today-body {
-  min-height: 320px;
+  min-height: 265px;
 }
 
 .dashboard-table th:nth-child(1),
@@ -976,7 +984,7 @@ export default {
 }
 
 .dashboard-empty-state {
-  min-height: 310px;
+  min-height: 260px;
   border: 1px dashed #dfe5ee;
   border-radius: 16px;
   background: #fbfcfe;
@@ -1014,6 +1022,17 @@ export default {
   font-size: 12.5px;
   color: #8a96a8;
   line-height: 1.45;
+}
+
+.dashboard-right-panel .dashboard-card :deep(.card-body),
+.dashboard-right-panel .dashboard-card :deep(.card-content) {
+  padding-top: 0;
+}
+
+.low-stock-card,
+.online-card,
+.quick-card {
+  min-height: auto;
 }
 
 /* =========================
@@ -1119,18 +1138,18 @@ export default {
 .quick-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .qa-btn {
-  min-height: 58px;
-  padding: 12px;
-  border-radius: 15px;
+  min-height: 52px;
+  padding: 10px 11px;
+  border-radius: 14px;
   border: 1px solid #dfe5ee;
   background: #fbfcfe;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
   text-align: left;
   text-decoration: none;
   color: inherit;
@@ -1145,16 +1164,7 @@ export default {
 .qa-btn:hover {
   background: #ffffff;
   border-color: #cfd8e6;
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.045);
-}
-
-.qa-btn:active {
-  transform: scale(0.99);
-}
-
-.qa-btn:disabled {
-  opacity: 0.58;
-  cursor: not-allowed;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.045);
 }
 
 .qa-btn.primary-action {
@@ -1172,24 +1182,28 @@ export default {
   opacity: 0.72;
 }
 
-.qa-svg {
-  width: 15px;
-  height: 15px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 .qa-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
+  width: 31px;
+  height: 31px;
+  border-radius: 11px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.qa-label {
+  font-size: 12.8px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.qa-desc {
+  margin-top: 3px;
+  font-size: 11.4px;
+  color: #8a96a8;
+  line-height: 1.25;
 }
 
 .qa-dark {
@@ -1212,20 +1226,6 @@ export default {
   color: #7c3aed;
 }
 
-.qa-label {
-  font-size: 13px;
-  font-weight: 850;
-  color: #0f172a;
-  line-height: 1.2;
-}
-
-.qa-desc {
-  margin-top: 3px;
-  font-size: 11.7px;
-  color: #8a96a8;
-  line-height: 1.3;
-}
-
 /* =========================
    LOW STOCK ALERTS
 ========================= */
@@ -1239,9 +1239,9 @@ export default {
 }
 
 .stock-alert-item {
-  padding: 13px;
+  padding: 11px;
   border: 1px solid #dfe5ee;
-  border-radius: 15px;
+  border-radius: 14px;
   background: #fbfcfe;
 }
 
@@ -1287,15 +1287,15 @@ export default {
 }
 
 .stock-alert-action {
-  height: 34px;
-  margin-top: 12px;
-  border-radius: 12px;
+  height: 32px;
+  margin-top: 10px;
+  border-radius: 11px;
   border: 1px solid #dfe5ee;
   background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11.8px;
   font-weight: 800;
   color: #475569;
   text-decoration: none;
