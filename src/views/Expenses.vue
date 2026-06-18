@@ -218,17 +218,18 @@
             </div>
 
             
-            <div class="summary-list">
+            <div v-else class="trend-list">
               <div
-                v-for="month in monthlyTrend"
-                :key="month.month"
-                class="summary-row"
+                v-for="row in monthlyTrend"
+                :key="row.label"
+                class="trend-row"
               >
-                <span>
-                  <strong class="trend-month">{{ month.label }}</strong>
-                  <small>Operating expenses</small>
-                </span>
-                <b>{{ formatMoney(month.total) }}</b>
+                <div>
+                  <div class="trend-label">{{ row.label }}</div>
+                  <div class="trend-sub">Operating expenses</div>
+                </div>
+
+                <strong>RM {{ formatMoney(row.total) }}</strong>
               </div>
             </div>
           </Card>
@@ -1173,37 +1174,43 @@ export default {
 }
 
 .trend-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.trend-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
   border: 1px solid #dfe5ee;
   border-radius: 14px;
   background: #fbfcfe;
+  overflow: hidden;
+}
+
+.trend-row {
+  min-height: 58px;
+  padding: 13px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.trend-row:last-child {
+  border-bottom: none;
 }
 
 .trend-label {
-  font-size: 12.8px;
+  font-size: 13px;
   font-weight: 800;
   color: #0f172a;
 }
 
 .trend-sub {
   margin-top: 3px;
-  font-size: 11.5px;
+  font-size: 11.8px;
+  font-weight: 500;
   color: #8a96a8;
 }
 
 .trend-row strong {
-  font-size: 12.8px;
-  font-weight: 850;
+  font-size: 13.2px;
+  font-weight: 800;
   color: #0f172a;
   white-space: nowrap;
 }
