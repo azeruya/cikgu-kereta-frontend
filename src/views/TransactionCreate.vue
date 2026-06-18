@@ -85,7 +85,13 @@
           <!-- CUSTOMER & VEHICLE -->
           <Card class="workflow-card">
             <template #header>
-              <span class="card-title">Customer & Vehicle</span>
+              <div class="section-heading">
+                <div class="section-index">1</div>
+                <div>
+                  <span class="card-title">Customer & Vehicle</span>
+                  <p class="section-caption">Select the customer and vehicle for this quotation.</p>
+                </div>
+              </div>
             </template>
 
             <div class="customer-vehicle-grid">
@@ -117,7 +123,7 @@
                     :value="vehicle.id"
                   >
                     {{ vehicle.license_plate }} — {{ vehicle.make }} {{ vehicle.model }}
-                    <span v-if="vehicle.year">({{ vehicle.year }})</span>
+                    {{ vehicle.year ? `(${vehicle.year})` : "" }}
                   </option>
                 </select>
               </div>
@@ -144,35 +150,67 @@
           <!-- COMPATIBLE PARTS -->
           <Card class="workflow-card compatible-parts-card">
             <template #header>
-              <span class="card-title">Available Compatible Parts</span>
-              <span class="card-link">{{ compatibleParts.length }} items</span>
-            </template>
-
-            <div class="compatible-parts-body">
-              <div
-                v-if="!form.vehicle_id"
-                class="empty-state-panel empty-state-centered"
-              >
-                <div class="empty-state-icon">□</div>
-                <div class="empty-state-text">
-                  <strong>Select a vehicle first</strong>
-                  <p>
-                    Compatible parts will appear here based on the selected
-                    vehicle make, model, and year.
-                  </p>
+              <div class="section-heading">
+                <div class="section-index">2</div>
+                <div>
+                  <span class="card-title">Available Compatible Parts</span>
+                  <p class="section-caption">Click a part to add it into the quotation.</p>
                 </div>
               </div>
 
-              <div
-                v-else-if="compatibleParts.length === 0"
-                class="empty-state-panel empty-state-centered"
-              >
-                <div class="empty-state-icon">!</div>
-                <div class="empty-state-text">
+              <span class="section-count">{{ compatibleParts.length }} items</span>
+            </template>
+
+            <div class="compatible-parts-body">
+              <div v-if="!form.vehicle_id" class="setup-panel">
+                <div class="setup-icon">
+                  <svg viewBox="0 0 24 24" class="setup-svg">
+                    <path d="M4 17h16" />
+                    <path d="M6 17l1.3-5.2A3 3 0 0 1 10.2 9h3.6a3 3 0 0 1 2.9 2.8L18 17" />
+                    <path d="M7 17v2" />
+                    <path d="M17 17v2" />
+                    <path d="M9 13h6" />
+                  </svg>
+                </div>
+
+                <div class="setup-content">
+                  <strong>Select a vehicle first</strong>
+                  <p>
+                    Compatible parts will appear after choosing a customer and vehicle.
+                    This helps prevent adding parts that may not fit the selected car.
+                  </p>
+
+                  <div class="setup-hints">
+                    <span>Customer</span>
+                    <span>Vehicle</span>
+                    <span>Compatible parts</span>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else-if="compatibleParts.length === 0" class="setup-panel warning-panel">
+                <div class="setup-icon">
+                  <svg viewBox="0 0 24 24" class="setup-svg">
+                    <path d="M12 9v4" />
+                    <path d="M12 17h.01" />
+                    <path d="M10.3 4.3L2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" />
+                  </svg>
+                </div>
+
+                <div class="setup-content">
                   <strong>No compatible parts found</strong>
                   <p>
+                    No matching inventory item was found for this vehicle.
                     You can still continue by adding a manual service item.
                   </p>
+
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    @click="addServiceItem"
+                  >
+                    + Add Service
+                  </button>
                 </div>
               </div>
 
@@ -184,20 +222,29 @@
                   class="part-row"
                   @click="addPartItem(part)"
                 >
-                  <div class="part-copy">
-                    <div class="part-name">
-                      {{ part.name }}
-                      <span v-if="part.variant">— {{ part.variant }}</span>
+                  <div class="part-left">
+                    <div class="part-icon">
+                      <svg viewBox="0 0 24 24" class="part-svg">
+                        <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4Z" />
+                      </svg>
                     </div>
 
-                    <div class="part-meta">
-                      {{ part.sku || "-" }} · Stock: {{ part.stock }} ·
-                      {{ part.is_generic ? "Generic" : "Specific" }}
+                    <div class="part-copy">
+                      <div class="part-name">
+                        {{ part.name }}
+                        <span v-if="part.variant">— {{ part.variant }}</span>
+                      </div>
+
+                      <div class="part-meta">
+                        {{ part.sku || "-" }} · Stock: {{ part.stock }} ·
+                        {{ part.is_generic ? "Generic" : "Specific" }}
+                      </div>
                     </div>
                   </div>
 
-                  <div class="part-price">
-                    RM {{ formatMoney(part.selling_price) }}
+                  <div class="part-right">
+                    <div class="part-price">RM {{ formatMoney(part.selling_price) }}</div>
+                    <span class="part-add">Add</span>
                   </div>
                 </button>
               </div>
@@ -207,7 +254,14 @@
           <!-- TRANSACTION ITEMS -->
           <Card class="workflow-card">
             <template #header>
-              <span class="card-title">Transaction Items</span>
+              <div class="section-heading">
+                <div class="section-index">3</div>
+                <div>
+                  <span class="card-title">Transaction Items</span>
+                  <p class="section-caption">Review selected parts and service charges.</p>
+                </div>
+              </div>
+
               <button
                 class="btn btn-secondary btn-pill"
                 type="button"
@@ -217,18 +271,32 @@
               </button>
             </template>
 
-            <div
-              v-if="form.items.length === 0"
-              class="empty-state-panel empty-state-inline"
-            >
-              <div class="empty-state-icon">+</div>
+            <div v-if="form.items.length === 0" class="setup-panel items-empty-panel">
+              <div class="setup-icon">
+                <svg viewBox="0 0 24 24" class="setup-svg">
+                  <path d="M8 6h13" />
+                  <path d="M8 12h13" />
+                  <path d="M8 18h13" />
+                  <path d="M3 6h.01" />
+                  <path d="M3 12h.01" />
+                  <path d="M3 18h.01" />
+                </svg>
+              </div>
 
-              <div class="empty-state-text">
-                <strong>No items added yet</strong>
+              <div class="setup-content">
+                <strong>No transaction items added</strong>
                 <p>
-                  Add a compatible part from the list above or click “Add Service”
-                  to create a manual labour/service item.
+                  Add a compatible part from the list above, or create a manual labour
+                  or service item for this quotation.
                 </p>
+
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm"
+                  @click="addServiceItem"
+                >
+                  + Add manual service
+                </button>
               </div>
             </div>
 
@@ -240,17 +308,26 @@
                 :class="item.item_type === 'part' ? 'part-card' : 'service-card'"
               >
                 <div class="item-top">
-                  <div>
-                    <div class="item-title">
-                      {{
-                        item.item_type === "part"
-                          ? item.part_label
-                          : (item.service_name || "Unnamed service")
-                      }}
-                    </div>
-
-                    <div class="item-sub">
+                  <div class="item-title-group">
+                    <span
+                      class="item-type-badge"
+                      :class="item.item_type === 'part' ? 'badge-part' : 'badge-service'"
+                    >
                       {{ item.item_type === "part" ? "Part" : "Service" }}
+                    </span>
+
+                    <div>
+                      <div class="item-title">
+                        {{
+                          item.item_type === "part"
+                            ? item.part_label
+                            : (item.service_name || "Unnamed service")
+                        }}
+                      </div>
+
+                      <div class="item-sub">
+                        {{ item.item_type === "part" ? "Inventory item" : "Manual labour/service" }}
+                      </div>
                     </div>
                   </div>
 
@@ -358,7 +435,13 @@
           <!-- NOTES -->
           <Card class="workflow-card">
             <template #header>
-              <span class="card-title">Notes</span>
+              <div class="section-heading">
+                <div class="section-index muted">4</div>
+                <div>
+                  <span class="card-title">Notes</span>
+                  <p class="section-caption">Optional remarks shown internally or on quotation.</p>
+                </div>
+              </div>
             </template>
 
             <div class="form-field">
@@ -381,7 +464,7 @@
 
             <div class="summary-box">
               <div v-if="form.items.length === 0" class="summary-helper">
-                Add parts or services to calculate the quotation total.
+                Add at least one part or service before saving the quotation.
               </div>
 
               <div class="summary-box-row">
@@ -839,6 +922,52 @@ export default {
 }
 
 /* ================================
+   CARD HEADER / SECTION STYLE
+================================ */
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  min-width: 0;
+}
+
+.section-index {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 850;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+}
+
+.section-index.muted {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #dfe5ee;
+  box-shadow: none;
+}
+
+.section-caption {
+  margin-top: 3px;
+  font-size: 11.8px;
+  color: #8a96a8;
+  line-height: 1.35;
+}
+
+.section-count {
+  font-size: 12px;
+  color: #8a96a8;
+  white-space: nowrap;
+}
+
+/* ================================
    STEPPER
 ================================ */
 
@@ -993,8 +1122,8 @@ export default {
 }
 
 .compatible-parts-body {
-  max-height: 310px;
-  min-height: 160px;
+  max-height: 320px;
+  min-height: 165px;
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -1018,15 +1147,15 @@ export default {
 .parts-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 }
 
 .part-row {
   width: 100%;
-  min-height: 58px;
-  padding: 11px 13px;
+  min-height: 62px;
+  padding: 12px 13px;
   border: 1px solid #e1e7ef;
-  border-radius: 12px;
+  border-radius: 13px;
   background: #ffffff;
   display: flex;
   align-items: center;
@@ -1045,7 +1174,37 @@ export default {
   background: #f8fafc;
   border-color: #cbd5e1;
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.045);
+}
+
+.part-left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.part-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: #f1f5f9;
+  border: 1px solid #e1e7ef;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.part-svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .part-copy {
@@ -1054,7 +1213,7 @@ export default {
 
 .part-name {
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 850;
   color: #0f172a;
   line-height: 1.25;
 }
@@ -1066,11 +1225,39 @@ export default {
   line-height: 1.25;
 }
 
+.part-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .part-price {
   font-size: 13px;
   font-weight: 850;
   color: #0f172a;
   white-space: nowrap;
+}
+
+.part-add {
+  min-height: 26px;
+  padding: 6px 9px;
+  border-radius: 9px;
+  background: #f8fafc;
+  border: 1px solid #dfe5ee;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 800;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.part-row:hover .part-add {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
 }
 
 /* ================================
@@ -1085,17 +1272,14 @@ export default {
 
 .item-card {
   border: 1px solid #e1e7ef;
-  border-radius: 13px;
+  border-radius: 14px;
   padding: 14px 16px;
   background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
 }
 
-.part-card {
-  background: #ffffff;
-}
-
-.service-card {
-  background: #ffffff;
+.item-card:hover {
+  border-color: #d4dce8;
 }
 
 .item-top {
@@ -1104,6 +1288,35 @@ export default {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.item-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.item-type-badge {
+  min-height: 23px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 850;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.badge-part {
+  background: #eef4ff;
+  color: #3366cc;
+  border: 1px solid #dbe8ff;
+}
+
+.badge-service {
+  background: #fff6e8;
+  color: #c87518;
+  border: 1px solid #ffe4c2;
 }
 
 .item-title {
@@ -1183,65 +1396,99 @@ export default {
 }
 
 /* ================================
-   EMPTY STATES
+   PROFESSIONAL EMPTY / SETUP STATES
 ================================ */
 
-.empty-state-panel {
-  border: 1px dashed #d9e1ea;
-  border-radius: 12px;
-  background: #fbfcfe;
-  color: #8a96a8;
-}
-
-.empty-state-centered {
-  min-height: 150px;
+.setup-panel {
+  min-height: 132px;
   padding: 18px;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(255, 255, 255, 0.92));
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 11px;
-  text-align: center;
+  align-items: flex-start;
+  gap: 14px;
 }
 
-.empty-state-inline {
-  min-height: 76px;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-  text-align: left;
+.items-empty-panel {
+  min-height: 104px;
 }
 
-.empty-state-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: #eef2f7;
+.warning-panel {
+  background: #fffdf8;
+  border-color: #f3dfba;
+}
+
+.setup-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid #e1e7ef;
   color: #64748b;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 850;
 }
 
-.empty-state-text strong {
+.warning-panel .setup-icon {
+  background: #fff6e8;
+  border-color: #ffe4c2;
+  color: #c87518;
+}
+
+.setup-svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.setup-content {
+  min-width: 0;
+}
+
+.setup-content strong {
   display: block;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 850;
   color: #0f172a;
   line-height: 1.25;
 }
 
-.empty-state-text p {
-  max-width: 420px;
-  margin: 4px 0 0;
+.setup-content p {
+  max-width: 560px;
+  margin: 5px 0 0;
   font-size: 12.5px;
-  line-height: 1.45;
+  line-height: 1.48;
   color: #8a96a8;
+}
+
+.setup-content .btn {
+  margin-top: 12px;
+}
+
+.setup-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.setup-hints span {
+  min-height: 24px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e1e7ef;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 750;
 }
 
 /* ================================
@@ -1366,6 +1613,12 @@ export default {
   .compact-total-card {
     align-items: flex-start;
   }
+
+  .part-right {
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 6px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1382,8 +1635,25 @@ export default {
     min-width: 28px;
   }
 
-  .empty-state-inline {
+  .setup-panel {
+    flex-direction: column;
+  }
+
+  .part-row {
     align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .part-right {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .item-top,
+  .item-title-group {
+    flex-direction: column;
   }
 }
 </style>
