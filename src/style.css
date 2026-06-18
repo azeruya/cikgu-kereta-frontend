@@ -1350,32 +1350,33 @@ th.center {
 ========================================================= */
 
 .summary-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.summary-list.compact {
-  margin-top: 4px;
+  padding: 0;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #f8fafc;
+  overflow: hidden;
 }
 
 .summary-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 14px;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--border-soft);
-  font-size: 13px;
-  color: var(--text-soft);
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  font-size: 12.8px;
+  color: #526173;
 }
 
 .summary-row:last-child {
   border-bottom: none;
 }
 
-.summary-row b {
-  color: var(--text);
-  font-weight: 800;
+.summary-row b,
+.summary-row strong {
+  font-size: 13.5px;
+  font-weight: 850;
+  color: #0f172a;
   text-align: right;
   white-space: nowrap;
 }

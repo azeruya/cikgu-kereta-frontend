@@ -65,16 +65,24 @@
       <div class="inventory-grid">
         <Card>
           <template #header>
-            <span class="card-title">Parts List</span>
-            <span class="card-link">
-              {{ totalRecords }} item(s)
+            <div class="section-heading no-index">
+              <div>
+                <span class="card-title">Items</span>
+                <p class="section-caption">
+                  Click a row to view details, edit, or restock.
+                </p>
+              </div>
+            </div>
+
+            <span class="section-count">
+              Showing {{ filteredParts.length }} of {{ totalRecords }}
             </span>
           </template>
 
           <div v-if="loading" class="empty-state">Loading inventory...</div>
 
           <template v-else>
-            <table class="table" v-if="filteredParts.length > 0">
+            <table class="table inventory-table" v-if="filteredParts.length > 0">
               <thead>
                 <tr>
                   <th>Part</th>
@@ -471,7 +479,7 @@ export default {
       parts: [],
       page: 1,
       totalPages: 1,
-      perPage: 5,
+      perPage: 10,
       totalRecords: 0,
       activePart: null,
       exporting: false,
@@ -832,6 +840,10 @@ nextPage() {
 </script>
 
 <style scoped>
+/* ================================
+   INVENTORY PAGE
+================================ */
+
 .inventory-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.8fr) 340px;
@@ -845,69 +857,44 @@ nextPage() {
   gap: 14px;
 }
 
-.item-sub {
-  color: #888;
+/* ================================
+   INVENTORY TABLE
+================================ */
+
+.inventory-table tbody tr {
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.stock-text {
-  font-weight: 600;
+.inventory-table tbody tr:hover {
+  background: #f8fafc;
 }
 
-.stock-normal {
-  color: #2e7d32;
+.inventory-table td {
+  vertical-align: middle;
 }
 
-.stock-danger {
-  color: #e53935;
-}
-
-/* Inventory layout polish */
 .item-name {
   font-size: 13px;
-  font-weight: 700;
-  color: #222;
+  font-weight: 780;
+  color: #0f172a;
+  line-height: 1.25;
 }
 
 .item-sub {
-  font-size: 12px;
-  color: #888;
+  display: block;
+  margin-top: 3px;
+  font-size: 11.8px;
+  color: #8a96a8;
+  line-height: 1.3;
 }
 
-.stock-pill {
-  display: inline-flex;
-  align-items: center;
-  height: 24px;
-  padding: 0 9px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-}
+/* ================================
+   STOCK
+================================ */
 
-.stock-pill.stock-normal {
-  background: #eaf8ef;
-  color: #287a3e;
-}
-
-.stock-pill.stock-danger {
-  background: #fff1f0;
-  color: #d92d20;
-}
-
-/* Modal style matching Customer page */
-.inventory-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) 340px;
-  gap: 18px;
-  align-items: start;
-}
-
-.stack-col {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* Stock text inside inventory table */
 .stock-block {
   display: flex;
   flex-direction: column;
@@ -915,41 +902,54 @@ nextPage() {
 }
 
 .stock-main {
-  font-size: 12.8px;
-  font-weight: 700;
-  color: #287a3e;
+  font-size: 12.7px;
+  font-weight: 800;
   white-space: nowrap;
 }
 
-.stock-main.stock-danger {
+.stock-main.stock-danger,
+.stock-danger {
   color: #d92d20;
 }
 
-.stock-main.stock-normal {
-  color: #287a3e;
+.stock-main.stock-normal,
+.stock-normal {
+  color: #15803d;
 }
 
 .stock-min {
   font-size: 11px;
-  color: #999;
+  color: #8a96a8;
 }
 
-/* Low stock preview card */
+/* ================================
+   LOW STOCK PREVIEW
+================================ */
+
 .stock-preview-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
   padding: 12px 13px;
-  border: 1px solid #ececea;
-  border-radius: 13px;
-  background: #fff;
+  border: 1px solid #e1e7ef;
+  border-radius: 14px;
+  background: #ffffff;
   cursor: pointer;
-  margin-bottom: 5px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.stock-preview-item + .stock-preview-item {
+  margin-top: 8px;
 }
 
 .stock-preview-item:hover {
-  background: #fafafa;
+  background: #f8fafc;
+  border-color: #d4dce8;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
 }
 
 .stock-alert-main {
@@ -958,7 +958,8 @@ nextPage() {
 }
 
 .stock-alert-main .item-name {
-  font-size: 12px;
+  font-size: 12.8px;
+  font-weight: 800;
 }
 
 .stock-preview-right {
@@ -968,30 +969,60 @@ nextPage() {
 
 .stock-danger-text {
   font-size: 12px;
-  font-weight: 600;
-  color: #d24b4b;
+  font-weight: 800;
+  color: #d92d20;
 }
 
 .restock-link {
-  margin-top: 3px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #999;
+  margin-top: 4px;
+  min-height: 24px;
+  padding: 4px 8px;
+  border: 1px solid #e1e7ef;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #64748b;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 750;
   cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .restock-link:hover {
-  color: #d24b4b;
+  background: #fff1f0;
+  border-color: #ffd6d2;
+  color: #d92d20;
 }
 
-/* Skeleton loading */
+/* ================================
+   STOCK METER
+================================ */
+
+.stock-meter {
+  width: 100%;
+  height: 5px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: #edf1f6;
+  overflow: hidden;
+}
+
+.stock-meter-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #f59e0b;
+}
+
+/* ================================
+   MODAL SKELETON
+================================ */
+
 .skeleton-line {
   height: 13px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #eee, #f7f7f7, #eee);
+  background: linear-gradient(90deg, #eef2f7, #f8fafc, #eef2f7);
   background-size: 200% 100%;
   animation: skeleton 1.2s infinite;
 }
@@ -1022,6 +1053,10 @@ nextPage() {
     background-position: -200% 0;
   }
 }
+
+/* ================================
+   RESPONSIVE
+================================ */
 
 @media (max-width: 1100px) {
   .inventory-grid {
