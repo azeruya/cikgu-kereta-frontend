@@ -497,7 +497,7 @@
 
             <div class="summary-box">
               <div class="summary-progress">
-                <div class="summary-progress-title">Quotation readiness</div>
+                <div class="summary-progress-title">Ready to save</div>
 
                 <div
                   class="summary-check"
@@ -990,18 +990,18 @@ export default {
 }
 
 .section-index {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 850;
   border: 1px solid #dfe5ee;
   background: #f1f5f9;
-  color: #64748b;
+  color: #94a3b8;
   box-shadow: none;
 }
 
@@ -1009,27 +1009,27 @@ export default {
   background: #0f172a;
   color: #ffffff;
   border-color: #0f172a;
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+  box-shadow: none;
 }
 
 .section-index.done {
-  background: #ecfdf3;
-  border-color: #bbf7d0;
-  color: #15803d;
+  background: #f0fdf4;
+  border-color: #d7f0df;
+  color: #1f8f4d;
   font-size: 0;
 }
 
 .section-index.done::before {
   content: "✓";
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
 }
 
 .section-index.pending,
 .section-index.muted {
-  background: #f1f5f9;
-  color: #94a3b8;
-  border-color: #dfe5ee;
+  background: #f8fafc;
+  color: #a8b2c0;
+  border-color: #e3e9f2;
   box-shadow: none;
 }
 
@@ -1662,7 +1662,7 @@ export default {
 }
 
 .summary-progress {
-  padding: 13px 14px;
+  padding: 12px 14px 10px;
   border-bottom: 1px solid #e5eaf1;
   background: #ffffff;
 }
@@ -1678,7 +1678,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 0;
+  padding: 3px 0;
 }
 
 .summary-check span {
