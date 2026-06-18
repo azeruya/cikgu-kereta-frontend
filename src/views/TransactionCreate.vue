@@ -300,7 +300,7 @@
                     </div>
                   </div>
 
-                  <div class="item-total">
+                  <div class="line-total-bar">
                     <span>Line total</span>
                     <strong>RM {{ formatMoney(lineTotal(item)) }}</strong>
                   </div>
@@ -332,7 +332,7 @@
           </template>
 
           <div class="summary-box">
-            <div v-if="items.length === 0" class="summary-helper">
+            <div v-if="form.items.length === 0" class="summary-helper">
               Add items to calculate the quotation total.
             </div>
 
@@ -753,8 +753,8 @@ export default {
 <style scoped>
 .transaction-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 330px;
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 22px;
   align-items: start;
 }
 
@@ -767,7 +767,7 @@ export default {
 
 .transaction-side {
   position: sticky;
-  top: 24px;
+  top: 28px;
   align-self: start;
 }
 
@@ -897,31 +897,6 @@ export default {
   grid-template-columns: 90px 140px minmax(220px, 1fr) 120px;
   gap: 12px;
   align-items: end;
-}
-
-.compact-total {
-  min-height: 38px;
-  padding-left: 14px;
-  border-left: 1px solid #e5eaf1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-}
-
-.compact-total span {
-  font-size: 10px;
-  font-weight: 750;
-  color: #8a96a8;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.compact-total strong {
-  margin-top: 3px;
-  font-size: 14px;
-  font-weight: 850;
-  color: #0f172a;
 }
 
 /* vehicle summary */
@@ -1160,7 +1135,7 @@ export default {
 }
 
 /* responsive */
-@media (max-width: 1200px) {
+@media (max-width: 1050px) {
   .transaction-workspace {
     grid-template-columns: 1fr;
   }
@@ -1202,5 +1177,32 @@ export default {
     max-width: 100%;
     overflow-x: auto;
   }
+}
+
+.line-total-bar {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #e1e7ef;
+  border-radius: 11px;
+  background: #f8fafc;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.line-total-bar span {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #8a96a8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.line-total-bar strong {
+  font-size: 14px;
+  font-weight: 850;
+  color: #0f172a;
 }
 </style>
