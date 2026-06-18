@@ -957,7 +957,7 @@ nextPage() {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 12px 13px;
+  padding: 13px 14px;
   border: 1px solid #e1e7ef;
   border-radius: 14px;
   background: #ffffff;
@@ -994,21 +994,21 @@ nextPage() {
 }
 
 .stock-danger-text {
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11.8px;
+  font-weight: 850;
   color: #d92d20;
 }
 
 .restock-link {
-  margin-top: 4px;
+  margin-top: 5px;
   min-height: 24px;
-  padding: 4px 8px;
-  border: 1px solid #e1e7ef;
+  padding: 5px 10px;
+  border: 1px solid #dfe5ee;
   border-radius: 999px;
   background: #ffffff;
-  color: #64748b;
+  color: #475569;
   font-size: 11px;
-  font-weight: 750;
+  font-weight: 800;
   cursor: pointer;
   transition:
     background 0.15s ease,
@@ -1017,8 +1017,8 @@ nextPage() {
 }
 
 .restock-link:hover {
-  background: #fff1f0;
-  border-color: #ffd6d2;
+  border-color: #f3b4ad;
+  background: #fff7f6;
   color: #d92d20;
 }
 
@@ -1029,7 +1029,7 @@ nextPage() {
 .stock-meter {
   width: 100%;
   height: 5px;
-  margin-top: 8px;
+  margin-top: 9px;
   border-radius: 999px;
   background: #edf1f6;
   overflow: hidden;
@@ -1115,7 +1115,7 @@ nextPage() {
   margin-bottom: 7px;
   font-size: 10.5px;
   font-weight: 850;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: #8a96a8;
 }
