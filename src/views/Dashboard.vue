@@ -65,14 +65,14 @@
           <!-- LATEST TRANSACTIONS -->
           <Card class="dashboard-panel latest-panel">
             <template #header>
-              <div class="panel-head">
+              <div class="panel-head panel-head-inline">
                 <div>
                   <h3>Latest transactions</h3>
                   <p>Recent jobs created or updated in the workshop.</p>
                 </div>
 
-                <router-link to="/transactions" class="panel-link">
-                  View all
+                <router-link to="/transactions" class="panel-link subtle-link">
+                  All transactions →
                 </router-link>
               </div>
             </template>
@@ -233,8 +233,8 @@
             </div>
 
             <!-- LOW STOCK COMPACT -->
-            <div class="ops-section">
-              <div class="ops-section-header">
+            <div class="ops-section low-stock-section-clean">
+              <div class="ops-section-header compact">
                 <div>
                   <div class="ops-section-title">Low stock alerts</div>
                   <p>
@@ -246,23 +246,26 @@
 
                 <span
                   v-if="summary.critical_stock_count > 0"
-                  class="attention-pill danger"
+                  class="critical-badge"
                 >
                   {{ summary.critical_stock_count }} critical
                 </span>
               </div>
 
-              <div v-if="lowStockItems.length > 0" class="stock-chip-list">
+              <div v-if="lowStockItems.length > 0" class="stock-chip-list clean">
                 <span
                   v-for="item in lowStockItems.slice(0, 4)"
                   :key="item.id"
-                  class="stock-chip"
+                  class="stock-name-chip"
                   :class="{ critical: item.level === 'critical' }"
                 >
                   {{ item.name }}
                 </span>
 
-                <span v-if="lowStockItems.length > 4" class="stock-chip muted">
+                <span
+                  v-if="lowStockItems.length > 4"
+                  class="stock-name-chip more-chip"
+                >
                   +{{ lowStockItems.length - 4 }} more
                 </span>
               </div>
@@ -271,71 +274,71 @@
                 Stock levels look okay.
               </div>
 
-              <router-link
-                to="/inventory"
-                class="btn btn-secondary btn-pill ops-full-btn"
-              >
-                Manage inventory
+              <router-link to="/inventory" class="inline-action-link">
+                View inventory →
               </router-link>
             </div>
 
-            <!-- ONLINE REQUESTS -->
-            <div class="ops-section">
-              <div class="attention-title-row">
-                <span>Online requests</span>
+          </Card>
+
+          <Card class="dashboard-panel requests-panel">
+            <template #header>
+              <div class="panel-head panel-head-inline">
+                <div>
+                  <h3>Online requests</h3>
+                  <p>Latest imported requests from the online form.</p>
+                </div>
 
                 <button
                   type="button"
-                  class="panel-link button-link"
+                  class="panel-link button-link subtle-link"
                   :disabled="importingRequests"
                   @click="importOnlineRequests"
                 >
                   {{ importingRequests ? "Importing..." : "Import" }}
                 </button>
               </div>
+            </template>
 
-              <div v-if="importMessage" class="import-message compact">
-                {{ importMessage }}
-              </div>
+            <div v-if="importMessage" class="import-message compact">
+              {{ importMessage }}
+            </div>
 
-              <div v-if="onlineRequests.length > 0" class="request-list-clean">
-                <div
-                  v-for="request in onlineRequests.slice(0, 3)"
-                  :key="request.id"
-                  class="request-item-clean"
-                >
-                  <div class="request-copy">
-                    <strong>{{ requestCustomerName(request) }}</strong>
-
-                    <p>
-                      {{ requestVehiclePlate(request) }}
-
-                      <span v-if="requestVehicleText(request)">
-                        · {{ requestVehicleText(request) }}
-                      </span>
-                    </p>
-                  </div>
-
-                  <div class="request-actions">
-                    <span class="small-pill">
-                      {{ request.status || "Pending" }}
+            <div v-if="onlineRequests.length > 0" class="request-list-clean">
+              <div
+                v-for="request in onlineRequests.slice(0, 4)"
+                :key="request.id"
+                class="request-item-clean"
+              >
+                <div class="request-copy">
+                  <strong>{{ requestCustomerName(request) }}</strong>
+                  <p>
+                    {{ requestVehiclePlate(request) }}
+                    <span v-if="requestVehicleText(request)">
+                      · {{ requestVehicleText(request) }}
                     </span>
+                  </p>
+                </div>
 
-                    <button
-                      v-if="request.status !== 'converted'"
-                      type="button"
-                      class="convert-btn"
-                      @click="convertOnlineRequest(request)"
-                    >
-                      Convert
-                    </button>
-                  </div>
+                <div class="request-actions">
+                  <span class="small-pill">
+                    {{ request.status || "Pending" }}
+                  </span>
+
+                  <button
+                    v-if="request.status !== 'converted'"
+                    type="button"
+                    class="convert-btn"
+                    @click="convertOnlineRequest(request)"
+                  >
+                    Convert
+                  </button>
                 </div>
               </div>
+            </div>
 
-              <div v-else class="attention-empty">
-                No online requests waiting.
-              </div>
+            <div v-else class="attention-empty">
+              No online requests waiting.
             </div>
           </Card>
         </aside>
@@ -1480,6 +1483,117 @@ export default {
 
 .activity-dot.dot-purple {
   background: #7c3aed;
+}
+
+/* additional edits */
+.panel-head-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.subtle-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: #7c8aa5;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s ease;
+}
+
+.subtle-link:hover {
+  color: #0f172a;
+}
+
+.low-stock-section-clean {
+  padding-top: 2px;
+}
+
+.ops-section-header.compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ops-section-header.compact p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #8a96a8;
+  line-height: 1.35;
+}
+
+.critical-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+  color: #dc2626;
+  font-size: 11.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.stock-chip-list.clean {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.stock-name-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #f6f8fb;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.stock-name-chip.critical {
+  background: #fff7f7;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.stock-name-chip.more-chip {
+  color: #94a3b8;
+}
+
+.inline-action-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #64748b;
+  text-decoration: none;
+}
+
+.inline-action-link:hover {
+  color: #0f172a;
+}
+
+.dashboard-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.operations-panel,
+.requests-panel {
+  min-height: auto;
 }
 
 /* =========================================================
