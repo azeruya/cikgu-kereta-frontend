@@ -86,7 +86,15 @@
           <Card class="workflow-card">
             <template #header>
               <div class="section-heading">
-                <div class="section-index">1</div>
+                <div
+                  class="section-index"
+                  :class="{
+                    active: !form.customer_id || !form.vehicle_id,
+                    done: form.customer_id && form.vehicle_id
+                  }"
+                >
+                  1
+                </div>
                 <div>
                   <span class="card-title">Customer & Vehicle</span>
                   <p class="section-caption">Select the customer and vehicle for this quotation.</p>
@@ -151,7 +159,16 @@
           <Card class="workflow-card compatible-parts-card">
             <template #header>
               <div class="section-heading">
-                <div class="section-index">2</div>
+                <div
+                  class="section-index"
+                  :class="{
+                    pending: !form.customer_id || !form.vehicle_id,
+                    active: form.customer_id && form.vehicle_id && form.items.length === 0,
+                    done: form.items.length > 0
+                  }"
+                >
+                  2
+                </div>
                 <div>
                   <span class="card-title">Available Compatible Parts</span>
                   <p class="section-caption">Click a part to add it into the quotation.</p>
@@ -255,7 +272,15 @@
           <Card class="workflow-card">
             <template #header>
               <div class="section-heading">
-                <div class="section-index">3</div>
+                <div
+                  class="section-index"
+                  :class="{
+                    pending: form.items.length === 0,
+                    active: form.items.length > 0
+                  }"
+                >
+                  3
+                </div>
                 <div>
                   <span class="card-title">Transaction Items</span>
                   <p class="section-caption">Review selected parts and service charges.</p>
@@ -436,7 +461,15 @@
           <Card class="workflow-card">
             <template #header>
               <div class="section-heading">
-                <div class="section-index muted">4</div>
+                <div
+                  class="section-index"
+                  :class="{
+                    pending: form.items.length === 0,
+                    muted: form.items.length > 0
+                  }"
+                >
+                  4
+                </div>
                 <div>
                   <span class="card-title">Notes</span>
                   <p class="section-caption">Optional remarks shown internally or on quotation.</p>
@@ -463,8 +496,32 @@
             </template>
 
             <div class="summary-box">
-              <div v-if="form.items.length === 0" class="summary-helper">
-                Add at least one part or service before saving the quotation.
+              <div class="summary-progress">
+                <div class="summary-progress-title">Quotation readiness</div>
+
+                <div
+                  class="summary-check"
+                  :class="{ done: form.customer_id && form.vehicle_id }"
+                >
+                  <span></span>
+                  <p>Customer and vehicle selected</p>
+                </div>
+
+                <div
+                  class="summary-check"
+                  :class="{ done: form.items.length > 0 }"
+                >
+                  <span></span>
+                  <p>At least one item added</p>
+                </div>
+
+                <div
+                  class="summary-check"
+                  :class="{ done: totalAfterDiscount > 0 }"
+                >
+                  <span></span>
+                  <p>Total amount calculated</p>
+                </div>
               </div>
 
               <div class="summary-box-row">
@@ -936,21 +993,43 @@ export default {
   width: 26px;
   height: 26px;
   border-radius: 999px;
-  background: #0f172a;
-  color: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   font-size: 11px;
   font-weight: 850;
+  border: 1px solid #dfe5ee;
+  background: #f1f5f9;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.section-index.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
   box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
 }
 
+.section-index.done {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+  color: #15803d;
+  font-size: 0;
+}
+
+.section-index.done::before {
+  content: "✓";
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.section-index.pending,
 .section-index.muted {
   background: #f1f5f9;
-  color: #64748b;
-  border: 1px solid #dfe5ee;
+  color: #94a3b8;
+  border-color: #dfe5ee;
   box-shadow: none;
 }
 
@@ -1118,12 +1197,12 @@ export default {
 ================================ */
 
 .compatible-parts-card {
-  min-height: 260px;
+  min-height: 230px;
 }
 
 .compatible-parts-body {
   max-height: 320px;
-  min-height: 165px;
+  min-height: 140px;
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -1580,6 +1659,65 @@ export default {
   display: grid;
   grid-template-columns: 92px 1fr;
   gap: 10px;
+}
+
+.summary-progress {
+  padding: 13px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  background: #ffffff;
+}
+
+.summary-progress-title {
+  margin-bottom: 9px;
+  font-size: 11.5px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.summary-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+}
+
+.summary-check span {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid #d5dde8;
+  background: #f8fafc;
+  flex-shrink: 0;
+}
+
+.summary-check p {
+  margin: 0;
+  font-size: 12px;
+  color: #8a96a8;
+  line-height: 1.3;
+}
+
+.summary-check.done span {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+  position: relative;
+}
+
+.summary-check.done span::before {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #15803d;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.summary-check.done p {
+  color: #475569;
+  font-weight: 650;
 }
 
 .error-text {
