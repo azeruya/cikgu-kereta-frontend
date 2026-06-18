@@ -940,12 +940,14 @@ nextPage() {
 
 .stock-main.stock-normal,
 .stock-normal {
-  color: #0f172a;
+  color: #1e293b;
 }
 
 .stock-min {
+  margin-top: 2px;
   font-size: 11px;
-  color: #8a96a8;
+  color: #94a3b8;
+  font-weight: 500;
 }
 
 /* ================================
