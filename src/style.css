@@ -1378,8 +1378,8 @@ th.center {
 
 .summary-row b,
 .summary-row strong {
-  min-width: 28px;
-  height: 26px;
+  min-width: 26px;
+  height: 24px;
   padding: 4px 8px;
   border-radius: 999px;
   background: #ffffff;
@@ -1387,11 +1387,12 @@ th.center {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12.8px;
+  font-size: 12.5px;
   font-weight: 850;
   color: #0f172a;
   text-align: center;
   white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
 /* =========================================================

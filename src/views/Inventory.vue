@@ -935,12 +935,12 @@ nextPage() {
 
 .stock-main.stock-danger,
 .stock-danger {
-  color: #d92d20;
+  color: #dc2626;
 }
 
 .stock-main.stock-normal,
 .stock-normal {
-  color: #15803d;
+  color: #0f172a;
 }
 
 .stock-min {
@@ -996,7 +996,7 @@ nextPage() {
 .stock-danger-text {
   font-size: 11.8px;
   font-weight: 850;
-  color: #d92d20;
+  color: #dc2626;
 }
 
 .restock-link {
