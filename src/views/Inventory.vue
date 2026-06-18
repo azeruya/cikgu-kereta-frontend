@@ -199,7 +199,7 @@
               class="stock-alert-card"
               @click="openDetail(part)"
             >
-              <div class="stock-alert-top">
+              <div class="stock-alert-main-row">
                 <div class="stock-alert-info">
                   <div class="stock-alert-name">{{ part.name }}</div>
                   <div class="stock-alert-meta">
@@ -207,18 +207,18 @@
                   </div>
                 </div>
 
-                <div class="stock-alert-status">
-                  <strong>{{ part.min_stock_threshold - part.stock }} short</strong>
-
-                  <button
-                    type="button"
-                    class="stock-alert-action"
-                    @click.stop="openRestockFromList(part)"
-                  >
-                    Restock
-                  </button>
-                </div>
+                <span class="stock-short-pill">
+                  {{ part.min_stock_threshold - part.stock }} short
+                </span>
               </div>
+
+              <button
+                type="button"
+                class="stock-alert-action full"
+                @click.stop="openRestockFromList(part)"
+              >
+                Restock
+              </button>
             </div>
           </Card>
         </div>
@@ -1100,11 +1100,11 @@ nextPage() {
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035);
 }
 
-.stock-alert-top {
+.stock-alert-main-row {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .stock-alert-info {
@@ -1126,44 +1126,39 @@ nextPage() {
   line-height: 1.3;
 }
 
-.stock-alert-status {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 7px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.stock-alert-status strong {
-  font-size: 11.8px;
-  font-weight: 850;
-  color: #dc2626;
-  line-height: 1.2;
-}
-
-.stock-alert-action {
-  min-height: 26px;
-  padding: 4px 11px;
-  border: 1px solid #dfe5ee;
+.stock-short-pill {
+  min-height: 24px;
+  padding: 4px 9px;
   border-radius: 999px;
-  background: #ffffff;
-  color: #475569;
+  background: #fff1f0;
+  border: 1px solid #ffd6d2;
+  color: #dc2626;
   font-size: 11px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.stock-alert-action.full {
+  width: 100%;
+  min-height: 32px;
+  margin-top: 12px;
+  border: 1px solid #dfe5ee;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 12px;
   font-weight: 800;
   cursor: pointer;
   transition:
     background 0.15s ease,
     color 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.12s ease;
+    border-color 0.15s ease;
 }
 
-.stock-alert-action:hover {
+.stock-alert-action.full:hover {
   background: #fff7f6;
   border-color: #f3b4ad;
   color: #dc2626;
-  transform: translateY(-1px);
 }
 
 .mini-empty-state {
