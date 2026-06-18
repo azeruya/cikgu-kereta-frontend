@@ -132,7 +132,7 @@
                   <p>Compatible parts will appear here based on vehicle make, model, and year.</p>
               </div>
 
-              <div v-else-if="compatibleParts.length === 0" class="empty-box">
+              <div v-else-if="compatibleParts.length === 0" class="empty-box compatible-empty">
                 <div class="empty-icon">▣</div>
                 <strong>No compatible parts found</strong>
                 <p>Add a service manually, or update inventory compatibility for this vehicle.</p>
@@ -733,284 +733,6 @@ export default {
 </script>
 
 <style scoped>
-.create-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.bottom-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.bottom-grid > :last-child {
-  position: sticky;
-  top: 24px;
-  align-self: start;
-}
-
-.vehicle-summary {
-  margin-top: 14px;
-  padding: 12px;
-  border: 1px solid #ececea;
-  border-radius: 10px;
-  background: #fafaf9;
-  display: grid;
-  gap: 6px;
-  font-size: 12px;
-  color: #555;
-}
-
-.parts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 300px;
-  overflow: auto;
-}
-
-.part-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  width: 100%;
-  text-align: left;
-  background: #fafaf9;
-  border: 1px solid #e8e8e6;
-  border-radius: 10px;
-  padding: 12px;
-  cursor: pointer;
-}
-
-.part-row:hover {
-  background: #f3f3f1;
-}
-
-.part-name {
-  font-size: 12px;
-  font-weight: 700;
-  color: #111;
-}
-
-.part-meta {
-  font-size: 11px;
-  color: #999;
-  margin-top: 3px;
-}
-
-.part-price {
-  font-size: 12px;
-  font-weight: 700;
-  color: #111;
-  white-space: nowrap;
-}
-
-.items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.item-card {
-  border: 1px solid #ececea;
-  border-radius: 10px;
-  padding: 12px 14px;
-  background: #fafaf9;
-}
-
-.item-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.item-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #111;
-}
-
-.empty-box {
-  border: 1px dashed #ddddda;
-  border-radius: 12px;
-  padding: 18px;
-  text-align: center;
-  background: #fbfbfa;
-  font-size: 12px;
-  color: #999;
-}
-
-.empty-icon {
-  width: 34px;
-  height: 34px;
-  margin: 0 auto 10px;
-  border-radius: 10px;
-  background: #f1f1ee;
-  color: #777;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.empty-box strong {
-  display: block;
-  font-size: 13px;
-  color: #222;
-  margin-bottom: 4px;
-}
-
-.empty-box p {
-  font-size: 12px;
-  color: #999;
-  line-height: 1.45;
-}
-
-.clean-item-top {
-  margin-bottom: 10px;
-}
-
-.compact-item-card {
-  padding-bottom: 14px;
-}
-
-.part-compact-layout {
-  margin-top: 8px;
-}
-
-.service-item-layout {
-  margin-top: 6px;
-}
-
-.part-card {
-  background: #fcfcfb;
-}
-
-.service-card {
-  background: #fafafa;
-  padding-top: 12px;
-  padding-bottom: 12px;
-}
-
-.service-item-layout .form-field input {
-  height: 36px;
-}
-
-.flow-steps {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-  margin-bottom: 14px;
-  padding: 8px 10px;
-  background: #ffffff;
-  border: 1px solid #eeeeea;
-  border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-}
-
-.flow-step {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #aaa;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.flow-number {
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  background: #f2f2ef;
-  border: 1px solid #e3e3df;
-  color: #888;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.flow-step.active {
-  color: #111;
-}
-
-.flow-step.active .flow-number {
-  background: #111;
-  border-color: #111;
-  color: #fff;
-}
-
-.flow-step.done {
-  color: #444;
-}
-
-.flow-step.done .flow-number {
-  background: #eef7e9;
-  border-color: #cfe8c5;
-  color: #2f7d32;
-  font-size: 0;
-}
-
-.flow-step.done .flow-number::before {
-  content: "✓";
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.flow-line {
-  width: 34px;
-  height: 1px;
-  background: #e4e4df;
-}
-
-.edit-context {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-  margin-bottom: 16px;
-  padding: 7px 10px;
-  background: #ffffff;
-  border: 1px solid #eeeeea;
-  border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-}
-
-.edit-pill {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #111111;
-  color: #ffffff;
-  font-size: 11.5px;
-  font-weight: 700;
-}
-
-.edit-note {
-  font-size: 12px;
-  color: #888888;
-  padding-right: 4px;
-}
-
-@media (max-width: 1100px) {
-  .create-grid,
-  .bottom-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .bottom-grid > :last-child {
-    position: static;
-  }
-}
-
 .transaction-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 330px;
@@ -1031,90 +753,26 @@ export default {
   align-self: start;
 }
 
-.sticky-summary-card {
-  min-height: 220px;
-}
-
 .create-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-.bottom-grid {
-  display: contents;
-}
-
-.bottom-grid > :last-child {
-  position: static;
-}
-
-@media (max-width: 1200px) {
-  .transaction-workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .transaction-side {
-    position: static;
-  }
-}
-
-@media (max-width: 900px) {
-  .create-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.empty-box {
-  min-height: 86px;
-  border: 1px dashed #d8dee8;
+/* Vehicle preview */
+.vehicle-summary {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid #e1e7ef;
   border-radius: 12px;
   background: #f8fafc;
-  color: #8a96a8;
-  font-size: 12.5px;
-  line-height: 1.45;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: grid;
   gap: 6px;
-  text-align: center;
-  padding: 16px;
-}
-
-.empty-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  background: #eef2f7;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-}
-
-.empty-box strong {
-  font-size: 13px;
-  font-weight: 750;
-  color: #111827;
-}
-
-.empty-box p {
-  max-width: 360px;
-  margin: 0;
   font-size: 12.5px;
-  color: #8a96a8;
+  color: #526173;
 }
 
-.empty-box-horizontal {
-  min-height: 74px;
-  flex-direction: row;
-  justify-content: flex-start;
-  text-align: left;
-}
-
+/* Compatible parts */
 .parts-list {
   display: flex;
   flex-direction: column;
@@ -1164,6 +822,7 @@ export default {
   white-space: nowrap;
 }
 
+/* Transaction items */
 .items-list {
   display: flex;
   flex-direction: column;
@@ -1197,6 +856,15 @@ export default {
   color: #8a96a8;
 }
 
+.part-card {
+  background: #ffffff;
+}
+
+.service-card {
+  background: #ffffff;
+}
+
+/* Compact item editor */
 .compact-inputs {
   display: grid;
   grid-template-columns: 90px 140px minmax(220px, 1fr) 120px;
@@ -1229,8 +897,65 @@ export default {
   color: #0f172a;
 }
 
+/* Empty states */
+.empty-box {
+  min-height: 86px;
+  border: 1px dashed #d8dee8;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #8a96a8;
+  font-size: 12.5px;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  padding: 16px;
+}
+
+.empty-box-horizontal {
+  min-height: 74px;
+  flex-direction: row;
+  justify-content: center;
+  text-align: left;
+}
+
+.empty-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: #eef2f7;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.empty-box strong {
+  font-size: 13px;
+  font-weight: 750;
+  color: #111827;
+}
+
+.empty-box p {
+  max-width: 360px;
+  margin: 0;
+  font-size: 12.5px;
+  color: #8a96a8;
+}
+
+.compatible-empty {
+  min-height: 118px;
+}
+
+/* Summary side panel */
 .sticky-summary-card {
   position: relative;
+  min-height: 220px;
 }
 
 .sticky-summary-card .card-title {
@@ -1286,6 +1011,7 @@ export default {
   gap: 10px;
 }
 
+/* Stepper */
 .flow-steps {
   display: inline-flex;
   align-items: center;
@@ -1341,11 +1067,82 @@ export default {
   background: #ecfdf3;
   border-color: #bbf7d0;
   color: #15803d;
+  font-size: 0;
+}
+
+.flow-step.done .flow-number::before {
+  content: "✓";
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .flow-line {
   width: 32px;
   height: 1px;
   background: #dfe5ee;
+}
+
+/* Edit context */
+.edit-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 16px;
+  padding: 7px 10px;
+  background: #ffffff;
+  border: 1px solid #dfe5ee;
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+}
+
+.edit-pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.edit-note {
+  font-size: 12px;
+  color: #8a96a8;
+  padding-right: 4px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .transaction-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-side {
+    position: static;
+  }
+}
+
+@media (max-width: 900px) {
+  .create-grid,
+  .compact-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-total {
+    border-left: none;
+    border-top: 1px solid #e5eaf1;
+    padding-left: 0;
+    padding-top: 12px;
+    align-items: flex-start;
+  }
+
+  .sticky-summary-card .page-bottom-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-steps {
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
 </style>
