@@ -285,39 +285,43 @@
           </div>
 
           <div class="modal-body modal-detail-body">
-            <div class="detail-summary-grid">
-              <div class="detail-summary-cell">
-                <span>SKU</span>
-                <strong>{{ activePart.sku || "-" }}</strong>
-              </div>
-
-              <div class="detail-summary-cell">
-                <span>Type</span>
-                <strong>
-                  {{ activePart.is_generic ? "Generic" : "Vehicle Specific" }}
-                </strong>
-              </div>
-
-              <div class="detail-summary-cell">
-                <span>Cost Price</span>
-                <strong>RM {{ formatMoney(activePart.cost_price) }}</strong>
-              </div>
-
-              <div class="detail-summary-cell">
-                <span>Selling Price</span>
-                <strong>RM {{ formatMoney(activePart.selling_price) }}</strong>
-              </div>
-
-              <div class="detail-summary-cell">
+            <div class="part-kpi-grid">
+              <div class="part-kpi-card">
                 <span>Stock</span>
                 <strong :class="stockClass(activePart)">
                   {{ activePart.stock }} left
                 </strong>
               </div>
 
-              <div class="detail-summary-cell">
-                <span>Minimum Stock</span>
-                <strong>{{ activePart.min_stock_threshold }}</strong>
+              <div class="part-kpi-card">
+                <span>Selling Price</span>
+                <strong>RM {{ formatMoney(activePart.selling_price) }}</strong>
+              </div>
+
+              <div class="part-kpi-card">
+                <span>Type</span>
+                <strong>{{ activePart.is_generic ? "Generic" : "Specific" }}</strong>
+              </div>
+            </div>
+
+            <div class="detail-section-card compact-detail-card">
+              <div class="detail-section-title">Part Details</div>
+
+              <div class="compact-detail-list">
+                <div class="compact-detail-row">
+                  <span>SKU</span>
+                  <strong>{{ activePart.sku || "-" }}</strong>
+                </div>
+
+                <div class="compact-detail-row">
+                  <span>Cost Price</span>
+                  <strong>RM {{ formatMoney(activePart.cost_price) }}</strong>
+                </div>
+
+                <div class="compact-detail-row">
+                  <span>Minimum Stock</span>
+                  <strong>{{ activePart.min_stock_threshold }}</strong>
+                </div>
               </div>
             </div>
 
@@ -1086,6 +1090,84 @@ nextPage() {
 
 @media (max-width: 700px) {
   .skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.part-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.part-kpi-card {
+  min-height: 76px;
+  padding: 13px 14px;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #fbfcfe;
+}
+
+.part-kpi-card span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #8a96a8;
+}
+
+.part-kpi-card strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.compact-detail-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.compact-detail-card .detail-section-title {
+  margin: 0;
+  padding: 12px 14px 8px;
+}
+
+.compact-detail-list {
+  border-top: 1px solid #e5eaf1;
+}
+
+.compact-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.compact-detail-row:last-child {
+  border-bottom: none;
+}
+
+.compact-detail-row span {
+  font-size: 12.5px;
+  font-weight: 650;
+  color: #64748b;
+}
+
+.compact-detail-row strong {
+  font-size: 12.8px;
+  font-weight: 760;
+  color: #0f172a;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .part-kpi-grid {
     grid-template-columns: 1fr;
   }
 }
