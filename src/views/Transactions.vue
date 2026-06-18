@@ -275,43 +275,32 @@
           class="modal"
           @click.self="closeConfirmQuotationModal"
         >
-          <div class="modal-card action-modal-card">
-            <div class="action-modal-header">
-              <div>
-                <div class="action-modal-title">Confirm quotation?</div>
-                <p class="action-modal-subtitle">
-                  Convert this quotation into an invoice.
-                </p>
+          <div class="modal-card success-confirm-card">
+            <div class="success-confirm-body">
+              <div class="success-confirm-icon">✓</div>
+
+              <div class="success-confirm-title">
+                Confirm quotation?
               </div>
 
-              <button
-                type="button"
-                class="btn btn-sm btn-ghost"
-                @click="closeConfirmQuotationModal"
-              >
-                ✕
-              </button>
-            </div>
+              <div class="success-confirm-message">
+                This will convert the quotation into an invoice for payment tracking.
+              </div>
 
-            <div class="action-modal-body">
-              <div class="action-summary-box">
-                <div class="action-summary-row">
+              <div class="success-confirm-summary">
+                <div class="success-confirm-row">
                   <span>Document no.</span>
                   <strong>{{ quotationToConfirm?.document_number || "-" }}</strong>
                 </div>
 
-                <div class="action-summary-row">
+                <div class="success-confirm-row">
                   <span>Customer</span>
                   <strong>{{ quotationToConfirm?.customer?.name || "-" }}</strong>
                 </div>
               </div>
-
-              <p class="action-helper-text">
-                Once confirmed, this quotation will become an invoice and can be used for payment tracking.
-              </p>
             </div>
 
-            <div class="action-modal-footer">
+            <div class="success-confirm-footer">
               <button
                 type="button"
                 class="btn btn-secondary btn-pill"
@@ -323,7 +312,7 @@
 
               <button
                 type="button"
-                class="btn btn-primary btn-pill"
+                class="btn btn-success btn-pill"
                 :disabled="actionLoadingId === quotationToConfirm?.id"
                 @click="submitConfirmQuotation"
               >

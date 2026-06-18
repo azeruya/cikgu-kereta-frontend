@@ -3514,6 +3514,93 @@ th.center {
 }
 
 /* =========================================================
+   REUSABLE SUCCESS CONFIRM MODAL
+========================================================= */
+
+.success-confirm-card {
+  width: min(420px, calc(100vw - 32px));
+  overflow: hidden;
+}
+
+.success-confirm-body {
+  padding: 26px 26px 20px;
+  text-align: center;
+}
+
+.success-confirm-icon {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 16px;
+  border-radius: 999px;
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.success-confirm-title {
+  font-size: 16px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.success-confirm-message {
+  max-width: 330px;
+  margin: 9px auto 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.success-confirm-message strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.success-confirm-summary {
+  margin: 16px 0 0;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #f8fafc;
+  overflow: hidden;
+  text-align: left;
+}
+
+.success-confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #e5eaf1;
+  font-size: 12.8px;
+  color: #64748b;
+}
+
+.success-confirm-row:last-child {
+  border-bottom: none;
+}
+
+.success-confirm-row strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: right;
+}
+
+.success-confirm-footer {
+  padding: 14px 24px 22px;
+  border-top: 1px solid #e5eaf1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* =========================================================
    RESPONSIVE MODALS
 ========================================================= */
 
