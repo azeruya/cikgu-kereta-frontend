@@ -55,31 +55,25 @@
       <div class="dashboard-shell">
         <!-- LEFT MAIN AREA -->
         <section class="dashboard-main-panel">
-          <!-- KPI CARDS -->
-          <div
-            class="dashboard-kpi-grid"
-            :class="{ 'staff-metrics': !isAdmin }"
-          >
+          
+          <!-- KPI STRIP -->
+          <section class="metric-strip" :class="{ 'staff-metrics': !isAdmin }">
             <div
               v-for="metric in metrics"
               :key="metric.label"
-              class="dashboard-kpi-card"
+              class="metric-item"
             >
-              <div class="kpi-top">
-                <span class="kpi-label">{{ metric.label }}</span>
-
-                <div class="kpi-icon" :class="metric.iconClass">
-                  <span v-html="metric.icon"></span>
-                </div>
+              <div class="metric-copy">
+                <span class="metric-label">{{ metric.label }}</span>
+                <strong class="metric-value">{{ metric.value }}</strong>
+                <span class="metric-sub" v-html="metric.sub"></span>
               </div>
 
-              <div class="kpi-value">
-                {{ metric.value }}
+              <div class="metric-icon" :class="metric.iconClass">
+                <span v-html="metric.icon"></span>
               </div>
-
-              <div class="kpi-sub" v-html="metric.sub"></div>
             </div>
-          </div>
+          </section>
 
           <!-- WORKSPACE GRID -->
           <div class="dashboard-work-grid">
@@ -191,7 +185,7 @@
               </div>
             </template>
 
-            <div class="quick-actions">
+            <div class="quick-actions compact">
               <router-link to="/transactions/new" class="qa-btn primary-action">
                 <div class="qa-icon qa-dark">
                   <svg class="qa-svg" viewBox="0 0 16 16">
@@ -274,117 +268,121 @@
             </div>
           </Card>
 
-          <!-- LOW STOCK -->
-          <Card class="dashboard-card low-stock-card">
+          <!-- NEEDS ATTENTION -->
+          <Card class="dashboard-card attention-card">
             <template #header>
               <div>
-                <span class="card-title">Low stock alerts</span>
-                <p class="card-subtitle">Parts that need attention.</p>
+                <span class="card-title">Needs attention</span>
+                <p class="card-subtitle">Stock and online requests to review.</p>
               </div>
-
-              <router-link to="/inventory" class="card-link">
-                Inventory
-              </router-link>
             </template>
 
-            <div v-if="lowStockItems.length === 0" class="dashboard-empty-line">
-              No low stock alerts.
-            </div>
+            <div class="attention-stack">
+              <!-- LOW STOCK SECTION -->
+              <section class="attention-section">
+                <div class="attention-section-head">
+                  <span>Low stock</span>
 
-            <div v-else class="stock-list">
-              <div
-                v-for="item in lowStockItems"
-                :key="item.id || item.name"
-                class="stock-alert-item"
-              >
-                <div class="stock-alert-main">
-                  <div>
-                    <div class="stock-alert-name">{{ item.name }}</div>
-                    <div class="stock-alert-meta">
-                      {{ item.left }} in stock · Minimum {{ item.min }}
-                    </div>
-                  </div>
+                  <router-link to="/inventory" class="card-link">
+                    Inventory
+                  </router-link>
+                </div>
 
-                  <span
-                    class="stock-alert-pill"
-                    :class="{ critical: item.level === 'critical' }"
+                <div v-if="lowStockItems.length === 0" class="attention-empty">
+                  No low stock alerts.
+                </div>
+
+                <div v-else class="attention-list">
+                  <div
+                    v-for="item in lowStockItems.slice(0, 2)"
+                    :key="item.id || item.name"
+                    class="attention-item"
                   >
-                    {{ item.level === "critical" ? "Critical" : "Low" }}
-                  </span>
-                </div>
+                    <div>
+                      <div class="attention-name">{{ item.name }}</div>
+                      <div class="attention-meta">
+                        {{ item.left }} in stock · Minimum {{ item.min }}
+                      </div>
+                    </div>
 
-                <router-link to="/inventory" class="stock-alert-action">
-                  Manage stock
-                </router-link>
-              </div>
-            </div>
-          </Card>
-
-          <!-- ONLINE REQUESTS -->
-          <Card class="dashboard-card online-card">
-            <template #header>
-              <div>
-                <span class="card-title">Online requests</span>
-                <p class="card-subtitle">Latest imported requests.</p>
-              </div>
-
-              <button
-                class="card-link btn-link"
-                type="button"
-                :disabled="importingRequests"
-                @click="importOnlineRequests"
-              >
-                {{ importingRequests ? "Importing..." : "Import" }}
-              </button>
-            </template>
-
-            <div v-if="importMessage" class="import-message">
-              {{ importMessage }}
-            </div>
-
-            <div v-if="onlineRequests.length === 0" class="dashboard-empty-line">
-              No online requests.
-            </div>
-
-            <div v-else class="online-request-list">
-              <div
-                v-for="request in onlineRequests.slice(0,3)"
-                :key="request.id"
-                class="online-request-item"
-              >
-                <div class="or-content">
-                  <div class="or-name">
-                    {{ request.customer?.name || request.customer_name || "-" }}
-                  </div>
-
-                  <div class="or-meta">
-                    {{ request.vehicle?.license_plate || request.license_plate || "-" }}
-
-                    <span v-if="request.vehicle?.make || request.vehicle_make">
-                      · {{ request.vehicle?.make || request.vehicle_make }}
-                    </span>
-
-                    <span v-if="request.vehicle?.model || request.vehicle_model">
-                      {{ request.vehicle?.model || request.vehicle_model }}
+                    <span
+                      class="attention-pill"
+                      :class="{ critical: item.level === 'critical' }"
+                    >
+                      {{ item.level === "critical" ? "Critical" : "Low" }}
                     </span>
                   </div>
-                </div>
 
-                <div class="or-actions">
-                  <span class="badge badge-muted">
-                    {{ request.status }}
-                  </span>
+                  <router-link to="/inventory" class="attention-action">
+                    Manage stock
+                  </router-link>
+                </div>
+              </section>
+
+              <!-- ONLINE REQUEST SECTION -->
+              <section class="attention-section">
+                <div class="attention-section-head">
+                  <span>Online requests</span>
 
                   <button
-                    v-if="request.status !== 'converted'"
-                    class="or-convert-btn"
+                    class="card-link btn-link"
                     type="button"
-                    @click="convertOnlineRequest(request)"
+                    :disabled="importingRequests"
+                    @click="importOnlineRequests"
                   >
-                    Convert
+                    {{ importingRequests ? "Importing..." : "Import" }}
                   </button>
                 </div>
-              </div>
+
+                <div v-if="importMessage" class="import-message compact">
+                  {{ importMessage }}
+                </div>
+
+                <div v-if="onlineRequests.length === 0" class="attention-empty">
+                  No online requests.
+                </div>
+
+                <div v-else class="attention-list">
+                  <div
+                    v-for="request in onlineRequests.slice(0, 3)"
+                    :key="request.id"
+                    class="attention-item request-item"
+                  >
+                    <div class="request-copy">
+                      <div class="attention-name">
+                        {{ request.customer?.name || request.customer_name || "-" }}
+                      </div>
+
+                      <div class="attention-meta">
+                        {{ request.vehicle?.license_plate || request.license_plate || "-" }}
+
+                        <span v-if="request.vehicle?.make || request.vehicle_make">
+                          · {{ request.vehicle?.make || request.vehicle_make }}
+                        </span>
+
+                        <span v-if="request.vehicle?.model || request.vehicle_model">
+                          {{ request.vehicle?.model || request.vehicle_model }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="request-actions">
+                      <span class="badge badge-muted">
+                        {{ request.status }}
+                      </span>
+
+                      <button
+                        v-if="request.status !== 'converted'"
+                        class="or-convert-btn"
+                        type="button"
+                        @click="convertOnlineRequest(request)"
+                      >
+                        Convert
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
             </div>
           </Card>
         </aside>
@@ -709,7 +707,7 @@ export default {
 ========================= */
 .main {
   min-height: 100vh;
-  padding: 32px 38px 42px;
+  padding: 30px 38px 42px;
   background:
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.92), transparent 34%),
     var(--bg);
@@ -724,7 +722,7 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
   gap: 22px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .hero-copy {
@@ -733,10 +731,10 @@ export default {
 
 .hero-title {
   margin: 0;
-  font-size: 26px;
+  font-size: 27px;
   font-weight: 850;
-  letter-spacing: -0.05em;
-  line-height: 1.06;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
   color: #0f172a;
 }
 
@@ -744,10 +742,10 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 10px;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  margin-top: 8px;
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: #7c8798;
 }
@@ -757,8 +755,8 @@ export default {
 }
 
 .hero-subtitle {
-  margin: 8px 0 0;
-  font-size: 13.5px;
+  margin: 7px 0 0;
+  font-size: 13px;
   color: #8a96a8;
   line-height: 1.4;
 }
@@ -776,8 +774,8 @@ export default {
 .dashboard-shell {
   max-width: 1380px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 350px;
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 18px;
   align-items: start;
 }
 
@@ -785,23 +783,16 @@ export default {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .dashboard-right-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
   min-width: 0;
   position: sticky;
   top: 24px;
-}
-
-.dashboard-work-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
-  gap: 16px;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .dashboard-card {
@@ -811,18 +802,23 @@ export default {
 .dashboard-card :deep(.card-header),
 .dashboard-card :deep(.card-head) {
   align-items: flex-start;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
+}
+
+.dashboard-card :deep(.card-body),
+.dashboard-card :deep(.card-content) {
+  padding-top: 0;
 }
 
 .card-title {
-  font-size: 13.5px;
+  font-size: 13.2px;
   font-weight: 850;
   color: #0f172a;
 }
 
 .card-subtitle {
-  margin: 4px 0 0;
-  font-size: 12.2px;
+  margin: 3px 0 0;
+  font-size: 11.8px;
   font-weight: 500;
   color: #8a96a8;
   line-height: 1.35;
@@ -830,8 +826,8 @@ export default {
 
 .card-link,
 .btn-link {
-  font-size: 12px;
-  font-weight: 750;
+  font-size: 11.8px;
+  font-weight: 800;
   color: #8a96a8;
   text-decoration: none;
   background: transparent;
@@ -846,70 +842,77 @@ export default {
 }
 
 /* =========================
-   KPI ROW
+   KPI METRIC STRIP
 ========================= */
-
-.dashboard-kpi-grid {
+.metric-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  border: 1px solid #dfe5ee;
+  border-radius: 17px;
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.03);
 }
 
-.dashboard-kpi-grid.staff-metrics {
+.metric-strip.staff-metrics {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.dashboard-kpi-card {
-  min-height: 86px;
+.metric-item {
+  min-height: 82px;
   padding: 14px 16px;
-  border: 1px solid #dfe5ee;
-  border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.03);
-}
-
-.kpi-top {
+  border-right: 1px solid #e5eaf1;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 14px;
 }
 
-.kpi-label {
-  max-width: 118px;
-  font-size: 10px;
+.metric-item:last-child {
+  border-right: none;
+}
+
+.metric-copy {
+  min-width: 0;
+}
+
+.metric-label {
+  display: block;
+  max-width: 128px;
+  font-size: 9.6px;
   font-weight: 850;
   letter-spacing: 0.11em;
   text-transform: uppercase;
   color: #7c8798;
-  line-height: 1.22;
+  line-height: 1.2;
 }
 
-.kpi-icon {
-  width: 30px;
-  height: 30px;
+.metric-value {
+  display: block;
+  margin-top: 9px;
+  font-size: 19px;
+  font-weight: 850;
+  letter-spacing: -0.045em;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.metric-sub {
+  display: block;
+  margin-top: 6px;
+  font-size: 11.3px;
+  color: #8a96a8;
+  line-height: 1.25;
+}
+
+.metric-icon {
+  width: 29px;
+  height: 29px;
   border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  opacity: 0.9;
-}
-
-.kpi-value {
-  font-size: 19px;
-  font-weight: 850;
-  letter-spacing: -0.045em;
-  color: #0f172a;
-  line-height: 1.05;
-}
-
-.kpi-sub {
-  margin-top: 5px;
-  font-size: 11.5px;
-  color: #8a96a8;
-  line-height: 1.28;
 }
 
 /* Existing metric icon classes */
@@ -939,22 +942,39 @@ export default {
 }
 
 /* =========================
-   WORK AREA
+   MAIN WORK GRID
 ========================= */
 .dashboard-work-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
-  gap: 18px;
-  align-items: stretch;
+  grid-template-columns: minmax(0, 1.15fr) minmax(310px, 0.85fr);
+  gap: 14px;
+  align-items: start;
 }
 
 .today-card,
 .activity-card {
-  min-height: 360px;
+  min-height: 300px;
 }
 
 .today-body {
-  min-height: 265px;
+  min-height: 0;
+}
+
+.dashboard-table {
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.dashboard-table th {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 10px;
+  letter-spacing: 0.105em;
+}
+
+.dashboard-table td {
+  padding: 12px 14px;
+  vertical-align: top;
 }
 
 .dashboard-table th:nth-child(1),
@@ -977,86 +997,88 @@ export default {
   width: 20%;
 }
 
-.dashboard-empty-line {
-  padding: 12px 0 4px;
-  font-size: 12.8px;
-  color: #8a96a8;
-  font-style: italic;
+.dashboard-table .item-name {
+  font-size: 12.6px;
+  font-weight: 850;
 }
 
+.dashboard-table .item-sub {
+  margin-top: 3px;
+  font-size: 11.3px;
+  color: #8a96a8;
+}
+
+.money-text {
+  font-size: 12.6px;
+  font-weight: 800;
+}
+
+/* Empty state */
 .dashboard-empty-state {
-  min-height: 260px;
+  min-height: 205px;
   border: 1px dashed #dfe5ee;
-  border-radius: 16px;
+  border-radius: 15px;
   background: #fbfcfe;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
   text-align: center;
-  padding: 24px;
+  padding: 22px;
 }
 
 .dashboard-empty-state .empty-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 13px;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
   background: #f3f6fa;
   color: #64748b;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 }
 
 .dashboard-empty-state strong {
-  font-size: 14px;
+  font-size: 13.2px;
   font-weight: 850;
   color: #0f172a;
 }
 
 .dashboard-empty-state span {
-  max-width: 320px;
+  max-width: 285px;
   margin-bottom: 6px;
-  font-size: 12.5px;
+  font-size: 12px;
   color: #8a96a8;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
-.dashboard-right-panel .dashboard-card :deep(.card-body),
-.dashboard-right-panel .dashboard-card :deep(.card-content) {
-  padding-top: 0;
-}
-
-.low-stock-card,
-.online-card,
-.quick-card {
-  min-height: auto;
+.dashboard-empty-line,
+.attention-empty {
+  padding: 8px 0 2px;
+  font-size: 12.2px;
+  color: #8a96a8;
+  font-style: italic;
 }
 
 /* =========================
    ACTIVITY
 ========================= */
 .activity-list {
-  max-height: 335px;
+  max-height: 255px;
   overflow-y: auto;
-  padding-right: 6px;
+  padding-right: 5px;
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
-.activity-list::-webkit-scrollbar,
-.online-request-list::-webkit-scrollbar,
-.stock-list::-webkit-scrollbar {
+.activity-list::-webkit-scrollbar {
   width: 5px;
 }
 
-.activity-list::-webkit-scrollbar-thumb,
-.online-request-list::-webkit-scrollbar-thumb,
-.stock-list::-webkit-scrollbar-thumb {
+.activity-list::-webkit-scrollbar-thumb {
   background: #dfe5ee;
   border-radius: 999px;
 }
@@ -1064,8 +1086,8 @@ export default {
 .activity-item {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 12px 2px;
+  gap: 9px;
+  padding: 10px 2px;
   border-bottom: 1px solid #edf1f6;
 }
 
@@ -1077,13 +1099,13 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 6px;
+  padding-top: 5px;
   flex-shrink: 0;
 }
 
 .act-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
 }
 
@@ -1105,9 +1127,9 @@ export default {
 
 .act-line {
   width: 1px;
-  min-height: 22px;
+  min-height: 18px;
   flex: 1;
-  margin-top: 6px;
+  margin-top: 5px;
   background: #e5eaf1;
 }
 
@@ -1120,9 +1142,9 @@ export default {
 }
 
 .act-text {
-  font-size: 12.6px;
+  font-size: 12.15px;
   color: #475569;
-  line-height: 1.42;
+  line-height: 1.38;
 }
 
 .act-bold {
@@ -1131,29 +1153,29 @@ export default {
 }
 
 .act-time {
-  margin-top: 4px;
-  font-size: 11.5px;
+  margin-top: 3px;
+  font-size: 10.8px;
   color: #8a96a8;
 }
 
 /* =========================
    QUICK ACTIONS
 ========================= */
-.quick-actions {
+.quick-actions.compact {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
 }
 
 .qa-btn {
-  min-height: 52px;
-  padding: 10px 11px;
-  border-radius: 14px;
+  min-height: 48px;
+  padding: 9px 10px;
+  border-radius: 13px;
   border: 1px solid #dfe5ee;
   background: #fbfcfe;
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 10px;
   text-align: left;
   text-decoration: none;
   color: inherit;
@@ -1187,25 +1209,36 @@ export default {
 }
 
 .qa-icon {
-  width: 31px;
-  height: 31px;
-  border-radius: 11px;
+  width: 29px;
+  height: 29px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
+.qa-svg,
+.metric-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .qa-label {
-  font-size: 12.8px;
+  font-size: 12.4px;
   font-weight: 850;
   color: #0f172a;
   line-height: 1.2;
 }
 
 .qa-desc {
-  margin-top: 3px;
-  font-size: 11.4px;
+  margin-top: 2px;
+  font-size: 11px;
   color: #8a96a8;
   line-height: 1.25;
 }
@@ -1231,155 +1264,153 @@ export default {
 }
 
 /* =========================
-   LOW STOCK ALERTS
+   NEEDS ATTENTION CARD
 ========================= */
-.stock-list {
-  max-height: 230px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-right: 4px;
+.attention-card {
+  min-height: 0;
 }
 
-.stock-alert-item {
+.attention-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attention-section {
   padding: 11px;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
+  border: 1px solid #e1e7ef;
+  border-radius: 15px;
   background: #fbfcfe;
 }
 
-.stock-alert-main {
+.attention-section-head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+.attention-section-head span {
+  font-size: 11.5px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.attention-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.attention-item {
+  min-height: 45px;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-.stock-alert-name {
-  font-size: 13px;
+.attention-name {
+  font-size: 12.8px;
   font-weight: 850;
   color: #0f172a;
   line-height: 1.25;
 }
 
-.stock-alert-meta {
-  margin-top: 4px;
-  font-size: 11.8px;
-  font-weight: 650;
+.attention-meta {
+  margin-top: 3px;
+  font-size: 11.3px;
+  font-weight: 600;
   color: #8a96a8;
+  line-height: 1.3;
 }
 
-.stock-alert-pill {
-  height: 24px;
-  padding: 0 10px;
+.attention-pill {
+  height: 22px;
+  padding: 0 9px;
   border-radius: 999px;
   border: 1px solid #fed7aa;
   background: #fff7ed;
   color: #c2410c;
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 850;
   white-space: nowrap;
 }
 
-.stock-alert-pill.critical {
+.attention-pill.critical {
   border-color: #fecaca;
   background: #fff1f2;
   color: #dc2626;
 }
 
-.stock-alert-action {
-  height: 32px;
-  margin-top: 10px;
+.attention-action {
+  height: 30px;
+  margin-top: 2px;
   border-radius: 11px;
   border: 1px solid #dfe5ee;
   background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11.8px;
+  font-size: 11.4px;
   font-weight: 800;
   color: #475569;
   text-decoration: none;
 }
 
-.stock-alert-action:hover {
+.attention-action:hover {
   border-color: #cfd8e6;
   color: #0f172a;
 }
 
-/* =========================
-   ONLINE REQUESTS
-========================= */
-.import-message {
-  margin-bottom: 10px;
-  padding: 9px 11px;
-  border-radius: 12px;
-  border: 1px solid #bbf7d0;
-  background: #f0fdf4;
-  color: #15803d;
-  font-size: 12px;
-  font-weight: 650;
+.request-item {
+  align-items: center;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
-.online-request-list {
-  max-height: 240px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-right: 4px;
-}
-
-.online-request-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px 12px;
-  padding: 13px;
-  border: 1px solid #e6ebf2;
-  border-radius: 14px;
-  background: #fbfcfe;
-}
-
-.or-content {
+.request-copy {
   min-width: 0;
 }
 
-.or-name {
-  font-size: 13px;
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1.2;
-}
-
-.or-meta {
-  margin-top: 3px;
-  font-size: 11.5px;
-  color: #8a96a8;
-  line-height: 1.3;
-}
-
-.or-actions {
+.request-actions {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
+  align-items: center;
+  gap: 7px;
   flex-shrink: 0;
 }
 
+.request-actions .badge {
+  font-size: 10.5px;
+  padding: 4px 9px;
+}
+
 .or-convert-btn {
-  height: 28px;
-  padding: 0 11px;
+  height: 26px;
+  padding: 0 10px;
   border: none;
   border-radius: 999px;
   background: #0f172a;
   color: #ffffff;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 850;
   cursor: pointer;
+}
+
+.import-message.compact {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 11.5px;
+  font-weight: 650;
 }
 
 /* =========================
@@ -1391,7 +1422,7 @@ export default {
   }
 
   .dashboard-shell {
-    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-columns: minmax(0, 1fr) 320px;
   }
 
   .dashboard-work-grid {
@@ -1413,13 +1444,30 @@ export default {
     position: static;
   }
 
-  .dashboard-kpi-grid {
+  .metric-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .quick-actions {
+  .metric-strip.staff-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metric-item:nth-child(2n) {
+    border-right: none;
+  }
+
+  .metric-item:nth-child(-n + 2) {
+    border-bottom: 1px solid #e5eaf1;
+  }
+
+  .quick-actions.compact {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .attention-stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -1434,7 +1482,7 @@ export default {
   }
 
   .hero-title {
-    font-size: 26px;
+    font-size: 25px;
   }
 
   .hero-actions {
@@ -1442,365 +1490,22 @@ export default {
     justify-content: space-between;
   }
 
-  .dashboard-kpi-grid,
-  .dashboard-kpi-grid.staff-metrics,
-  .quick-actions {
+  .metric-strip,
+  .metric-strip.staff-metrics,
+  .quick-actions.compact,
+  .attention-stack {
     grid-template-columns: 1fr;
   }
-}
 
-/* =========================================================
-   DASHBOARD — TIGHTER SAAS LAYOUT OVERRIDE
-========================================================= */
-
-/* Overall layout */
-.main {
-  padding: 30px 38px 40px;
-}
-
-.dashboard-hero {
-  margin-bottom: 18px;
-}
-
-.hero-title {
-  font-size: 27px;
-  letter-spacing: -0.055em;
-}
-
-.hero-meta {
-  margin-top: 8px;
-  font-size: 10.5px;
-}
-
-.hero-subtitle {
-  margin-top: 7px;
-  font-size: 13px;
-}
-
-/* Main shell */
-.dashboard-shell {
-  grid-template-columns: minmax(0, 1fr) 330px;
-  gap: 18px;
-}
-
-.dashboard-main-panel {
-  gap: 14px;
-}
-
-.dashboard-right-panel {
-  gap: 12px;
-}
-
-/* KPI cards */
-.dashboard-kpi-grid {
-  gap: 10px;
-}
-
-.dashboard-kpi-card {
-  min-height: 78px;
-  padding: 12px 14px;
-  border-radius: 15px;
-  box-shadow: 0 7px 20px rgba(15, 23, 42, 0.025);
-}
-
-.kpi-top {
-  margin-bottom: 8px;
-}
-
-.kpi-label {
-  max-width: 110px;
-  font-size: 9.5px;
-  line-height: 1.18;
-  letter-spacing: 0.105em;
-}
-
-.kpi-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 10px;
-}
-
-.kpi-value {
-  font-size: 18px;
-  line-height: 1;
-}
-
-.kpi-sub {
-  margin-top: 5px;
-  font-size: 11px;
-  line-height: 1.25;
-}
-
-/* Work grid */
-.dashboard-work-grid {
-  grid-template-columns: minmax(0, 1.15fr) minmax(310px, 0.85fr);
-  gap: 14px;
-  align-items: start;
-}
-
-/* General dashboard card tightening */
-.dashboard-card :deep(.card-header),
-.dashboard-card :deep(.card-head) {
-  margin-bottom: 10px;
-}
-
-.dashboard-card :deep(.card-body),
-.dashboard-card :deep(.card-content) {
-  padding-top: 0;
-}
-
-.card-title {
-  font-size: 13.2px;
-}
-
-.card-subtitle {
-  margin-top: 3px;
-  font-size: 11.8px;
-}
-
-/* Remove over-tall cards */
-.today-card,
-.activity-card {
-  min-height: 0;
-}
-
-.today-body {
-  min-height: 0;
-}
-
-/* Today's transactions card */
-.today-card {
-  min-height: 300px;
-}
-
-.dashboard-table {
-  border-radius: 13px;
-  overflow: hidden;
-}
-
-.dashboard-table th {
-  height: 34px;
-  padding: 0 14px;
-  font-size: 10px;
-  letter-spacing: 0.105em;
-}
-
-.dashboard-table td {
-  padding: 12px 14px;
-  vertical-align: top;
-}
-
-.dashboard-table .item-name {
-  font-size: 12.6px;
-  font-weight: 850;
-}
-
-.dashboard-table .item-sub {
-  margin-top: 3px;
-  font-size: 11.3px;
-  color: #8a96a8;
-}
-
-.money-text {
-  font-size: 12.6px;
-  font-weight: 800;
-}
-
-/* Empty state should not be huge */
-.dashboard-empty-state {
-  min-height: 205px;
-  padding: 22px;
-  gap: 8px;
-  border-radius: 15px;
-}
-
-.dashboard-empty-state .empty-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  font-size: 18px;
-}
-
-.dashboard-empty-state strong {
-  font-size: 13.2px;
-}
-
-.dashboard-empty-state span {
-  max-width: 285px;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-/* Recent activity */
-.activity-card {
-  min-height: 300px;
-}
-
-.activity-list {
-  max-height: 255px;
-  padding-right: 5px;
-}
-
-.activity-item {
-  gap: 9px;
-  padding: 10px 2px;
-}
-
-.act-dot-wrap {
-  padding-top: 5px;
-}
-
-.act-dot {
-  width: 7px;
-  height: 7px;
-}
-
-.act-line {
-  min-height: 18px;
-  margin-top: 5px;
-}
-
-.act-text {
-  font-size: 12.15px;
-  line-height: 1.38;
-}
-
-.act-time {
-  margin-top: 3px;
-  font-size: 10.8px;
-}
-
-/* Quick actions */
-.quick-card {
-  padding-bottom: 2px;
-}
-
-.quick-actions {
-  gap: 7px;
-}
-
-.qa-btn {
-  min-height: 48px;
-  padding: 9px 10px;
-  border-radius: 13px;
-  gap: 10px;
-}
-
-.qa-icon {
-  width: 29px;
-  height: 29px;
-  border-radius: 10px;
-}
-
-.qa-label {
-  font-size: 12.4px;
-}
-
-.qa-desc {
-  margin-top: 2px;
-  font-size: 11px;
-}
-
-/* Low stock */
-.low-stock-card {
-  min-height: 0;
-}
-
-.stock-list {
-  max-height: none;
-  gap: 8px;
-}
-
-.stock-alert-item {
-  padding: 10px;
-  border-radius: 13px;
-}
-
-.stock-alert-name {
-  font-size: 12.8px;
-}
-
-.stock-alert-meta {
-  margin-top: 3px;
-  font-size: 11.4px;
-}
-
-.stock-alert-pill {
-  height: 22px;
-  padding: 0 9px;
-  font-size: 10.5px;
-}
-
-.stock-alert-action {
-  height: 30px;
-  margin-top: 9px;
-  font-size: 11.4px;
-}
-
-/* Online requests: make it a compact inbox preview */
-.online-card {
-  min-height: 0;
-}
-
-.online-request-list {
-  max-height: none;
-  overflow: visible;
-  gap: 7px;
-  padding-right: 0;
-}
-
-.online-request-item {
-  padding: 10px 11px;
-  border-radius: 13px;
-  align-items: center;
-}
-
-.or-name {
-  font-size: 12.7px;
-}
-
-.or-meta {
-  margin-top: 2px;
-  font-size: 11.2px;
-}
-
-.or-actions {
-  gap: 0;
-}
-
-.or-actions .badge {
-  font-size: 10.5px;
-  padding: 4px 9px;
-}
-
-.or-convert-btn {
-  height: 26px;
-  padding: 0 10px;
-  font-size: 10.5px;
-}
-
-/* Optional mini footer link inside online card */
-.online-card-footer {
-  margin-top: 9px;
-  padding-top: 9px;
-  border-top: 1px solid #edf1f6;
-  display: flex;
-  justify-content: center;
-}
-
-.online-card-footer a,
-.online-card-footer button {
-  font-size: 11.8px;
-  font-weight: 800;
-  color: #64748b;
-  text-decoration: none;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-}
-
-.online-card-footer a:hover,
-.online-card-footer button:hover {
-  color: #0f172a;
+  .metric-item,
+  .metric-item:nth-child(2n),
+  .metric-item:nth-child(-n + 2) {
+    border-right: none;
+    border-bottom: 1px solid #e5eaf1;
+  }
+
+  .metric-item:last-child {
+    border-bottom: none;
+  }
 }
 </style>
