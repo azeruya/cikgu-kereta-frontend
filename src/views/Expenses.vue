@@ -41,7 +41,11 @@
       <div class="expense-grid">
         <Card>
           <template #header>
-            <span class="card-title">Expense List</span>
+            <div>
+              <span class="card-title">Expenses</span>
+              <div class="card-subtitle">Click a row to view details, edit, or manage receipts.</div>
+            </div>
+
             <span class="card-link">
               {{ filteredExpenses.length }} record{{ filteredExpenses.length === 1 ? '' : 's' }}
             </span>
@@ -125,45 +129,34 @@
                     <span v-else class="empty-inline">No receipt</span>
                   </td>
 
-                  <td class="right">
-                    <div class="icon-btn-group" @click.stop>
-                      <button
-                        class="icon-btn"
-                        title="View expense"
-                        @click="openDetail(expense)"
-                      >
-                        <svg viewBox="0 0 24 24" class="icon-svg">
-                          <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
-                      </button>
+              <td class="right">
+                <div class="icon-btn-group" @click.stop>
+                  <button
+                    class="icon-btn"
+                    title="Edit expense"
+                    @click="openFormModal(expense)"
+                  >
+                    <svg viewBox="0 0 24 24" class="icon-svg">
+                      <path d="M12 20h9" />
+                      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
+                    </svg>
+                  </button>
 
-                      <button
-                        class="icon-btn"
-                        title="Edit expense"
-                        @click="openFormModal(expense)"
-                      >
-                        <svg viewBox="0 0 24 24" class="icon-svg">
-                          <path d="M12 20h9" />
-                          <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
-                        </svg>
-                      </button>
-
-                      <button
-                        class="icon-btn icon-btn-danger"
-                        title="Delete expense"
-                        @click="openDeleteModal(expense)"
-                      >
-                        <svg viewBox="0 0 24 24" class="icon-svg">
-                          <path d="M3 6h18" />
-                          <path d="M8 6V4h8v2" />
-                          <path d="M19 6l-1 15H6L5 6" />
-                          <path d="M10 11v6" />
-                          <path d="M14 11v6" />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
+                  <button
+                    class="icon-btn icon-btn-danger"
+                    title="Delete expense"
+                    @click="openDeleteModal(expense)"
+                  >
+                    <svg viewBox="0 0 24 24" class="icon-svg">
+                      <path d="M3 6h18" />
+                      <path d="M8 6V4h8v2" />
+                      <path d="M19 6l-1 15H6L5 6" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
                 </tr>
               </tbody>
             </table>
@@ -270,8 +263,12 @@
       <Teleport to="body">
         <div class="modal" v-if="activeExpense" @click.self="closeDetail">
           <div v-if="detailLoading" class="modal-card large">
-            <div class="modal-header">
-              <span>Expense Detail</span>
+            <div class="modal-header detail-modal-header">
+              <div>
+                <div class="detail-modal-title-row">Expense Detail</div>
+                <p class="detail-modal-subtitle">Loading expense information...</p>
+              </div>
+
               <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
             </div>
 
@@ -288,92 +285,119 @@
             </div>
           </div>
 
-        <div v-else class="modal-card large">
-        <div class="modal-header">
-          <span>{{ activeExpense.category || "Expense Detail" }}</span>
-          <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
-        </div>
-
-        <div class="modal-body modal-detail-body">
-          <div class="detail-section">
-            <div class="section-title">Expense Information</div>
-
-            <div class="info-list">
-              <div class="info-row">
-                <div class="info-item">
-                  <span class="info-label">Date</span>
-                  <span class="info-value">{{ formatDate(activeExpense.expense_date) }}</span>
-                </div>
-
-                <div class="info-item">
-                  <span class="info-label">Category</span>
-                  <span class="info-value">{{ activeExpense.category || "-" }}</span>
-                </div>
-              </div>
-
-              <div class="info-row">
-                <div class="info-item">
-                  <span class="info-label">Amount</span>
-                  <span class="info-value">RM {{ formatMoney(activeExpense.amount) }}</span>
-                </div>
-
-                <div class="info-item">
-                  <span class="info-label">Receipt</span>
-                  <span class="info-value">
-                    {{ activeExpense.receipt_file ? "Available" : "-" }}
+          <div v-else class="modal-card large">
+            <div class="modal-header detail-modal-header">
+              <div>
+                <div class="detail-modal-title-row">
+                  <span>{{ activeExpense.category || "Expense Detail" }}</span>
+                  <span class="badge" :class="categoryBadgeClass(activeExpense.category)">
+                    {{ activeExpense.category || "Uncategorised" }}
                   </span>
                 </div>
+
+                <p class="detail-modal-subtitle">
+                  Expense details, receipt status, and description.
+                </p>
               </div>
 
-              <div class="info-row last">
-                <div class="info-item full">
-                  <span class="info-label">Description</span>
-                  <span class="info-value">{{ activeExpense.description || "-" }}</span>
+              <button class="btn btn-sm btn-ghost" @click="closeDetail">✕</button>
+            </div>
+
+            <div class="modal-body modal-detail-body">
+              <div class="expense-kpi-grid">
+                <div class="expense-kpi-card">
+                  <span>Amount</span>
+                  <strong>RM {{ formatMoney(activeExpense.amount) }}</strong>
+                </div>
+
+                <div class="expense-kpi-card">
+                  <span>Date</span>
+                  <strong>{{ formatDate(activeExpense.expense_date) }}</strong>
+                </div>
+
+                <div class="expense-kpi-card">
+                  <span>Receipt</span>
+                  <strong>{{ activeExpense.receipt_file ? "Available" : "Not uploaded" }}</strong>
                 </div>
               </div>
+
+              <div class="detail-section-card compact-detail-card">
+                <div class="detail-section-title">Expense Details</div>
+
+                <div class="compact-detail-list">
+                  <div class="compact-detail-row">
+                    <span>Category</span>
+                    <strong>{{ activeExpense.category || "-" }}</strong>
+                  </div>
+
+                  <div class="compact-detail-row">
+                    <span>Receipt</span>
+                    <strong>{{ activeExpense.receipt_file ? "Uploaded" : "No receipt" }}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-section-card">
+                <div class="detail-section-title">Description</div>
+                <p class="detail-description">
+                  {{ activeExpense.description || "No description provided." }}
+                </p>
+              </div>
+            </div>
+
+            <div class="modal-footer split">
+              <div class="left-actions">
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-pill"
+                  @click="openFormModal(activeExpense)"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-primary btn-pill"
+                  :disabled="!activeExpense.receipt_file"
+                  @click="viewReceipt(activeExpense)"
+                >
+                  View Receipt
+                </button>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-danger-light btn-pill"
+                @click="openDeleteModal(activeExpense)"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
-
-        <div class="modal-footer split">
-          <div class="left-actions">
-            <button @click="openFormModal(activeExpense)" class="btn btn-secondary btn-pill">Edit</button>
-            <button
-              class="btn btn-primary btn-pill"
-              :disabled="!activeExpense.receipt_file"
-              @click="viewReceipt(activeExpense)"
-            >
-              View Receipt
-            </button>
-          </div>
-
-          <button class="btn btn-danger-light btn-pill" @click="openDeleteModal(activeExpense)">
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
       </Teleport>
 
       <!-- Delete Confirmation Modal -->
       <Teleport to="body">
         <div
           v-if="showDeleteModal"
-          class="modal-overlay"
+          class="modal"
           @click.self="closeDeleteModal"
         >
-          <div class="confirm-card">
-            <div class="confirm-icon confirm-icon-danger">!</div>
+          <div class="modal-card danger-confirm-card">
+            <div class="danger-confirm-body">
+              <div class="danger-confirm-icon">!</div>
 
-            <div class="confirm-title">Delete expense?</div>
+              <div class="danger-confirm-title">Delete expense?</div>
 
-            <div class="confirm-message">
-              Are you sure you want to delete this
-              <strong>{{ expenseToDelete?.category }}</strong>
-              expense? This action cannot be undone.
+              <div class="danger-confirm-message">
+                Are you sure you want to delete this
+                <strong>{{ expenseToDelete?.category || "expense" }}</strong>
+                record? This action cannot be undone.
+              </div>
             </div>
 
-            <div class="confirm-actions">
+            <div class="danger-confirm-footer">
               <button
                 type="button"
                 class="btn btn-secondary btn-pill"
@@ -399,15 +423,25 @@
         <!-- Add/Edit Expense Form Modal -->
         <Teleport to="body">
           <div v-if="showFormModal" class="modal" @click.self="closeFormModal">
-            <div class="modal-card large form-modal-card">
-              <div class="modal-header">
-                <span>{{ editingExpenseId ? "Edit Expense" : "Add Expense" }}</span>
-                <button type="button" class="btn btn-sm btn-ghost" @click="closeFormModal">✕</button>
+            <div class="modal-card form-dialog-card">
+              <div class="form-dialog-header">
+                <div>
+                  <div class="form-dialog-title">
+                    {{ editingExpenseId ? "Edit Expense" : "Add Expense" }}
+                  </div>
+                  <p class="form-dialog-subtitle">
+                    {{ editingExpenseId ? "Update expense record and receipt." : "Record a workshop operating expense." }}
+                  </p>
+                </div>
+
+                <button type="button" class="btn btn-sm btn-ghost" @click="closeFormModal">
+                  ✕
+                </button>
               </div>
 
-              <div class="modal-body form-modal-body">
-                <div class="form-section">
-                  <div class="section-title">Expense Information</div>
+              <div class="form-dialog-body">
+                <div class="form-dialog-section">
+                  <div class="form-dialog-section-title">Expense Information</div>
 
                   <div class="form-grid">
                     <div class="form-field">
@@ -464,40 +498,50 @@
                       ></textarea>
                     </div>
 
-                     <div v-if="editingExpenseId && form.existing_receipt" class="receipt-chip">
-                      <div class="receipt-chip-left">
-                      <svg class="receipt-chip-icon" viewBox="0 0 16 16">
-                        <path d="M5 2h5l3 3v9H5z" />
-                        <path d="M10 2v3h3" />
-                        <path d="M7 8h4" />
-                        <path d="M7 11h4" />
-                      </svg>
-
-                      <div>
-                        <div class="receipt-chip-title">Receipt uploaded</div>
-                        <div class="receipt-chip-sub">Choose a new file to replace it</div>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      class="receipt-chip-action"
-                      @click="viewReceipt({ receipt_file: form.existing_receipt })"
+                    <div
+                      v-if="editingExpenseId && form.existing_receipt"
+                      class="receipt-chip improved"
                     >
-                      View
-                    </button>                 
-                  </div>
+                      <div class="receipt-chip-left">
+                        <svg class="receipt-chip-icon" viewBox="0 0 16 16">
+                          <path d="M5 2h5l3 3v9H5z" />
+                          <path d="M10 2v3h3" />
+                          <path d="M7 8h4" />
+                          <path d="M7 11h4" />
+                        </svg>
+
+                        <div>
+                          <div class="receipt-chip-title">Receipt uploaded</div>
+                          <div class="receipt-chip-sub">Choose a new file to replace it</div>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="receipt-chip-action"
+                        @click="viewReceipt({ receipt_file: form.existing_receipt })"
+                      >
+                        View
+                      </button>
                     </div>
                   </div>
-     
+                </div>
 
                 <div v-if="formError" class="page-error" style="margin-top:12px;">
                   {{ formError }}
                 </div>
               </div>
 
-              <div class="modal-footer form-actions">
-                <button type="button" class="btn btn-secondary btn-pill" @click="closeFormModal">Cancel</button>
+              <div class="form-dialog-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-pill"
+                  :disabled="savingForm"
+                  @click="closeFormModal"
+                >
+                  Cancel
+                </button>
+
                 <button
                   type="button"
                   class="btn btn-primary btn-pill"
@@ -1036,6 +1080,10 @@ export default {
 </script>
 
 <style scoped>
+/* ================================
+   EXPENSES
+================================ */
+
 .expense-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.8fr) 340px;
@@ -1049,33 +1097,20 @@ export default {
   gap: 14px;
 }
 
-.category-list {
-  display: flex;
-  flex-direction: column;
+.card-subtitle {
+  margin-top: 4px;
+  font-size: 12.2px;
+  color: #8a96a8;
+  font-weight: 500;
 }
 
-.category-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 0;
-  border-bottom: 1px solid #eeeeee;
-}
-
-.category-row:last-child {
-  border-bottom: none;
-}
-
-.category-name-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* ================================
+   TABLE CELLS
+================================ */
 
 .description-cell {
-  max-width: 220px;
-  color: #333;
+  max-width: 240px;
+  color: #334155;
   font-size: 12.5px;
   line-height: 1.35;
 
@@ -1085,38 +1120,58 @@ export default {
   overflow: hidden;
 }
 
-/* Single month trend card */
+.description-cell.empty {
+  color: #8a96a8;
+  font-style: italic;
+}
+
+.money-cell {
+  font-size: 12.8px;
+  font-weight: 760;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.empty-inline {
+  font-size: 12px;
+  color: #8a96a8;
+  font-style: italic;
+}
+
+/* ================================
+   MONTHLY TREND
+================================ */
+
 .single-trend-card {
-  min-height: 96px;
-  border: 1px solid #eeeeee;
+  min-height: 92px;
+  border: 1px solid #dfe5ee;
   border-radius: 14px;
-  background: #fafafa;
-  padding: 18px;
+  background: #fbfcfe;
+  padding: 15px 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .single-trend-label {
-  font-size: 12px;
-  color: #777;
-  font-weight: 600;
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 750;
 }
 
 .single-trend-value {
-  font-size: 20px;
-  color: #111;
-  font-weight: 800;
   margin-top: 2px;
+  font-size: 18px;
+  color: #0f172a;
+  font-weight: 850;
 }
 
 .single-trend-note {
   font-size: 11.5px;
-  color: #999;
+  color: #8a96a8;
 }
 
-/* Monthly trend list */
 .trend-list {
   display: flex;
   flex-direction: column;
@@ -1128,43 +1183,120 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 11px 12px;
-  border: 1px solid #eeeeee;
-  border-radius: 13px;
-  background: #fafafa;
+  padding: 12px 14px;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #fbfcfe;
 }
 
 .trend-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #222;
+  font-size: 12.8px;
+  font-weight: 800;
+  color: #0f172a;
 }
 
 .trend-sub {
-  margin-top: 2px;
+  margin-top: 3px;
   font-size: 11.5px;
-  color: #999;
+  color: #8a96a8;
 }
 
 .trend-row strong {
-  font-size: 13px;
-  font-weight: 800;
-  color: #222;
+  font-size: 12.8px;
+  font-weight: 850;
+  color: #0f172a;
   white-space: nowrap;
 }
 
-/* Existing receipt chip in edit form */
+/* ================================
+   CATEGORY LIST
+================================ */
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #fbfcfe;
+  overflow: hidden;
+}
+
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 43px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.category-row:last-child {
+  border-bottom: none;
+}
+
+.category-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* ================================
+   EXPENSE DETAIL MODAL
+================================ */
+
+.expense-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.expense-kpi-card {
+  min-height: 78px;
+  padding: 13px 14px;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #fbfcfe;
+}
+
+.expense-kpi-card span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #8a96a8;
+}
+
+.expense-kpi-card strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 820;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+/* ================================
+   RECEIPT CHIP
+================================ */
+
 .receipt-chip {
   grid-column: 1 / -1;
   margin-top: 2px;
-  padding: 10px 12px;
-  border: 1px solid #eeeeee;
+  padding: 11px 13px;
+  border: 1px solid #dfe5ee;
   border-radius: 13px;
-  background: #fafafa;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.receipt-chip.improved {
+  background: #f8fafc;
 }
 
 .receipt-chip-left {
@@ -1179,42 +1311,47 @@ export default {
   height: 18px;
   flex-shrink: 0;
   fill: none;
-  stroke: #777;
-  stroke-width: 1.6;
+  stroke: #64748b;
+  stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .receipt-chip-title {
   font-size: 12.5px;
-  font-weight: 700;
-  color: #222;
+  font-weight: 800;
+  color: #0f172a;
   line-height: 1.2;
 }
 
 .receipt-chip-sub {
-  margin-top: 2px;
+  margin-top: 3px;
   font-size: 11.5px;
-  color: #888;
+  color: #8a96a8;
   line-height: 1.2;
 }
 
 .receipt-chip-action {
-  height: 30px;
+  min-height: 30px;
   padding: 0 12px;
   border-radius: 10px;
-  border: 1px solid #e3e3e3;
-  background: #fff;
-  color: #333;
+  border: 1px solid #dfe5ee;
+  background: #ffffff;
+  color: #334155;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .receipt-chip-action:hover {
-  background: #f7f7f6;
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
+
+/* ================================
+   RESPONSIVE
+================================ */
 
 @media (max-width: 1100px) {
   .expense-grid {
@@ -1223,6 +1360,21 @@ export default {
 
   .filters-bar {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 720px) {
+  .expense-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .receipt-chip {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .receipt-chip-action {
+    width: 100%;
   }
 }
 </style> 

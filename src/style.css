@@ -3223,3 +3223,120 @@ th.center {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   REUSABLE FORM MODAL
+========================================================= */
+
+.form-dialog-card {
+  width: min(620px, calc(100vw - 32px));
+  overflow: hidden;
+}
+
+.form-dialog-header {
+  padding: 22px 24px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.form-dialog-title {
+  font-size: 15.5px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.form-dialog-subtitle {
+  margin: 5px 0 0;
+  font-size: 12.5px;
+  color: #8a96a8;
+  line-height: 1.4;
+}
+
+.form-dialog-body {
+  padding: 0 24px 22px;
+}
+
+.form-dialog-section {
+  padding: 16px;
+  border: 1px solid #dfe5ee;
+  border-radius: 15px;
+  background: #fbfcfe;
+}
+
+.form-dialog-section-title {
+  margin-bottom: 13px;
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.form-dialog-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid #e5eaf1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.form-dialog-footer .btn {
+  min-width: 112px;
+}
+
+/* =========================================================
+   REUSABLE DANGER CONFIRM MODAL
+========================================================= */
+
+.danger-confirm-card {
+  width: min(440px, calc(100vw - 32px));
+  overflow: hidden;
+}
+
+.danger-confirm-body {
+  padding: 22px 24px 18px;
+}
+
+.danger-confirm-icon {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 14px;
+  border-radius: 999px;
+  background: #fff1f0;
+  border: 1px solid #ffd6d2;
+  color: #dc2626;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.danger-confirm-title {
+  font-size: 15.5px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.danger-confirm-message {
+  margin-top: 8px;
+  font-size: 12.8px;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.danger-confirm-message strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.danger-confirm-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid #e5eaf1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
