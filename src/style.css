@@ -743,6 +743,7 @@ th.center {
 .empty-inline,
 .description-cell.empty {
   font-size: 12px;
+  line-height: 1.2;
   color: #8a96a8;
   font-style: normal;
 }
