@@ -901,7 +901,7 @@ export default {
   padding: 14px;
   border: 1px solid #dfe5ee;
   border-radius: 14px;
-  background: #f8fafc;
+  background: #fbfcfe;
 }
 
 .overview-section-title {
@@ -915,31 +915,31 @@ export default {
 
 .overview-pair {
   display: flex;
-  justify-content: space-between;
-  gap: 14px;
+  flex-direction: column;
+  gap: 3px;
   padding: 8px 0;
   border-bottom: 1px solid #e5eaf1;
 }
 
-.overview-pair:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
 .overview-pair span {
-  font-size: 12px;
-  font-weight: 650;
+  font-size: 11.5px;
+  font-weight: 750;
   color: #8a96a8;
 }
 
 .overview-pair strong,
 .overview-value {
-  font-size: 12.5px;
-  font-weight: 580;
+  font-size: 12.6px;
+  font-weight: 620;
   color: #0f172a;
-  text-align: right;
+  text-align: left;
   line-height: 1.35;
   word-break: break-word;
+}
+
+.overview-pair:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .overview-pair strong {
@@ -948,6 +948,7 @@ export default {
 
 .notes-section {
   grid-column: 1 / -1;
+  padding: 13px 14px;
 }
 
 .overview-note {
@@ -965,15 +966,6 @@ export default {
   .notes-section {
     grid-column: auto;
   }
-}
-
-.overview-value {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 560;
-  color: #0f172a;
-  line-height: 1.35;
-  word-break: break-word;
 }
 
 .notes-cell strong {
