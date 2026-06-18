@@ -194,6 +194,7 @@
 
             <div
               v-for="part in lowStockPreview"
+              v-else
               :key="part.id"
               class="stock-alert-card"
               @click="openDetail(part)"
@@ -208,6 +209,7 @@
 
                 <div class="stock-alert-status">
                   <strong>{{ part.min_stock_threshold - part.stock }} short</strong>
+
                   <button
                     type="button"
                     class="stock-alert-action"
@@ -216,15 +218,6 @@
                     Restock
                   </button>
                 </div>
-              </div>
-
-              <div class="stock-meter">
-                <div
-                  class="stock-meter-fill"
-                  :style="{
-                    width: `${Math.min((part.stock / Math.max(part.min_stock_threshold, 1)) * 100, 100)}%`
-                  }"
-                ></div>
               </div>
             </div>
           </Card>
@@ -932,12 +925,6 @@ nextPage() {
 
 .stock-main {
   font-size: 12.7px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.stock-main {
-  font-size: 12.7px;
   font-weight: 720;
   white-space: nowrap;
 }
@@ -959,25 +946,6 @@ nextPage() {
   font-size: 11px;
   color: #94a3b8;
   font-weight: 500;
-}
-
-/* ================================
-   STOCK METER
-================================ */
-
-.stock-meter {
-  width: 100%;
-  height: 5px;
-  margin-top: 9px;
-  border-radius: 999px;
-  background: #edf1f6;
-  overflow: hidden;
-}
-
-.stock-meter-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: #f59e0b;
 }
 
 /* ================================
@@ -1126,10 +1094,6 @@ nextPage() {
     box-shadow 0.15s ease;
 }
 
-.stock-alert-card + .stock-alert-card {
-  margin-top: 8px;
-}
-
 .stock-alert-card:hover {
   background: #fbfcfe;
   border-color: #d4dce8;
@@ -1138,9 +1102,9 @@ nextPage() {
 
 .stock-alert-top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
 }
 
 .stock-alert-info {
@@ -1163,13 +1127,15 @@ nextPage() {
 }
 
 .stock-alert-status {
-  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .stock-alert-status strong {
-  display: block;
   font-size: 11.8px;
   font-weight: 850;
   color: #dc2626;
@@ -1177,9 +1143,8 @@ nextPage() {
 }
 
 .stock-alert-action {
-  margin-top: 6px;
-  min-height: 25px;
-  padding: 4px 10px;
+  min-height: 26px;
+  padding: 4px 11px;
   border: 1px solid #dfe5ee;
   border-radius: 999px;
   background: #ffffff;
@@ -1199,21 +1164,6 @@ nextPage() {
   border-color: #f3b4ad;
   color: #dc2626;
   transform: translateY(-1px);
-}
-
-.stock-meter {
-  width: 100%;
-  height: 5px;
-  margin-top: 10px;
-  border-radius: 999px;
-  background: #edf1f6;
-  overflow: hidden;
-}
-
-.stock-meter-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: #f59e0b;
 }
 
 .mini-empty-state {
