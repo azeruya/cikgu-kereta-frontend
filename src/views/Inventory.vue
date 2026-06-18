@@ -403,52 +403,75 @@
 
       <!-- RESTOCK MODAL -->
         <Teleport to="body">
-          <div class="modal" @click.self="closeRestockModal">
+          <div
+            v-if="showRestockModal"
+            class="modal"
+            @click.self="closeRestockModal"
+          >
             <div class="modal-card action-modal-card">
               <div class="action-modal-header">
                 <div>
                   <div class="action-modal-title">Restock part</div>
                   <p class="action-modal-subtitle">
-                    Add stock quantity for <strong>{{ restockPart?.name }}</strong>.
+                    Add stock quantity for
+                    <strong>{{ activePart?.name || "this part" }}</strong>.
                   </p>
                 </div>
 
-                <button class="btn btn-sm btn-ghost" type="button" @click="closeRestockModal">
+                <button
+                  class="btn btn-sm btn-ghost"
+                  type="button"
+                  @click="closeRestockModal"
+                >
                   ✕
                 </button>
               </div>
 
               <div class="action-modal-body">
-                <div class="action-summary-box">
+                <div v-if="activePart" class="action-summary-box">
                   <div class="action-summary-row">
                     <span>Current stock</span>
-                    <strong>{{ restockPart?.stock ?? 0 }}</strong>
+                    <strong>{{ activePart.stock }}</strong>
                   </div>
 
                   <div class="action-summary-row">
                     <span>Minimum stock</span>
-                    <strong>{{ restockPart?.min_stock_threshold ?? 0 }}</strong>
+                    <strong>{{ activePart.min_stock_threshold }}</strong>
                   </div>
                 </div>
 
                 <div class="form-field">
                   <label>Quantity to add</label>
                   <input
-                    v-model.number="restockQuantity"
+                    v-model.number="restockForm.quantity"
                     type="number"
                     min="1"
                     step="1"
                   />
                 </div>
+
+                <div v-if="restockError" class="page-error" style="margin-top: 12px;">
+                  {{ restockError }}
+                </div>
               </div>
 
               <div class="action-modal-footer">
-                <button class="btn btn-secondary btn-pill" type="button" @click="closeRestockModal">
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-pill"
+                  :disabled="restockLoading"
+                  @click="closeRestockModal"
+                >
                   Cancel
                 </button>
 
-                <button class="btn btn-primary btn-pill" type="button" @click="confirmRestock">
-                  Confirm
+                <button
+                  type="button"
+                  class="btn btn-primary btn-pill"
+                  :disabled="restockLoading"
+                  @click="submitRestock"
+                >
+                  {{ restockLoading ? "Saving..." : "Confirm" }}
                 </button>
               </div>
             </div>
