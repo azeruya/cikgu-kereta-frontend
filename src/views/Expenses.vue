@@ -1133,12 +1133,6 @@ export default {
   white-space: nowrap;
 }
 
-.empty-inline {
-  font-size: 12px;
-  color: #8a96a8;
-  font-style: italic;
-}
-
 /* ================================
    MONTHLY TREND
 ================================ */
