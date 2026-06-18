@@ -3086,6 +3086,7 @@ th.center {
 /* Top KPI cards, used by inventory detail modal */
 .part-kpi-grid {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
