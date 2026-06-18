@@ -723,8 +723,8 @@ export default {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 22px;
+  gap: 22px;
+  margin-bottom: 20px;
 }
 
 .hero-copy {
@@ -733,35 +733,34 @@ export default {
 
 .hero-title {
   margin: 0;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 850;
+  letter-spacing: -0.05em;
+  line-height: 1.06;
   color: #0f172a;
-  line-height: 1.05;
-  letter-spacing: -0.055em;
 }
 
 .hero-meta {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
-  margin-bottom: 0;
+  margin-top: 10px;
   font-size: 11px;
   font-weight: 800;
-  color: #7c8798;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: #7c8798;
 }
 
 .hero-meta span {
-  color: #c4ccd8;
+  color: #c3cad5;
 }
 
 .hero-subtitle {
-  margin: 7px 0 0;
+  margin: 8px 0 0;
   font-size: 13.5px;
   color: #8a96a8;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .hero-actions {
@@ -831,7 +830,7 @@ export default {
 
 .card-link,
 .btn-link {
-  font-size: 12.2px;
+  font-size: 12px;
   font-weight: 750;
   color: #8a96a8;
   text-decoration: none;
@@ -849,6 +848,7 @@ export default {
 /* =========================
    KPI ROW
 ========================= */
+
 .dashboard-kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -860,12 +860,12 @@ export default {
 }
 
 .dashboard-kpi-card {
-  min-height: 92px;
-  padding: 14px 15px;
+  min-height: 86px;
+  padding: 14px 16px;
   border: 1px solid #dfe5ee;
   border-radius: 16px;
   background: #ffffff;
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.032);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.03);
 }
 
 .kpi-top {
@@ -880,35 +880,36 @@ export default {
   max-width: 118px;
   font-size: 10px;
   font-weight: 850;
-  color: #7c8798;
   letter-spacing: 0.11em;
   text-transform: uppercase;
-  line-height: 1.25;
+  color: #7c8798;
+  line-height: 1.22;
 }
 
 .kpi-icon {
-  width: 31px;
-  height: 31px;
-  border-radius: 11px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  opacity: 0.9;
 }
 
 .kpi-value {
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 850;
-  color: #0f172a;
   letter-spacing: -0.045em;
+  color: #0f172a;
   line-height: 1.05;
 }
 
 .kpi-sub {
-  margin-top: 7px;
-  font-size: 11.8px;
+  margin-top: 5px;
+  font-size: 11.5px;
   color: #8a96a8;
-  line-height: 1.3;
+  line-height: 1.28;
 }
 
 /* Existing metric icon classes */
@@ -949,7 +950,7 @@ export default {
 
 .today-card,
 .activity-card {
-  min-height: 365px;
+  min-height: 360px;
 }
 
 .today-body {
@@ -1042,6 +1043,9 @@ export default {
   max-height: 335px;
   overflow-y: auto;
   padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .activity-list::-webkit-scrollbar,
@@ -1060,8 +1064,8 @@ export default {
 .activity-item {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
+  gap: 10px;
+  padding: 12px 2px;
   border-bottom: 1px solid #edf1f6;
 }
 
@@ -1116,9 +1120,9 @@ export default {
 }
 
 .act-text {
-  font-size: 12.8px;
-  color: #526173;
-  line-height: 1.45;
+  font-size: 12.6px;
+  color: #475569;
+  line-height: 1.42;
 }
 
 .act-bold {
@@ -1325,7 +1329,7 @@ export default {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   padding-right: 4px;
 }
 
@@ -1333,10 +1337,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px 12px;
   padding: 13px;
-  border: 1px solid #dfe5ee;
-  border-radius: 15px;
+  border: 1px solid #e6ebf2;
+  border-radius: 14px;
   background: #fbfcfe;
 }
 
@@ -1346,16 +1350,16 @@ export default {
 
 .or-name {
   font-size: 13px;
-  font-weight: 850;
+  font-weight: 800;
   color: #0f172a;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .or-meta {
-  margin-top: 4px;
-  font-size: 11.8px;
+  margin-top: 3px;
+  font-size: 11.5px;
   color: #8a96a8;
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
 .or-actions {

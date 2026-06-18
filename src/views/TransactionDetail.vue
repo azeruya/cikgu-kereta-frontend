@@ -918,7 +918,7 @@ export default {
 
 .overview-section {
   padding: 13px 14px;
-  min-height: 152px;
+  min-height: 12px;
   border: 1px solid #dfe5ee;
   border-radius: 14px;
   background: #fbfcfe;
