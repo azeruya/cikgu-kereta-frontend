@@ -435,13 +435,13 @@ a {
 
 .tab,
 .filter-tab {
-  min-height: 39px;
+  min-height: 36px;
   padding: 0 16px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--surface);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 660;
   color: var(--text-soft);
   transition: all 0.15s ease;

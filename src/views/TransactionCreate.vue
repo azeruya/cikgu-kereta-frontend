@@ -75,222 +75,223 @@
         </span>
       </div>
 
-      <div class="create-grid">
-        <Card>
-          <template #header>
-            <span class="card-title">Customer & Vehicle</span>
-          </template>
+      <div class="transaction-workspace">
+        <div class="transaction-main">
+          <div class="create-grid">
+            <Card>
+              <template #header>
+                <span class="card-title">Customer & Vehicle</span>
+              </template>
 
-          <div class="form-grid">
-            <div class="form-field">
-              <label>Customer</label>
-              <select v-model="form.customer_id" @change="handleCustomerChange">
-                <option value="">Select customer</option>
-                <option
-                  v-for="customer in customers"
-                  :key="customer.id"
-                  :value="customer.id"
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Customer</label>
+                  <select v-model="form.customer_id" @change="handleCustomerChange">
+                    <option value="">Select customer</option>
+                    <option
+                      v-for="customer in customers"
+                      :key="customer.id"
+                      :value="customer.id"
+                    >
+                      {{ customer.name }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-field">
+                  <label>Vehicle</label>
+                  <select v-model="form.vehicle_id" @change="handleVehicleChange" :disabled="!form.customer_id">
+                    <option value="">Select vehicle</option>
+                    <option
+                      v-for="vehicle in vehicles"
+                      :key="vehicle.id"
+                      :value="vehicle.id"
+                    >
+                      {{ vehicle.license_plate }} — {{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div v-if="selectedVehicle" class="vehicle-summary">
+                <div><b>Plate:</b> {{ selectedVehicle.license_plate }}</div>
+                <div><b>Make / Model:</b> {{ selectedVehicle.make }} {{ selectedVehicle.model }}</div>
+                <div><b>Year:</b> {{ selectedVehicle.year }}</div>
+              </div>
+            </Card>
+
+            <Card>
+              <template #header>
+                <span class="card-title">Available Compatible Parts</span>
+                <span class="card-link">{{ compatibleParts.length }} items</span>
+              </template>
+
+              <div v-if="!form.vehicle_id" class="empty-box">
+                  <div class="empty-icon">▣</div>
+                  <strong>Select a vehicle first</strong>
+                  <p>Compatible parts will appear here based on vehicle make, model, and year.</p>
+              </div>
+
+              <div v-else-if="compatibleParts.length === 0" class="empty-box">
+                <div class="empty-icon">▣</div>
+                <strong>No compatible parts found</strong>
+                <p>Add a service manually, or update inventory compatibility for this vehicle.</p>
+              </div>
+
+              <div v-else class="parts-list">
+                <button
+                  v-for="part in compatibleParts"
+                  :key="part.id"
+                  type="button"
+                  class="part-row"
+                  @click="addPartItem(part)"
                 >
-                  {{ customer.name }}
-                </option>
-              </select>
-            </div>
+                  <div>
+                    <div class="part-name">
+                      {{ part.name }}
+                      <span v-if="part.variant">— {{ part.variant }}</span>
+                    </div>
+                    <div class="part-meta">
+                      {{ part.sku || 'No SKU' }} · Stock: {{ part.stock }}
+                      <span v-if="part.is_generic">· Generic</span>
+                    </div>
+                  </div>
 
-            <div class="form-field">
-              <label>Vehicle</label>
-              <select v-model="form.vehicle_id" @change="handleVehicleChange" :disabled="!form.customer_id">
-                <option value="">Select vehicle</option>
-                <option
-                  v-for="vehicle in vehicles"
-                  :key="vehicle.id"
-                  :value="vehicle.id"
-                >
-                  {{ vehicle.license_plate }} — {{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div v-if="selectedVehicle" class="vehicle-summary">
-            <div><b>Plate:</b> {{ selectedVehicle.license_plate }}</div>
-            <div><b>Make / Model:</b> {{ selectedVehicle.make }} {{ selectedVehicle.model }}</div>
-            <div><b>Year:</b> {{ selectedVehicle.year }}</div>
-          </div>
-        </Card>
-
-        <Card>
-          <template #header>
-            <span class="card-title">Available Compatible Parts</span>
-            <span class="card-link">{{ compatibleParts.length }} items</span>
-          </template>
-
-          <div v-if="!form.vehicle_id" class="empty-box">
-              <div class="empty-icon">▣</div>
-              <strong>Select a vehicle first</strong>
-              <p>Compatible parts will appear here based on vehicle make, model, and year.</p>
-          </div>
-
-          <div v-else-if="compatibleParts.length === 0" class="empty-box">
-            <div class="empty-icon">▣</div>
-            <strong>No compatible parts found</strong>
-            <p>Add a service manually, or update inventory compatibility for this vehicle.</p>
-          </div>
-
-          <div v-else class="parts-list">
-            <button
-              v-for="part in compatibleParts"
-              :key="part.id"
-              type="button"
-              class="part-row"
-              @click="addPartItem(part)"
-            >
-              <div>
-                <div class="part-name">
-                  {{ part.name }}
-                  <span v-if="part.variant">— {{ part.variant }}</span>
-                </div>
-                <div class="part-meta">
-                  {{ part.sku || 'No SKU' }} · Stock: {{ part.stock }}
-                  <span v-if="part.is_generic">· Generic</span>
-                </div>
+                  <div class="part-price">
+                    RM {{ formatMoney(part.selling_price) }}
+                  </div>
+                </button>
               </div>
-
-              <div class="part-price">
-                RM {{ formatMoney(part.selling_price) }}
-              </div>
-            </button>
+            </Card>
           </div>
-        </Card>
-      </div>
 
-      <Card>
-        <template #header>
-          <span class="card-title">Transaction Items</span>
-          <button class="btn btn-secondary btn-pill" type="button" @click="addServiceItem">
-            + Add Service
-          </button>
-        </template>
-
-        <div v-if="form.items.length === 0" class="empty-box">
-          No items added yet. Add a compatible part or service to begin.
-        </div>
-
-        <div v-else class="items-list">
-          <div
-            v-for="(item, index) in form.items"
-            :key="index"
-            class="item-card"
-            :class="item.item_type === 'part' ? 'part-card compact-item-card' : 'service-card'"
-          >
-            <div class="item-top clean-item-top">
-              <div>
-                <div class="item-title">
-                  {{ item.item_type === "part" ? item.part_label : (item.service_name || "Unnamed service") }}
-                </div>
-                <div class="item-sub">
-                  {{ item.item_type === "part" ? "Part" : "Service" }}
-                </div>
-              </div>
-
-              <button type="button" class="btn btn-sm btn-ghost" @click="removeItem(index)">
-                Remove
+          <Card>
+            <template #header>
+              <span class="card-title">Transaction Items</span>
+              <button class="btn btn-secondary btn-pill" type="button" @click="addServiceItem">
+                + Add Service
               </button>
+            </template>
+
+            <div v-if="form.items.length === 0" class="empty-box">
+              No items added yet. Add a compatible part or service to begin.
             </div>
 
-            <!-- PART UI: compact -->
-            <div v-if="item.item_type === 'part'" class="part-compact-layout">
-              <div class="compact-inputs">
-                <div class="form-field form-field-sm">
-                  <label>Qty</label>
-                  <input
-                    v-model.number="item.quantity"
-                    type="number"
-                    min="1"
-                    step="1"
-                  />
+            <div v-else class="items-list">
+              <div
+                v-for="(item, index) in form.items"
+                :key="index"
+                class="item-card"
+                :class="item.item_type === 'part' ? 'part-card compact-item-card' : 'service-card'"
+              >
+                <div class="item-top clean-item-top">
+                  <div>
+                    <div class="item-title">
+                      {{ item.item_type === "part" ? item.part_label : (item.service_name || "Unnamed service") }}
+                    </div>
+                    <div class="item-sub">
+                      {{ item.item_type === "part" ? "Part" : "Service" }}
+                    </div>
+                  </div>
+
+                  <button type="button" class="btn btn-sm btn-ghost" @click="removeItem(index)">
+                    Remove
+                  </button>
                 </div>
 
-                <div class="form-field form-field-sm">
-                  <label>Unit Price</label>
-                  <input
-                    v-model.number="item.selling_price"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                  />
+                <!-- PART UI: compact -->
+                <div v-if="item.item_type === 'part'" class="part-compact-layout">
+                  <div class="compact-inputs">
+                    <div class="form-field form-field-sm">
+                      <label>Qty</label>
+                      <input
+                        v-model.number="item.quantity"
+                        type="number"
+                        min="1"
+                        step="1"
+                      />
+                    </div>
+
+                    <div class="form-field form-field-sm">
+                      <label>Unit Price</label>
+                      <input
+                        v-model.number="item.selling_price"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
+
+                    <div class="form-field compact-note">
+                      <label>Note</label>
+                      <input
+                        v-model="item.note"
+                        type="text"
+                        placeholder="Optional note"
+                      />
+                    </div>
+
+                    <div class="compact-total">
+                      <span>Total</span>
+                      <strong>RM {{ formatMoney(lineTotal(item)) }}</strong>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="form-field compact-note">
-                  <label>Note</label>
-                  <input
-                    v-model="item.note"
-                    type="text"
-                    placeholder="Optional note"
-                  />
-                </div>
+                <!-- SERVICE UI: descriptive -->
+                <div v-else class="service-item-layout">
+                  <div class="form-grid item-grid">
+                    <div class="form-field full">
+                      <label>Service name</label>
+                      <input
+                        v-model="item.service_name"
+                        type="text"
+                        placeholder="e.g. Brake service, inspection, labour charge"
+                      />
+                    </div>
 
-                <div class="compact-total">
-                  <span>Total</span>
-                  <strong>RM {{ formatMoney(lineTotal(item)) }}</strong>
+                    <div class="form-field">
+                      <label>Duration (hrs)</label>
+                      <input
+                        v-model.number="item.quantity"
+                        type="number"
+                        min="0.1"
+                        step="0.1"
+                        placeholder="e.g. 1.5"
+                      />
+                    </div>
+
+                    <div class="form-field">
+                      <label>Rate (RM/hr)</label>
+                      <input
+                        v-model.number="item.selling_price"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="e.g. 80"
+                      />
+                    </div>
+
+                    <div class="form-field full">
+                      <label>Note</label>
+                      <input
+                        v-model="item.note"
+                        type="text"
+                        placeholder="Optional service note"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="item-total">
+                    <span>Line total</span>
+                    <strong>RM {{ formatMoney(lineTotal(item)) }}</strong>
+                  </div>
                 </div>
               </div>
             </div>
+          </Card>
 
-            <!-- SERVICE UI: descriptive -->
-            <div v-else class="service-item-layout">
-              <div class="form-grid item-grid">
-                <div class="form-field full">
-                  <label>Service name</label>
-                  <input
-                    v-model="item.service_name"
-                    type="text"
-                    placeholder="e.g. Brake service, inspection, labour charge"
-                  />
-                </div>
-
-                <div class="form-field">
-                  <label>Duration (hrs)</label>
-                  <input
-                    v-model.number="item.quantity"
-                    type="number"
-                    min="0.1"
-                    step="0.1"
-                    placeholder="e.g. 1.5"
-                  />
-                </div>
-
-                <div class="form-field">
-                  <label>Rate (RM/hr)</label>
-                  <input
-                    v-model.number="item.selling_price"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="e.g. 80"
-                  />
-                </div>
-
-                <div class="form-field full">
-                  <label>Note</label>
-                  <input
-                    v-model="item.note"
-                    type="text"
-                    placeholder="Optional service note"
-                  />
-                </div>
-              </div>
-
-              <div class="item-total">
-                <span>Line total</span>
-                <strong>RM {{ formatMoney(lineTotal(item)) }}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      <div class="bottom-grid">
-        <Card>
+          <Card>
           <template #header>
             <span class="card-title">Notes</span>
           </template>
@@ -303,9 +304,11 @@
               placeholder="Optional remarks for quotation"
             ></textarea>
           </div>
-        </Card>
+          </Card>
+        </div>
 
-        <Card>
+        <div class="transaction-side">
+        <Card class="sticky-summary-card">
           <template #header>
             <span class="card-title">Summary</span>
           </template>
@@ -349,6 +352,8 @@
 
           <p v-if="error" class="error-text">{{ error }}</p>
         </Card>
+        </div>
+
       </div>
     </div>
   </div>
@@ -999,6 +1004,60 @@ export default {
 
   .bottom-grid > :last-child {
     position: static;
+  }
+}
+
+.transaction-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 18px;
+  align-items: start;
+}
+
+.transaction-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.transaction-side {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.sticky-summary-card {
+  min-height: 220px;
+}
+
+.create-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.bottom-grid {
+  display: contents;
+}
+
+.bottom-grid > :last-child {
+  position: static;
+}
+
+@media (max-width: 1200px) {
+  .transaction-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-side {
+    position: static;
+  }
+}
+
+@media (max-width: 900px) {
+  .create-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
