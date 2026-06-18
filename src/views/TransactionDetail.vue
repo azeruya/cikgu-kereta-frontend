@@ -59,48 +59,62 @@
                 </div>
               </template>
 
-              <div class="overview-panel">
-                <div class="overview-cell important">
-                  <span>Document No.</span>
-                  <strong>{{ transaction.document_number || "-" }}</strong>
-                </div>
+              <div class="overview-sections">
+                <div class="overview-section">
+                  <div class="overview-section-title">Document</div>
 
-                <div class="overview-cell">
-                  <span>Created At</span>
-                  <div class="overview-value">{{ formatDateTime(transaction.created_at) }}</div>
-                </div>
+                  <div class="overview-pair">
+                    <span>Document No.</span>
+                    <strong>{{ transaction.document_number || "-" }}</strong>
+                  </div>
 
-                <div class="overview-cell">
-                  <span>Customer</span>
-                  <div class="overview-value">{{ transaction.customer?.name || "-" }}</div>
-                </div>
-
-                <div class="overview-cell">
-                  <span>Phone</span>
-                  <div class="overview-value">{{ transaction.customer?.phone || "-" }}</div>
-                </div>
-
-                <div class="overview-cell">
-                  <span>Vehicle</span>
-                  <div class="overview-value">{{ transaction.vehicle?.license_plate || "-" }}</div>
-                </div>
-
-                <div class="overview-cell">
-                  <span>Make / Model</span>
-                  <div class="overview-value">
-                    {{ transaction.vehicle?.make || "-" }}
-                    {{ transaction.vehicle?.model || "" }}
+                  <div class="overview-pair">
+                    <span>Created At</span>
+                    <div class="overview-value">{{ formatDateTime(transaction.created_at) }}</div>
                   </div>
                 </div>
 
-                <div class="overview-cell">
-                  <span>Year</span>
-                  <div class="overview-value">{{ transaction.vehicle?.year || "-" }}</div>
+                <div class="overview-section">
+                  <div class="overview-section-title">Customer</div>
+
+                  <div class="overview-pair">
+                    <span>Name</span>
+                    <div class="overview-value">{{ transaction.customer?.name || "-" }}</div>
+                  </div>
+
+                  <div class="overview-pair">
+                    <span>Phone</span>
+                    <div class="overview-value">{{ transaction.customer?.phone || "-" }}</div>
+                  </div>
                 </div>
 
-                <div class="overview-cell notes-cell">
-                  <span>Notes</span>
-                  <div class="overview-value">{{ transaction.notes || "-" }}</div>
+                <div class="overview-section">
+                  <div class="overview-section-title">Vehicle</div>
+
+                  <div class="overview-pair">
+                    <span>Plate</span>
+                    <div class="overview-value">{{ transaction.vehicle?.license_plate || "-" }}</div>
+                  </div>
+
+                  <div class="overview-pair">
+                    <span>Make / Model</span>
+                    <div class="overview-value">
+                      {{ transaction.vehicle?.make || "-" }}
+                      {{ transaction.vehicle?.model || "" }}
+                    </div>
+                  </div>
+
+                  <div class="overview-pair">
+                    <span>Year</span>
+                    <div class="overview-value">{{ transaction.vehicle?.year || "-" }}</div>
+                  </div>
+                </div>
+
+                <div class="overview-section notes-section">
+                  <div class="overview-section-title">Notes</div>
+                  <div class="overview-note">
+                    {{ transaction.notes || "-" }}
+                  </div>
                 </div>
               </div>
             </Card>
@@ -877,49 +891,80 @@ export default {
 /* ================================
    OVERVIEW
 ================================ */
-
-.overview-panel {
+.overview-sections {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.overview-section {
+  padding: 14px;
   border: 1px solid #dfe5ee;
   border-radius: 14px;
   background: #f8fafc;
-  overflow: hidden;
 }
 
-.overview-cell {
-  min-height: 62px;
-  padding: 12px 14px;
-  border-right: 1px solid #e5eaf1;
-  border-bottom: 1px solid #e5eaf1;
-  background: #ffffff;
-}
-
-.overview-cell:nth-child(2n) {
-  border-right: none;
-}
-
-.overview-cell:nth-last-child(-n + 2) {
-  border-bottom: none;
-}
-
-.overview-cell span {
-  display: block;
-  margin-bottom: 5px;
+.overview-section-title {
+  margin-bottom: 10px;
   font-size: 10.5px;
   font-weight: 850;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: #64748b;
+}
+
+.overview-pair {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.overview-pair:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.overview-pair span {
+  font-size: 12px;
+  font-weight: 650;
   color: #8a96a8;
 }
 
-.overview-cell strong {
-  display: block;
-  font-size: 12px;
-  font-weight: 450;
+.overview-pair strong,
+.overview-value {
+  font-size: 12.5px;
+  font-weight: 580;
   color: #0f172a;
+  text-align: right;
   line-height: 1.35;
   word-break: break-word;
+}
+
+.overview-pair strong {
+  font-weight: 780;
+}
+
+.notes-section {
+  grid-column: 1 / -1;
+}
+
+.overview-note {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #1e293b;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .overview-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .notes-section {
+    grid-column: auto;
+  }
 }
 
 .overview-value {
@@ -929,19 +974,6 @@ export default {
   color: #0f172a;
   line-height: 1.35;
   word-break: break-word;
-}
-
-.overview-cell.important .overview-value,
-.overview-cell.important strong {
-  font-size: 12.8px;
-  font-weight: 780;
-}
-
-.overview-note {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #1e293b;
-  line-height: 1.4;
 }
 
 .notes-cell strong {
@@ -1254,20 +1286,6 @@ export default {
 }
 
 @media (max-width: 700px) {
-  .overview-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .overview-cell,
-  .overview-cell:nth-child(2n),
-  .overview-cell:nth-last-child(-n + 2) {
-    border-right: none;
-    border-bottom: 1px solid #e5eaf1;
-  }
-
-  .overview-cell:last-child {
-    border-bottom: none;
-  }
 
   .detail-item-card,
   .detail-item-left {
