@@ -299,8 +299,10 @@
               </div>
 
               <div class="part-kpi-card">
-                <span>Type</span>
-                <strong>{{ activePart.is_generic ? "Generic" : "Specific" }}</strong>
+                <span>Margin</span>
+                <strong>
+                  RM {{ formatMoney((activePart.selling_price || 0) - (activePart.cost_price || 0)) }}
+                </strong>
               </div>
             </div>
 
