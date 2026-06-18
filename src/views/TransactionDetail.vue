@@ -24,9 +24,12 @@
             </span>
           </div>
 
+          <!--
+          
           <div class="page-subtitle">
             Review customer details, documents, payments, and transaction items
           </div>
+          -->
         </div>
 
         <div class="page-actions">
