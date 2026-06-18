@@ -913,8 +913,8 @@ export default {
 .overview-cell strong,
 .overview-value {
   display: block;
-  font-size: 13px;
-  font-weight: 650;
+  font-size: 12px;
+  font-weight: 450;
   color: #0f172a;
   line-height: 1.35;
   word-break: break-word;
