@@ -193,7 +193,7 @@
             </div>
 
             <div
-              v-for="part in lowStockParts"
+              v-for="part in lowStockPreview"
               :key="part.id"
               class="stock-alert-card"
               @click="openDetail(part)"
@@ -936,14 +936,22 @@ nextPage() {
   white-space: nowrap;
 }
 
-.stock-main.stock-danger,
-.stock-danger {
-  color: #dc2626;
+.stock-main {
+  font-size: 12.7px;
+  font-weight: 720;
+  white-space: nowrap;
 }
 
 .stock-main.stock-normal,
 .stock-normal {
-  color: #1e293b;
+  color: #334155;
+  font-weight: 720;
+}
+
+.stock-main.stock-danger,
+.stock-danger {
+  color: #dc2626;
+  font-weight: 820;
 }
 
 .stock-min {
@@ -951,80 +959,6 @@ nextPage() {
   font-size: 11px;
   color: #94a3b8;
   font-weight: 500;
-}
-
-/* ================================
-   LOW STOCK PREVIEW
-================================ */
-
-.stock-preview-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 14px;
-  border: 1px solid #e1e7ef;
-  border-radius: 14px;
-  background: #ffffff;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.stock-preview-item + .stock-preview-item {
-  margin-top: 8px;
-}
-
-.stock-preview-item:hover {
-  background: #f8fafc;
-  border-color: #d4dce8;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
-}
-
-.stock-alert-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.stock-alert-main .item-name {
-  font-size: 12.8px;
-  font-weight: 800;
-}
-
-.stock-preview-right {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.stock-danger-text {
-  font-size: 11.8px;
-  font-weight: 850;
-  color: #dc2626;
-}
-
-.restock-link {
-  margin-top: 5px;
-  min-height: 24px;
-  padding: 5px 10px;
-  border: 1px solid #dfe5ee;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #475569;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.restock-link:hover {
-  border-color: #f3b4ad;
-  background: #fff7f6;
-  color: #d92d20;
 }
 
 /* ================================
