@@ -937,7 +937,7 @@ export default {
 
 .transaction-side {
   position: sticky;
-  top: 28px;
+  top: 24px;
   align-self: start;
 }
 
@@ -1168,11 +1168,11 @@ export default {
 ================================ */
 
 .compatible-parts-card {
-  min-height: 230px;
+  min-height: auto;
 }
 
 .compatible-parts-body {
-  max-height: 320px;
+  max-height: 0;
   min-height: 140px;
   overflow-y: auto;
   padding-right: 4px;
@@ -1293,7 +1293,7 @@ export default {
   min-height: 26px;
   padding: 6px 9px;
   border-radius: 9px;
-  background: #f8fafc;
+  background: transparent;
   border: 1px solid #dfe5ee;
   color: #475569;
   font-size: 11px;
@@ -1450,7 +1450,7 @@ export default {
 ================================ */
 
 .setup-panel {
-  min-height: 132px;
+  min-height: 128px;
   padding: 18px;
   border: 1px solid #dfe5ee;
   border-radius: 14px;
