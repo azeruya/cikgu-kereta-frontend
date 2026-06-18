@@ -1358,7 +1358,7 @@ th.center {
 
 .summary-row {
   min-height: 42px;
-  padding: 11px 14px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
