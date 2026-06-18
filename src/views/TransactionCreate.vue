@@ -271,7 +271,7 @@
               </button>
             </template>
 
-            <div v-if="form.items.length === 0" class="setup-panel items-empty-panel">
+            <div v-if="form.items.length === 0" class="setup-panel compact items-empty-panel">
               <div class="setup-icon">
                 <svg viewBox="0 0 24 24" class="setup-svg">
                   <path d="M8 6h13" />
@@ -300,24 +300,24 @@
               </div>
             </div>
 
-            <div v-else class="items-list">
+            <div v-else class="form-item-list">
               <div
                 v-for="(item, index) in form.items"
                 :key="index"
-                class="item-card"
+                class="form-item-card"
                 :class="item.item_type === 'part' ? 'part-card' : 'service-card'"
               >
-                <div class="item-top">
-                  <div class="item-title-group">
+                <div class="form-item-top">
+                  <div class="form-item-title-group">
                     <span
-                      class="item-type-badge"
+                      class="type-badge"
                       :class="item.item_type === 'part' ? 'badge-part' : 'badge-service'"
                     >
                       {{ item.item_type === "part" ? "Part" : "Service" }}
                     </span>
 
                     <div>
-                      <div class="item-title">
+                      <div class="form-item-title">
                         {{
                           item.item_type === "part"
                             ? item.part_label
@@ -325,7 +325,7 @@
                         }}
                       </div>
 
-                      <div class="item-sub">
+                      <div class="form-item-sub">
                         {{ item.item_type === "part" ? "Inventory item" : "Manual labour/service" }}
                       </div>
                     </div>
@@ -941,24 +941,10 @@ export default {
   align-self: start;
 }
 
-.workflow-card {
-  overflow: hidden;
-}
 
 /* ================================
    CARD HEADER / SECTION STYLE
 ================================ */
-
-.section-heading {
-  display: flex;
-  align-items: flex-start;
-  gap: 11px;
-  min-width: 0;
-}
-
-.section-heading.no-index {
-  gap: 0;
-}
 
 .section-index {
   width: 24px;
@@ -1002,19 +988,6 @@ export default {
   color: #a8b2c0;
   border-color: #e3e9f2;
   box-shadow: none;
-}
-
-.section-caption {
-  margin-top: 3px;
-  font-size: 11.8px;
-  color: #8a96a8;
-  line-height: 1.35;
-}
-
-.section-count {
-  font-size: 12px;
-  color: #8a96a8;
-  white-space: nowrap;
 }
 
 /* ================================
@@ -1172,8 +1145,8 @@ export default {
 }
 
 .compatible-parts-body {
-  max-height: 0;
-  min-height: 140px;
+  max-height: 320px;
+  min-height: 0;
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -1314,48 +1287,6 @@ export default {
    TRANSACTION ITEMS
 ================================ */
 
-.items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item-card {
-  border: 1px solid #e1e7ef;
-  border-radius: 14px;
-  padding: 14px 16px;
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
-}
-
-.item-card:hover {
-  border-color: #d4dce8;
-}
-
-.item-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.item-title-group {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  min-width: 0;
-}
-
-.item-type-badge {
-  min-height: 23px;
-  padding: 5px 8px;
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 850;
-  line-height: 1;
-  flex-shrink: 0;
-}
 
 .badge-part {
   background: #eef4ff;
@@ -1367,19 +1298,6 @@ export default {
   background: #fff6e8;
   color: #c87518;
   border: 1px solid #ffe4c2;
-}
-
-.item-title {
-  font-size: 13.5px;
-  font-weight: 850;
-  color: #0f172a;
-  line-height: 1.25;
-}
-
-.item-sub {
-  margin-top: 3px;
-  font-size: 11.5px;
-  color: #8a96a8;
 }
 
 .part-compact-layout,
@@ -1407,9 +1325,9 @@ export default {
 .compact-total-card {
   min-height: 36px;
   padding: 8px 12px;
-  border: 1px solid #e1e7ef;
+  border: 1px solid #e5eaf1;
   border-radius: 11px;
-  background: #f8fafc;
+  background: #f9fafb;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1446,142 +1364,8 @@ export default {
 }
 
 /* ================================
-   PROFESSIONAL EMPTY / SETUP STATES
-================================ */
-
-.setup-panel {
-  min-height: 128px;
-  padding: 18px;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background:
-    linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(255, 255, 255, 0.92));
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-
-.items-empty-panel {
-  min-height: 104px;
-}
-
-.warning-panel {
-  background: #fffdf8;
-  border-color: #f3dfba;
-}
-
-.setup-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: #f1f5f9;
-  border: 1px solid #e1e7ef;
-  color: #64748b;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.warning-panel .setup-icon {
-  background: #fff6e8;
-  border-color: #ffe4c2;
-  color: #c87518;
-}
-
-.setup-svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.setup-content {
-  min-width: 0;
-}
-
-.setup-content strong {
-  display: block;
-  font-size: 13.5px;
-  font-weight: 850;
-  color: #0f172a;
-  line-height: 1.25;
-}
-
-.setup-content p {
-  max-width: 560px;
-  margin: 5px 0 0;
-  font-size: 12.5px;
-  line-height: 1.48;
-  color: #8a96a8;
-}
-
-.setup-content .btn {
-  margin-top: 12px;
-}
-
-.setup-hints {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 13px;
-}
-
-.setup-hints span {
-  min-height: 24px;
-  padding: 5px 9px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: 1px solid #e1e7ef;
-  color: #64748b;
-  font-size: 11px;
-  font-weight: 750;
-}
-
-/* ================================
    SUMMARY
 ================================ */
-
-.sticky-summary-card {
-  min-height: 220px;
-}
-
-.summary-box {
-  padding: 0;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background: #f8fafc;
-  overflow: hidden;
-}
-
-.summary-helper {
-  padding: 11px 14px;
-  border-bottom: 1px solid #e5eaf1;
-  background: #ffffff;
-  font-size: 12px;
-  line-height: 1.4;
-  color: #8a96a8;
-}
-
-.summary-box-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 13px 14px;
-  font-size: 13px;
-  color: #526173;
-  border-bottom: 1px solid #e5eaf1;
-}
-
-.summary-box-row strong {
-  font-size: 13.5px;
-  font-weight: 850;
-  color: #0f172a;
-}
 
 .summary-discount-row {
   padding: 10px 14px 12px;
@@ -1611,25 +1395,6 @@ export default {
 .summary-discount-row input:focus {
   border-color: #94a3b8;
   box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.14);
-}
-
-.summary-box-total {
-  background: #ffffff;
-  border-bottom: none;
-}
-
-.summary-box-total span,
-.summary-box-total strong {
-  font-size: 14px;
-  font-weight: 850;
-  color: #0f172a;
-}
-
-.summary-actions {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: 10px;
 }
 
 .summary-progress {
@@ -1760,8 +1525,8 @@ export default {
     align-items: center;
   }
 
-  .item-top,
-  .item-title-group {
+  .form-item-top,
+  .form-item-title-group {
     flex-direction: column;
   }
 }

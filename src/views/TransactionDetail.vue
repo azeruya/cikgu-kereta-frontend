@@ -234,7 +234,7 @@
             No items found for this transaction.
           </div>
 
-          <div v-else class="items-list">
+          <div v-else class="form-item-list">
             <div
               v-for="item in transaction.items"
               :key="item.id"
@@ -792,7 +792,7 @@ export default {
   margin-bottom: 14px;
 }
 
-.items-list {
+.form-item-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
