@@ -1,21 +1,31 @@
 <template>
   <div class="dash">
     <Sidebar
-    :collapsed="collapsed"
-    :menu="menu"
-    :user="currentUser"
-    @toggle="toggleSidebar"
-    @logout="handleLogout"
+      :collapsed="collapsed"
+      :menu="menu"
+      :user="currentUser"
+      @toggle="toggleSidebar"
+      @logout="handleLogout"
     />
 
     <div class="main">
       <div class="page-header">
         <div class="page-intro">
-          <div class="page-title">
-            {{ transaction?.document_number || "Transaction Detail" }}
+          <div class="page-title-row">
+            <div class="page-title">
+              {{ transaction?.document_number || "Transaction Detail" }}
+            </div>
+
+            <span
+              v-if="transaction"
+              :class="['badge', `badge-${transaction.status}`]"
+            >
+              {{ transaction.status }}
+            </span>
           </div>
+
           <div class="page-subtitle">
-            Review quotation, invoice, receipt, and transaction items
+            Review customer details, documents, payments, and transaction items
           </div>
         </div>
 
@@ -23,24 +33,6 @@
           <router-link to="/transactions" class="btn btn-secondary btn-pill link-btn">
             Back
           </router-link>
-
-          <button
-            v-if="transaction?.status === 'quotation'"
-            class="btn btn-primary btn-pill"
-            :disabled="actionLoading"
-            @click="confirmQuotation"
-          >
-            {{ actionLoading ? "Processing..." : "Confirm to Invoice" }}
-          </button>
-
-          <button
-            v-if="transaction?.status === 'invoice' && balanceDue > 0"
-            class="btn btn-primary btn-pill"
-            :disabled="actionLoading"
-            @click="openPaymentModal"
-          >
-            Add Payment
-          </button>
         </div>
       </div>
 
@@ -49,151 +41,251 @@
       </div>
 
       <template v-else-if="transaction">
-        <div class="detail-grid">
-          <Card>
-            <template #header>
-              <span class="card-title">Transaction Summary</span>
-              <span :class="['badge', `badge-${transaction.status}`]">
-                {{ transaction.status }}
-              </span>
-            </template>
+        <div class="transaction-detail-layout">
+          <div class="transaction-detail-main">
+            <!-- OVERVIEW -->
+            <Card class="workflow-card">
+              <template #header>
+                <div class="section-heading no-index">
+                  <div>
+                    <span class="card-title">Transaction Overview</span>
+                    <p class="section-caption">
+                      Customer, vehicle, document, and service request details.
+                    </p>
+                  </div>
+                </div>
+              </template>
 
-            <div class="summary-grid">
-              <div class="info-block">
-                <div class="info-label">Document No.</div>
-                <div class="info-value">{{ transaction.document_number || "-" }}</div>
+              <div class="overview-panel">
+                <div class="overview-cell important">
+                  <span>Document No.</span>
+                  <strong>{{ transaction.document_number || "-" }}</strong>
+                </div>
+
+                <div class="overview-cell">
+                  <span>Created At</span>
+                  <strong>{{ formatDateTime(transaction.created_at) }}</strong>
+                </div>
+
+                <div class="overview-cell">
+                  <span>Customer</span>
+                  <strong>{{ transaction.customer?.name || "-" }}</strong>
+                </div>
+
+                <div class="overview-cell">
+                  <span>Phone</span>
+                  <strong>{{ transaction.customer?.phone || "-" }}</strong>
+                </div>
+
+                <div class="overview-cell">
+                  <span>Vehicle</span>
+                  <strong>{{ transaction.vehicle?.license_plate || "-" }}</strong>
+                </div>
+
+                <div class="overview-cell">
+                  <span>Make / Model</span>
+                  <strong>
+                    {{ transaction.vehicle?.make || "-" }}
+                    {{ transaction.vehicle?.model || "" }}
+                  </strong>
+                </div>
+
+                <div class="overview-cell">
+                  <span>Year</span>
+                  <strong>{{ transaction.vehicle?.year || "-" }}</strong>
+                </div>
+
+                <div class="overview-cell notes-cell">
+                  <span>Notes</span>
+                  <strong>{{ transaction.notes || "-" }}</strong>
+                </div>
               </div>
+            </Card>
 
-              <div class="info-block">
-                <div class="info-label">Created At</div>
-                <div class="info-value">{{ formatDateTime(transaction.created_at) }}</div>
-              </div>
+            <!-- ITEMS -->
+            <Card class="workflow-card">
+              <template #header>
+                <div class="section-heading no-index">
+                  <div>
+                    <span class="card-title">Transaction Items</span>
+                    <p class="section-caption">
+                      Parts and services included in this transaction.
+                    </p>
+                  </div>
+                </div>
 
-              <div class="info-block">
-                <div class="info-label">Customer</div>
-                <div class="info-value">{{ transaction.customer?.name || "-" }}</div>
-              </div>
+                <span class="section-count">
+                  {{ transaction.items?.length || 0 }} item(s)
+                </span>
+              </template>
 
-              <div class="info-block">
-                <div class="info-label">Phone</div>
-                <div class="info-value">{{ transaction.customer?.phone || "-" }}</div>
-              </div>
+              <div v-if="!transaction.items || transaction.items.length === 0" class="setup-panel compact">
+                <div class="setup-icon">
+                  <svg viewBox="0 0 24 24" class="setup-svg">
+                    <path d="M8 6h13" />
+                    <path d="M8 12h13" />
+                    <path d="M8 18h13" />
+                    <path d="M3 6h.01" />
+                    <path d="M3 12h.01" />
+                    <path d="M3 18h.01" />
+                  </svg>
+                </div>
 
-              <div class="info-block">
-                <div class="info-label">Vehicle</div>
-                <div class="info-value">
-                  {{ transaction.vehicle?.license_plate || "-" }}
+                <div class="setup-content">
+                  <strong>No items found</strong>
+                  <p>This transaction does not have any part or service item.</p>
                 </div>
               </div>
 
-              <div class="info-block">
-                <div class="info-label">Make / Model</div>
-                <div class="info-value">
-                  {{ transaction.vehicle?.make || "-" }}
-                  {{ transaction.vehicle?.model || "" }}
+              <div v-else class="detail-item-list">
+                <div
+                  v-for="item in transaction.items"
+                  :key="item.id"
+                  class="detail-item-card"
+                >
+                  <div class="detail-item-left">
+                    <span
+                      class="type-badge"
+                      :class="item.item_type === 'service' ? 'warning' : 'info'"
+                    >
+                      {{ item.item_type === "service" ? "Service" : "Part" }}
+                    </span>
+
+                    <div class="detail-item-copy">
+                      <div class="detail-item-name">
+                        {{
+                          item.item_type === "service"
+                            ? item.service_name || "Service"
+                            : partDisplayName(item)
+                        }}
+                      </div>
+
+                      <div class="detail-item-meta">
+                        Qty: {{ item.quantity || 1 }}
+                        <span v-if="item.note"> · {{ item.note }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="detail-item-right">
+                    <strong>RM {{ formatMoney(item.total_price) }}</strong>
+                    <span>Unit: RM {{ formatMoney(item.selling_price) }}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          <!-- ACTION CENTER -->
+          <aside class="transaction-detail-side">
+            <Card class="action-center-card">
+              <template #header>
+                <span class="card-title">Action Center</span>
+              </template>
+
+              <div class="primary-action-block">
+                <button
+                  v-if="transaction.status === 'quotation'"
+                  class="btn btn-primary btn-pill"
+                  :disabled="actionLoading"
+                  @click="confirmQuotation"
+                >
+                  {{ actionLoading ? "Processing..." : "Confirm to Invoice" }}
+                </button>
+
+                <button
+                  v-if="transaction.status === 'invoice' && balanceDue > 0"
+                  class="btn btn-primary btn-pill"
+                  :disabled="actionLoading"
+                  @click="openPaymentModal"
+                >
+                  Add Payment
+                </button>
+
+                <div
+                  v-if="transaction.status === 'receipt' || balanceDue <= 0"
+                  class="completed-panel"
+                >
+                  <span>✓</span>
+                  <div>
+                    <strong>Payment completed</strong>
+                    <p>No outstanding balance for this transaction.</p>
+                  </div>
                 </div>
               </div>
 
-              <div class="info-block">
-                <div class="info-label">Year</div>
-                <div class="info-value">{{ transaction.vehicle?.year || "-" }}</div>
-              </div>
-
-              <div class="info-block">
-                <div class="info-label">Notes</div>
-                <div class="info-value">
-                  {{ transaction.notes || "-" }}
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          <Card>
-            <template #header>
-              <span class="card-title">Actions</span>
-            </template>
-
-            <div class="actions-panel">
+              <div class="action-list">
                 <button
-                class="btn btn-secondary btn-pill"
-                @click="previewDocument('quotation')"
-                v-if="transaction.status === 'quotation'"
+                  v-if="transaction.status === 'quotation'"
+                  class="btn btn-secondary btn-pill"
+                  @click="previewDocument('quotation')"
                 >
-                Preview Quotation
+                  Preview Quotation
                 </button>
 
                 <button
-                class="btn btn-secondary btn-pill"
-                @click="previewDocument('invoice')"
-                v-if="transaction.status === 'invoice'"
+                  v-if="transaction.status === 'invoice'"
+                  class="btn btn-secondary btn-pill"
+                  @click="previewDocument('invoice')"
                 >
-                Preview Invoice
+                  Preview Invoice
                 </button>
 
                 <button
-                class="btn btn-secondary btn-pill"
-                @click="previewDocument('receipt')"
-                v-if="transaction.status === 'receipt'"
+                  v-if="transaction.status === 'receipt'"
+                  class="btn btn-secondary btn-pill"
+                  @click="previewDocument('receipt')"
                 >
-                Preview Receipt
+                  Preview Receipt
                 </button>
-                <button
-                class="btn btn-secondary btn-pill"
-                @click="downloadDocument('receipt')"
-                v-if="transaction.status === 'receipt'"
-                >
-                Download Receipt
-                </button>
-              <button class="btn btn-secondary btn-pill" @click="openWhatsApp(transaction)">
-                WhatsApp Customer
-              </button>
 
-              <router-link
-                v-if="transaction.status === 'quotation'"
-                :to="`/transactions/${transaction.id}/edit`"
-                class="btn btn-secondary btn-pill"
+                <button
+                  v-if="transaction.status === 'receipt'"
+                  class="btn btn-secondary btn-pill"
+                  @click="downloadDocument('receipt')"
                 >
-                Edit Transaction
+                  Download Receipt
+                </button>
+
+                <button
+                  class="btn btn-secondary btn-pill"
+                  @click="openWhatsApp(transaction)"
+                >
+                  WhatsApp Customer
+                </button>
+
+                <router-link
+                  v-if="transaction.status === 'quotation'"
+                  :to="`/transactions/${transaction.id}/edit`"
+                  class="btn btn-secondary btn-pill"
+                >
+                  Edit Transaction
                 </router-link>
-
-              <button
-                v-if="transaction.status === 'quotation'"
-                class="btn btn-primary btn-pill"
-                :disabled="actionLoading"
-                @click="confirmQuotation"
-              >
-                {{ actionLoading ? "Processing..." : "Confirm to Invoice" }}
-              </button>
-
-              <button
-                v-if="transaction.status === 'invoice'"
-                class="btn btn-primary btn-pill"
-                :disabled="actionLoading"
-                @click="openPaymentModal"
-              >
-                Add Payment
-              </button>
-            </div>
-
-            <div class="summary-box">
-              <div class="summary-box-row">
-                <span>Subtotal</span>
-                <strong>RM {{ formatMoney(transaction.total_amount) }}</strong>
               </div>
 
-              <div class="summary-box-row">
-                <span>Discount</span>
-                <strong>RM {{ formatMoney(transaction.discount_amount || 0) }}</strong>
-              </div>
+              <div class="side-summary-box transaction-money-box">
+                <div class="side-summary-row">
+                  <span>Subtotal</span>
+                  <strong>RM {{ formatMoney(transaction.total_amount) }}</strong>
+                </div>
 
-              <div class="summary-box-row">
-                <span>Total Paid</span>
-                <strong>RM {{ formatMoney(totalPaid) }}</strong>
-              </div>
+                <div class="side-summary-row">
+                  <span>Discount</span>
+                  <strong>RM {{ formatMoney(transaction.discount_amount || 0) }}</strong>
+                </div>
 
-              <div class="summary-box-row">
-                <span>Balance Due</span>
-                <strong>RM {{ formatMoney(balanceDue) }}</strong>
+                <div class="side-summary-row">
+                  <span>Total Paid</span>
+                  <strong>RM {{ formatMoney(totalPaid) }}</strong>
+                </div>
+
+                <div
+                  class="side-summary-row total"
+                  :class="{ danger: balanceDue > 0, success: balanceDue <= 0 }"
+                >
+                  <span>Balance Due</span>
+                  <strong>RM {{ formatMoney(balanceDue) }}</strong>
+                </div>
               </div>
 
               <div
@@ -208,7 +300,9 @@
                   class="payment-row"
                 >
                   <div>
-                    <div class="payment-method">{{ payment.payment_method || "-" }}</div>
+                    <div class="payment-method">
+                      {{ payment.payment_method || "-" }}
+                    </div>
                     <div class="payment-meta">
                       {{ formatDateTime(payment.payment_date) }}
                       <span v-if="payment.payment_reference">
@@ -220,53 +314,9 @@
                   <strong>RM {{ formatMoney(payment.amount_paid) }}</strong>
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </aside>
         </div>
-
-        <Card>
-          <template #header>
-            <span class="card-title">Items</span>
-            <span class="card-link">{{ transaction.items?.length || 0 }} item(s)</span>
-          </template>
-
-          <div v-if="!transaction.items || transaction.items.length === 0" class="empty-state">
-            No items found for this transaction.
-          </div>
-
-          <div v-else class="form-item-list">
-            <div
-              v-for="item in transaction.items"
-              :key="item.id"
-              class="item-row"
-            >
-              <div class="item-left">
-                <div class="item-name">
-                  {{
-                    item.item_type === "service"
-                      ? item.service_name || "Service"
-                      : partDisplayName(item)
-                  }}
-                </div>
-
-                <div class="item-meta">
-                  Type: {{ item.item_type || "-" }}
-                  <span v-if="item.quantity"> · Qty: {{ item.quantity }}</span>
-                  <span v-if="item.note"> · {{ item.note }}</span>
-                </div>
-              </div>
-
-              <div class="item-right">
-                <div class="item-price">
-                  RM {{ formatMoney(item.total_price) }}
-                </div>
-                <div class="item-unit">
-                  Unit: RM {{ formatMoney(item.selling_price) }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </Card>
 
         <div v-if="error" class="page-error">
           {{ error }}
@@ -283,15 +333,27 @@
           <div class="pdf-container">
             <div class="pdf-topbar">
               <div class="pdf-title">
-                {{ currentDocType ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1) : "Document Preview" }}
+                {{
+                  currentDocType
+                    ? currentDocType.charAt(0).toUpperCase() + currentDocType.slice(1)
+                    : "Document Preview"
+                }}
               </div>
 
               <div class="pdf-actions">
-                <button class="btn btn-secondary btn-pill" type="button" @click="closePdfPreview">
+                <button
+                  class="btn btn-secondary btn-pill"
+                  type="button"
+                  @click="closePdfPreview"
+                >
                   Close
                 </button>
 
-                <button class="btn btn-primary btn-pill" type="button" @click="downloadDocument(currentDocType)">
+                <button
+                  class="btn btn-primary btn-pill"
+                  type="button"
+                  @click="downloadDocument(currentDocType)"
+                >
                   Download
                 </button>
               </div>
@@ -308,10 +370,21 @@
           <div class="modal-card large">
             <div class="modal-header">
               <span>Record Payment</span>
-              <button type="button" class="btn btn-sm btn-ghost" @click="closePaymentModal">✕</button>
+              <button
+                type="button"
+                class="btn btn-sm btn-ghost"
+                @click="closePaymentModal"
+              >
+                ✕
+              </button>
             </div>
 
             <div class="modal-body">
+              <div class="payment-due-panel">
+                <span>Amount due</span>
+                <strong>RM {{ formatMoney(balanceDue) }}</strong>
+              </div>
+
               <div class="form-grid">
                 <div class="form-field">
                   <label>Amount Paid</label>
@@ -344,10 +417,7 @@
 
                 <div class="form-field">
                   <label>Payment Date</label>
-                  <input
-                    v-model="paymentForm.payment_date"
-                    type="date"
-                  />
+                  <input v-model="paymentForm.payment_date" type="date" />
                 </div>
               </div>
 
@@ -357,7 +427,13 @@
             </div>
 
             <div class="modal-footer form-actions">
-              <button type="button" class="btn btn-secondary btn-pill" @click="closePaymentModal">Cancel</button>
+              <button
+                type="button"
+                class="btn btn-secondary btn-pill"
+                @click="closePaymentModal"
+              >
+                Cancel
+              </button>
               <button
                 type="button"
                 class="btn btn-primary btn-pill"
@@ -765,98 +841,262 @@ export default {
 </script>
 
 <style scoped>
-.detail-grid {
+/* ================================
+   TRANSACTION DETAIL
+================================ */
+
+.transaction-detail-layout {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 22px;
+  align-items: start;
+  width: 100%;
+  max-width: 1380px;
+}
+
+.transaction-detail-main {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  margin-bottom: 16px;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.info-block {
-  padding: 10px 12px;
-  background: #fafaf9;
-  border: 1px solid #ececea;
-  border-radius: 10px;
-}
-
-.actions-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.form-item-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 12px;
-  border: 1px solid #ececea;
-  border-radius: 10px;
-  background: #fafaf9;
-}
-
-.item-left {
   min-width: 0;
 }
 
-.item-meta {
-  margin-top: 4px;
-  font-size: 11px;
-  color: #888;
-  line-height: 1.4;
+.transaction-detail-side {
+  position: sticky;
+  top: 24px;
+  align-self: start;
 }
 
-.item-right {
+.action-center-card {
+  min-height: auto;
+}
+
+/* ================================
+   OVERVIEW
+================================ */
+
+.overview-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.overview-cell {
+  min-height: 66px;
+  padding: 13px 14px;
+  border-right: 1px solid #e5eaf1;
+  border-bottom: 1px solid #e5eaf1;
+  background: #ffffff;
+}
+
+.overview-cell:nth-child(2n) {
+  border-right: none;
+}
+
+.overview-cell:nth-last-child(-n + 2) {
+  border-bottom: none;
+}
+
+.overview-cell span {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #8a96a8;
+}
+
+.overview-cell strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.overview-cell.important strong {
+  letter-spacing: -0.01em;
+}
+
+.notes-cell strong {
+  font-weight: 760;
+}
+
+/* ================================
+   ACTION CENTER
+================================ */
+
+.primary-action-block {
+  margin-bottom: 11px;
+}
+
+.primary-action-block > .btn {
+  width: 100%;
+}
+
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.action-list .btn {
+  width: 100%;
+}
+
+.completed-panel {
+  padding: 13px 14px;
+  border: 1px solid #d7f0df;
+  border-radius: 14px;
+  background: #f0fdf4;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.completed-panel > span {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.completed-panel strong {
+  display: block;
+  font-size: 12.8px;
+  font-weight: 850;
+  color: #166534;
+}
+
+.completed-panel p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #4b8060;
+  line-height: 1.35;
+}
+
+.transaction-money-box {
+  margin-top: 4px;
+}
+
+.side-summary-row.danger strong {
+  color: #b42318;
+}
+
+.side-summary-row.success strong {
+  color: #15803d;
+}
+
+/* ================================
+   ITEMS
+================================ */
+
+.detail-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-item-card {
+  min-height: 68px;
+  padding: 13px 14px;
+  border: 1px solid #e1e7ef;
+  border-radius: 14px;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
+}
+
+.detail-item-card:hover {
+  border-color: #d4dce8;
+}
+
+.detail-item-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.detail-item-copy {
+  min-width: 0;
+}
+
+.detail-item-name {
+  font-size: 13.5px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.detail-item-meta {
+  margin-top: 4px;
+  font-size: 11.6px;
+  color: #8a96a8;
+  line-height: 1.35;
+}
+
+.detail-item-right {
   text-align: right;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.item-price {
-  font-size: 13px;
-  font-weight: 700;
-  color: #111;
+.detail-item-right strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 850;
+  color: #0f172a;
 }
 
-.item-unit {
+.detail-item-right span {
+  display: block;
   margin-top: 4px;
-  font-size: 11px;
-  color: #888;
+  font-size: 11.5px;
+  color: #8a96a8;
 }
+
+/* ================================
+   PAYMENT HISTORY
+================================ */
 
 .payment-history {
-  margin-top: 12px;
-  border-top: 1px solid #eeeeea;
-  padding-top: 10px;
+  margin-top: 14px;
+  border-top: 1px solid #e5eaf1;
+  padding-top: 12px;
 }
 
 .payment-title {
-  font-size: 11px;
-  color: #999;
+  margin-bottom: 7px;
+  font-size: 10.5px;
+  color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 8px;
-  font-weight: 600;
+  letter-spacing: 0.11em;
+  font-weight: 850;
 }
 
 .payment-row {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid #f3f3f0;
+  padding: 9px 0;
+  border-bottom: 1px solid #edf1f6;
 }
 
 .payment-row:last-child {
@@ -864,25 +1104,65 @@ export default {
 }
 
 .payment-method {
-  font-size: 12px;
-  font-weight: 600;
-  color: #111;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #0f172a;
   text-transform: capitalize;
 }
 
 .payment-meta {
-  font-size: 11px;
-  color: #999;
+  font-size: 11.5px;
+  color: #8a96a8;
   margin-top: 2px;
+  line-height: 1.35;
 }
+
+.payment-row strong {
+  font-size: 12.8px;
+  font-weight: 850;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+/* ================================
+   PAYMENT MODAL
+================================ */
+
+.payment-due-panel {
+  margin-bottom: 14px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  border: 1px solid #dfe5ee;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.payment-due-panel span {
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.payment-due-panel strong {
+  font-size: 14px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+/* ================================
+   PDF MODAL
+================================ */
 
 .pdf-modal {
   position: fixed;
   inset: 0;
   width: 100dvw;
   height: 100dvh;
-  background: rgba(15, 15, 15, 0.45);
-  backdrop-filter: blur(3px);
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -893,13 +1173,14 @@ export default {
 .pdf-container {
   width: min(95vw, 1400px);
   height: min(92vh, 1000px);
-  background: #fff;
-  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #dfe5ee;
+  border-radius: 18px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 26px 80px rgba(15, 23, 42, 0.24);
 }
 
 .pdf-topbar {
@@ -909,14 +1190,14 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  border-bottom: 1px solid #eeeeea;
-  background: #fff;
+  border-bottom: 1px solid #edf1f6;
+  background: #ffffff;
 }
 
 .pdf-title {
   font-size: 14px;
-  font-weight: 800;
-  color: #111;
+  font-weight: 850;
+  color: #0f172a;
 }
 
 .pdf-actions {
@@ -932,13 +1213,52 @@ export default {
   height: 100%;
   border: none;
   border-radius: 12px;
-  background: #f5f5f5;
+  background: #f8fafc;
 }
 
-@media (max-width: 1100px) { 
-  .detail-grid, 
-  .summary-grid { 
-    grid-template-columns: 1fr; 
-  } 
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 1150px) {
+  .transaction-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-detail-side {
+    position: static;
+  }
+}
+
+@media (max-width: 700px) {
+  .overview-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .overview-cell,
+  .overview-cell:nth-child(2n),
+  .overview-cell:nth-last-child(-n + 2) {
+    border-right: none;
+    border-bottom: 1px solid #e5eaf1;
+  }
+
+  .overview-cell:last-child {
+    border-bottom: none;
+  }
+
+  .detail-item-card,
+  .detail-item-left {
+    flex-direction: column;
+  }
+
+  .detail-item-right {
+    width: 100%;
+    text-align: left;
+  }
+
+  .pdf-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
 }
 </style>
