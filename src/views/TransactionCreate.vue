@@ -85,16 +85,8 @@
           <!-- CUSTOMER & VEHICLE -->
           <Card class="workflow-card">
             <template #header>
-              <div class="section-heading">
-                <div
-                  class="section-index"
-                  :class="{
-                    active: !form.customer_id || !form.vehicle_id,
-                    done: form.customer_id && form.vehicle_id
-                  }"
-                >
-                  1
-                </div>
+              <div class="section-heading no-index">
+          
                 <div>
                   <span class="card-title">Customer & Vehicle</span>
                   <p class="section-caption">Select the customer and vehicle for this quotation.</p>
@@ -158,17 +150,8 @@
           <!-- COMPATIBLE PARTS -->
           <Card class="workflow-card compatible-parts-card">
             <template #header>
-              <div class="section-heading">
-                <div
-                  class="section-index"
-                  :class="{
-                    pending: !form.customer_id || !form.vehicle_id,
-                    active: form.customer_id && form.vehicle_id && form.items.length === 0,
-                    done: form.items.length > 0
-                  }"
-                >
-                  2
-                </div>
+              <div class="section-heading no-index">
+                
                 <div>
                   <span class="card-title">Available Compatible Parts</span>
                   <p class="section-caption">Click a part to add it into the quotation.</p>
@@ -271,16 +254,8 @@
           <!-- TRANSACTION ITEMS -->
           <Card class="workflow-card">
             <template #header>
-              <div class="section-heading">
-                <div
-                  class="section-index"
-                  :class="{
-                    pending: form.items.length === 0,
-                    active: form.items.length > 0
-                  }"
-                >
-                  3
-                </div>
+              <div class="section-heading no-index">
+                
                 <div>
                   <span class="card-title">Transaction Items</span>
                   <p class="section-caption">Review selected parts and service charges.</p>
@@ -460,16 +435,8 @@
           <!-- NOTES -->
           <Card class="workflow-card">
             <template #header>
-              <div class="section-heading">
-                <div
-                  class="section-index"
-                  :class="{
-                    pending: form.items.length === 0,
-                    muted: form.items.length > 0
-                  }"
-                >
-                  4
-                </div>
+              <div class="section-heading no-index">
+                
                 <div>
                   <span class="card-title">Notes</span>
                   <p class="section-caption">Optional remarks shown internally or on quotation.</p>
@@ -496,7 +463,7 @@
             </template>
 
             <div class="summary-box">
-              <div class="summary-progress">
+              <div v-if="!canSubmit" class="summary-progress">
                 <div class="summary-progress-title">Ready to save</div>
 
                 <div
@@ -987,6 +954,10 @@ export default {
   align-items: flex-start;
   gap: 11px;
   min-width: 0;
+}
+
+.section-heading.no-index {
+  gap: 0;
 }
 
 .section-index {
