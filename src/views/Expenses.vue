@@ -290,10 +290,12 @@
             <div class="modal-header detail-modal-header">
               <div>
                 <div class="detail-modal-title-row">
-                  <span>{{ activeExpense.category || "Expense Detail" }}</span>
-                  <span class="badge" :class="categoryBadgeClass(activeExpense.category)">
-                    {{ activeExpense.category || "Uncategorised" }}
-                  </span>
+                  <div class="detail-modal-title-row">
+                    <span>Expense Detail</span>
+                    <span class="badge" :class="categoryBadgeClass(activeExpense.category)">
+                      {{ activeExpense.category || "Uncategorised" }}
+                    </span>
+                  </div>
                 </div>
 
                 <p class="detail-modal-subtitle">
@@ -305,36 +307,25 @@
             </div>
 
             <div class="modal-body modal-detail-body">
-              <div class="expense-kpi-grid">
-                <div class="expense-kpi-card">
+              <div class="detail-summary-grid">
+                <div class="detail-summary-cell">
                   <span>Amount</span>
                   <strong>RM {{ formatMoney(activeExpense.amount) }}</strong>
                 </div>
 
-                <div class="expense-kpi-card">
+                <div class="detail-summary-cell">
                   <span>Date</span>
                   <strong>{{ formatDate(activeExpense.expense_date) }}</strong>
                 </div>
 
-                <div class="expense-kpi-card">
-                  <span>Receipt</span>
-                  <strong>{{ activeExpense.receipt_file ? "Available" : "Not uploaded" }}</strong>
+                <div class="detail-summary-cell">
+                  <span>Category</span>
+                  <strong>{{ activeExpense.category || "-" }}</strong>
                 </div>
-              </div>
 
-              <div class="detail-section-card compact-detail-card">
-                <div class="detail-section-title">Expense Details</div>
-
-                <div class="compact-detail-list">
-                  <div class="compact-detail-row">
-                    <span>Category</span>
-                    <strong>{{ activeExpense.category || "-" }}</strong>
-                  </div>
-
-                  <div class="compact-detail-row">
-                    <span>Receipt</span>
-                    <strong>{{ activeExpense.receipt_file ? "Uploaded" : "No receipt" }}</strong>
-                  </div>
+                <div class="detail-summary-cell">
+                  <span>Receipt</span>
+                  <strong>{{ activeExpense.receipt_file ? "Uploaded" : "No receipt" }}</strong>
                 </div>
               </div>
 
@@ -1257,42 +1248,6 @@ export default {
   align-items: center;
   gap: 8px;
   min-width: 0;
-}
-
-/* ================================
-   EXPENSE DETAIL MODAL
-================================ */
-
-.expense-kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.expense-kpi-card {
-  min-height: 78px;
-  padding: 13px 14px;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background: #fbfcfe;
-}
-
-.expense-kpi-card span {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 10.5px;
-  font-weight: 850;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  color: #8a96a8;
-}
-
-.expense-kpi-card strong {
-  display: block;
-  font-size: 13.5px;
-  font-weight: 820;
-  color: #0f172a;
-  line-height: 1.35;
 }
 
 /* ================================

@@ -296,7 +296,7 @@
               </div>
             </div>
 
-            <div class="detail-section-card compact-detail-card">
+            <div class="detail-section-card -card">
               <div class="detail-section-title">Part Details</div>
 
               <div class="compact-detail-list">
