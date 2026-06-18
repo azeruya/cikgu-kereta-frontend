@@ -1359,6 +1359,15 @@ th.center {
 .summary-row {
   min-height: 44px;
   padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid #e5eaf1;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
 }
 
 .summary-row span {
@@ -1367,7 +1376,8 @@ th.center {
   color: #64748b;
 }
 
-.summary-row b {
+.summary-row b,
+.summary-row strong {
   min-width: 28px;
   height: 26px;
   padding: 4px 8px;
@@ -1379,8 +1389,10 @@ th.center {
   justify-content: center;
   font-size: 12.8px;
   font-weight: 850;
+  color: #0f172a;
+  text-align: center;
+  white-space: nowrap;
 }
-
 
 /* =========================================================
    FILTER BARS
