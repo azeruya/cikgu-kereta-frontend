@@ -268,7 +268,7 @@
             </div>
 
             <div class="modal-footer customer-detail-footer">
-              <div class="customer-detail-actions">
+              <div class="customer-detail-actions-left">
                 <button
                   type="button"
                   class="btn btn-secondary btn-pill"
@@ -287,19 +287,19 @@
 
                 <button
                   type="button"
-                  class="btn btn-primary btn-pill"
-                  @click="viewCustomerTransactions(activeCustomer)"
+                  class="btn btn-danger-light btn-pill"
+                  @click="openDeleteModal(activeCustomer)"
                 >
-                  View Transactions
+                  Delete
                 </button>
               </div>
 
               <button
                 type="button"
-                class="btn btn-danger-light btn-pill"
-                @click="openDeleteModal(activeCustomer)"
+                class="btn btn-primary btn-pill"
+                @click="viewCustomerTransactions(activeCustomer)"
               >
-                Delete
+                View Transactions
               </button>
             </div>
           </div>
@@ -1034,6 +1034,42 @@ async confirmDeleteCustomer() {
   gap: 14px 28px;
 }
 
+.customer-detail-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.customer-detail-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.customer-detail-footer .btn {
+  min-width: 96px;
+}
+
+.customer-detail-footer > .btn-primary {
+  min-width: 150px;
+}
+
+.customer-trx-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.customer-trx-amount {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
 @keyframes skeleton {
   0% {
     background-position: 200% 0;
@@ -1041,6 +1077,22 @@ async confirmDeleteCustomer() {
 
   100% {
     background-position: -200% 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .customer-detail-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .customer-detail-actions-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .customer-detail-footer .btn {
+    width: 100%;
   }
 }
 </style>
