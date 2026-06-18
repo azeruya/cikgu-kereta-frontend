@@ -913,8 +913,7 @@ export default {
   color: #8a96a8;
 }
 
-.overview-cell strong,
-.overview-value {
+.overview-cell strong {
   display: block;
   font-size: 12px;
   font-weight: 450;
@@ -923,14 +922,26 @@ export default {
   word-break: break-word;
 }
 
+.overview-value {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 560;
+  color: #0f172a;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.overview-cell.important .overview-value,
 .overview-cell.important strong {
-  font-weight: 820;
-  letter-spacing: -0.01em;
+  font-size: 12.8px;
+  font-weight: 780;
 }
 
 .overview-note {
-  font-weight: 620;
+  font-size: 12.5px;
+  font-weight: 500;
   color: #1e293b;
+  line-height: 1.4;
 }
 
 .notes-cell strong {
