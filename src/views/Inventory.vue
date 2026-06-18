@@ -187,41 +187,44 @@
               <span class="card-link">Needs restock</span>
             </template>
 
-            <div v-if="lowStockPreview.length === 0" class="empty-small">
-              No low stock alerts.
+            <div v-if="lowStockPreview.length === 0" class="mini-empty-state">
+              <strong>No low stock alerts</strong>
+              <p>All parts are currently above their minimum stock threshold.</p>
             </div>
 
             <div
-              v-for="part in lowStockPreview"
+              v-for="part in lowStockParts"
               :key="part.id"
-              class="stock-preview-item"
+              class="stock-alert-card"
               @click="openDetail(part)"
             >
-              <div class="stock-alert-main">
-                <div class="item-name">
-                  {{ part.name }}
-                  <span v-if="part.variant">— {{ part.variant }}</span>
+              <div class="stock-alert-top">
+                <div class="stock-alert-info">
+                  <div class="stock-alert-name">{{ part.name }}</div>
+                  <div class="stock-alert-meta">
+                    Stock {{ part.stock }} · Minimum {{ part.min_stock_threshold }}
+                  </div>
                 </div>
 
-                <small class="item-sub">
-                  {{ part.stock }} / {{ part.min_stock_threshold }} minimum
-                </small>
-
-                <div class="stock-meter">
-                  <div
-                    class="stock-meter-fill"
-                    :style="{ width: stockMeterWidth(part) + '%' }"
-                  ></div>
+                <div class="stock-alert-status">
+                  <strong>{{ part.min_stock_threshold - part.stock }} short</strong>
+                  <button
+                    type="button"
+                    class="stock-alert-action"
+                    @click.stop="openRestockFromList(part)"
+                  >
+                    Restock
+                  </button>
                 </div>
               </div>
 
-              <div class="stock-preview-right">
-                <div class="stock-danger-text">
-                  {{ Number(part.min_stock_threshold) - Number(part.stock) }} short
-                </div>
-                <button class="restock-link" @click.stop="openRestockFromList(part)">
-                  Restock
-                </button>
+              <div class="stock-meter">
+                <div
+                  class="stock-meter-fill"
+                  :style="{
+                    width: `${Math.min((part.stock / Math.max(part.min_stock_threshold, 1)) * 100, 100)}%`
+                  }"
+                ></div>
               </div>
             </div>
           </Card>
@@ -1174,5 +1177,129 @@ nextPage() {
   .part-kpi-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* low stock alert */
+.stock-alert-card {
+  padding: 13px 14px;
+  border: 1px solid #e1e7ef;
+  border-radius: 14px;
+  background: #ffffff;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.stock-alert-card + .stock-alert-card {
+  margin-top: 8px;
+}
+
+.stock-alert-card:hover {
+  background: #fbfcfe;
+  border-color: #d4dce8;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035);
+}
+
+.stock-alert-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stock-alert-info {
+  min-width: 0;
+}
+
+.stock-alert-name {
+  font-size: 12.8px;
+  font-weight: 820;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.stock-alert-meta {
+  margin-top: 4px;
+  font-size: 11.7px;
+  font-weight: 520;
+  color: #8a96a8;
+  line-height: 1.3;
+}
+
+.stock-alert-status {
+  text-align: right;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stock-alert-status strong {
+  display: block;
+  font-size: 11.8px;
+  font-weight: 850;
+  color: #dc2626;
+  line-height: 1.2;
+}
+
+.stock-alert-action {
+  margin-top: 6px;
+  min-height: 25px;
+  padding: 4px 10px;
+  border: 1px solid #dfe5ee;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
+}
+
+.stock-alert-action:hover {
+  background: #fff7f6;
+  border-color: #f3b4ad;
+  color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.stock-meter {
+  width: 100%;
+  height: 5px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: #edf1f6;
+  overflow: hidden;
+}
+
+.stock-meter-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #f59e0b;
+}
+
+.mini-empty-state {
+  padding: 13px 14px;
+  border: 1px dashed #dfe5ee;
+  border-radius: 14px;
+  background: #fbfcfe;
+}
+
+.mini-empty-state strong {
+  display: block;
+  font-size: 12.8px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.mini-empty-state p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #8a96a8;
+  line-height: 1.35;
 }
 </style>
