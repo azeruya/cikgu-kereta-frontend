@@ -354,17 +354,17 @@ a {
   color: var(--danger);
 }
 
+.success-confirm-footer .btn-success,
 .btn-success {
-  background: var(--success);
+  background: #15803d;
+  border-color: #15803d;
   color: #ffffff;
-  border-color: var(--success);
-  box-shadow: 0 8px 18px rgba(31, 143, 77, 0.14);
 }
 
+.success-confirm-footer .btn-success:hover,
 .btn-success:hover {
-  background: #18763f;
-  border-color: #18763f;
-  color: #ffffff;
+  background: #166534;
+  border-color: #166534;
 }
 
 .btn-pill {
@@ -3523,7 +3523,7 @@ th.center {
 }
 
 .success-confirm-body {
-  padding: 26px 26px 20px;
+  padding: 24px 26px 20px;
   text-align: center;
 }
 

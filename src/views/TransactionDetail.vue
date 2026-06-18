@@ -381,12 +381,23 @@
         </div>
       </Teleport>
 
-      <!-- Payment Modal -->
+      <!-- PAYMENT MODAL -->
       <Teleport to="body">
-        <div v-if="showPaymentModal" class="modal" @click.self="closePaymentModal">
-          <div class="modal-card large">
-            <div class="modal-header">
-              <span>Record Payment</span>
+        <div
+          v-if="showPaymentModal"
+          class="modal"
+          @click.self="closePaymentModal"
+        >
+          <div class="modal-card action-modal-card">
+            <div class="action-modal-header">
+              <div>
+                <div class="action-modal-title">Record payment</div>
+                <p class="action-modal-subtitle">
+                  Add payment for
+                  <strong>{{ transaction.document_number || "this transaction" }}</strong>.
+                </p>
+              </div>
+
               <button
                 type="button"
                 class="btn btn-sm btn-ghost"
@@ -396,13 +407,15 @@
               </button>
             </div>
 
-            <div class="modal-body">
-              <div class="payment-due-panel">
-                <span>Amount due</span>
-                <strong>RM {{ formatMoney(balanceDue) }}</strong>
+            <div class="action-modal-body">
+              <div class="action-summary-box">
+                <div class="action-summary-row">
+                  <span>Amount due</span>
+                  <strong>RM {{ formatMoney(balanceDue) }}</strong>
+                </div>
               </div>
 
-              <div class="form-grid">
+              <div class="form-grid form-grid-compact">
                 <div class="form-field">
                   <label>Amount Paid</label>
                   <input
@@ -438,19 +451,25 @@
                 </div>
               </div>
 
-              <div v-if="paymentFormError" class="page-error" style="margin-top:12px;">
+              <div
+                v-if="paymentFormError"
+                class="page-error"
+                style="margin-top: 12px;"
+              >
                 {{ paymentFormError }}
               </div>
             </div>
 
-            <div class="modal-footer form-actions">
+            <div class="action-modal-footer">
               <button
                 type="button"
                 class="btn btn-secondary btn-pill"
+                :disabled="actionLoading"
                 @click="closePaymentModal"
               >
                 Cancel
               </button>
+
               <button
                 type="button"
                 class="btn btn-primary btn-pill"

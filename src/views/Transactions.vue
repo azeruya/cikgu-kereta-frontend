@@ -316,7 +316,7 @@
                 :disabled="actionLoadingId === quotationToConfirm?.id"
                 @click="submitConfirmQuotation"
               >
-                {{ actionLoadingId === quotationToConfirm?.id ? "Confirming..." : "Confirm" }}
+                {{ actionLoadingId === quotationToConfirm?.id ? "Converting..." : "Confirm" }}
               </button>
             </div>
           </div>
