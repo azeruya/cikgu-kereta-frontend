@@ -3011,7 +3011,7 @@ th.center {
 }
 
 .modal-card.large {
-  width: min(540px, calc(100vw - 32px));
+  width: min(520px, calc(100vw - 32px));
 }
 
 .modal-header {
@@ -3088,7 +3088,7 @@ th.center {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .part-kpi-card {
@@ -3174,8 +3174,8 @@ th.center {
 
 /* Detail sections */
 .detail-section-card {
-  margin-top: 14px;
-  padding: 14px;
+  margin-top: 12px;
+  padding: 13px 14px;
   border: 1px solid #dfe5ee;
   border-radius: 14px;
   background: #fbfcfe;
@@ -3205,8 +3205,8 @@ th.center {
 }
 
 .compact-detail-row {
-  min-height: 42px;
-  padding: 11px 2px;
+  min-height: 39px;
+  padding: 9px 2px;
   border-bottom: 1px solid #e5eaf1;
   display: flex;
   align-items: center;
@@ -3240,7 +3240,7 @@ th.center {
 }
 
 .detail-list-card {
-  padding: 12px 13px;
+  padding: 11px 12px;
   border: 1px solid #e1e7ef;
   border-radius: 13px;
   background: #ffffff;
@@ -3309,7 +3309,7 @@ th.center {
 }
 
 .action-modal-body {
-  padding: 0 24px 22px;
+  padding: 0 24px 20px;
 }
 
 .action-modal-body .form-field label {
@@ -3332,7 +3332,7 @@ th.center {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  padding: 12px 14px;
+  padding: 11px 14px;
   border-bottom: 1px solid #e5eaf1;
   font-size: 12.8px;
   color: #526173;
@@ -3350,11 +3350,40 @@ th.center {
 }
 
 .action-modal-footer {
-  padding: 14px 24px 20px;
+  padding: 13px 24px 18px;
   border-top: 1px solid #e5eaf1;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+}
+
+.detail-action-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-action-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  .detail-action-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .detail-action-left {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .detail-action-footer .btn {
+    width: 100%;
+  }
 }
 
 /* =========================================================

@@ -337,34 +337,34 @@
               </div>
             </div>
 
-            <div class="modal-footer split">
-              <div class="left-actions">
-                <button
-                  type="button"
-                  class="btn btn-secondary btn-pill"
-                  @click="openFormModal(activeExpense)"
-                >
-                  Edit
-                </button>
+     <div class="modal-footer detail-action-footer">
+      <div class="detail-action-left">
+        <button
+          type="button"
+          class="btn btn-secondary btn-pill"
+          @click="openFormModal(activeExpense)"
+        >
+          Edit
+        </button>
 
-                <button
-                  type="button"
-                  class="btn btn-primary btn-pill"
-                  :disabled="!activeExpense.receipt_file"
-                  @click="viewReceipt(activeExpense)"
-                >
-                  View Receipt
-                </button>
-              </div>
+        <button
+          type="button"
+          class="btn btn-primary btn-pill"
+          :disabled="!activeExpense.receipt_file"
+          @click="viewReceipt(activeExpense)"
+        >
+          View Receipt
+        </button>
+      </div>
 
-              <button
-                type="button"
-                class="btn btn-danger-light btn-pill"
-                @click="openDeleteModal(activeExpense)"
-              >
-                Delete
-              </button>
-            </div>
+      <button
+        type="button"
+        class="btn btn-danger-light btn-pill"
+        @click="openDeleteModal(activeExpense)"
+      >
+        Delete
+      </button>
+    </div>
           </div>
         </div>
       </Teleport>
