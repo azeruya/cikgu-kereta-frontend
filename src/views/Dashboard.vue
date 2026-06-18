@@ -20,7 +20,7 @@
             <span>Workshop is open</span>
           </div>
 
-          <p>Here's what's happening at your workshop today.</p>
+          <p>Here’s a quick overview of today’s workshop activity.</p>
         </div>
 
         <div class="dashboard-header-actions">
@@ -58,112 +58,212 @@
         </div>
       </section>
 
-      <!-- MAIN GRID -->
-      <section class="dashboard-grid-clean">
-        <!-- TODAY TRANSACTIONS -->
-        <Card class="dashboard-panel today-panel">
-          <template #header>
-            <div class="panel-head">
-              <div>
-                <h3>Today's transactions</h3>
-                <p>Jobs created or updated today.</p>
-              </div>
+      <!-- DASHBOARD BODY -->
+      <section class="dashboard-layout">
+        <!-- LEFT COLUMN -->
+        <div class="dashboard-left">
+          <!-- LATEST TRANSACTIONS -->
+          <Card class="dashboard-panel latest-panel">
+            <template #header>
+              <div class="panel-head">
+                <div>
+                  <h3>Latest transactions</h3>
+                  <p>Recent jobs created or updated in the workshop.</p>
+                </div>
 
-              <router-link to="/transactions" class="panel-link">
-                View all
+                <router-link to="/transactions" class="panel-link">
+                  View all
+                </router-link>
+              </div>
+            </template>
+
+            <div v-if="latestTransactions.length > 0" class="mini-table-wrap">
+              <table class="mini-table">
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Work</th>
+                    <th>Status</th>
+                    <th class="right">Total</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr
+                    v-for="trx in latestTransactions.slice(0, 4)"
+                    :key="trx.id"
+                    @click="goToTransaction(trx.id)"
+                  >
+                    <td>
+                      <strong>{{ trx.customer }}</strong>
+                      <span>{{ trx.plate }}</span>
+                    </td>
+
+                    <td>
+                      <strong>{{ trx.work }}</strong>
+                    </td>
+
+                    <td>
+                      <span class="badge" :class="trx.badgeClass">
+                        {{ trx.status }}
+                      </span>
+                    </td>
+
+                    <td class="right">
+                      <strong>{{ trx.total }}</strong>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div v-else class="dashboard-empty-state">
+              <div class="empty-icon">+</div>
+              <strong>No transactions yet</strong>
+              <p>Create a quotation or invoice when a customer arrives.</p>
+
+              <router-link to="/transactions/new" class="btn btn-primary btn-pill">
+                New transaction
               </router-link>
             </div>
-          </template>
+          </Card>
 
-          <div v-if="todayTransactions.length > 0" class="mini-table-wrap">
-            <table class="mini-table">
-              <thead>
-                <tr>
-                  <th>Customer</th>
-                  <th>Work</th>
-                  <th>Status</th>
-                  <th class="right">Total</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr
-                  v-for="trx in todayTransactions"
-                  :key="trx.id"
-                  @click="goToTransaction(trx.id)"
-                >
-                  <td>
-                    <strong>{{ trx.customer }}</strong>
-                    <span>{{ trx.plate }}</span>
-                  </td>
-
-                  <td>
-                    <strong>{{ trx.work }}</strong>
-                  </td>
-
-                  <td>
-                    <span class="badge" :class="trx.badgeClass">
-                      {{ trx.status }}
-                    </span>
-                  </td>
-
-                  <td class="right">
-                    <strong>{{ trx.total }}</strong>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div v-else class="dashboard-empty-state">
-            <div class="empty-icon">+</div>
-            <strong>No transactions today</strong>
-            <p>Create a quotation or invoice when a customer arrives.</p>
-
-            <router-link to="/transactions/new" class="btn btn-primary btn-pill">
-              New transaction
-            </router-link>
-          </div>
-        </Card>
-
-        <!-- NEEDS ATTENTION -->
-        <Card class="dashboard-panel attention-panel">
-          <template #header>
-            <div class="panel-head">
-              <div>
-                <h3>Needs attention</h3>
-                <p>Stock and online requests to review.</p>
+          <!-- RECENT ACTIVITY -->
+          <Card class="dashboard-panel activity-panel">
+            <template #header>
+              <div class="panel-head">
+                <div>
+                  <h3>Recent activity</h3>
+                  <p>Latest workshop updates and system activity.</p>
+                </div>
               </div>
-            </div>
-          </template>
+            </template>
 
-          <div class="attention-section">
-            <div class="attention-title-row">
-              <span>Low stock</span>
-
-              <router-link to="/inventory" class="panel-link">
-                Inventory
-              </router-link>
-            </div>
-
-            <div v-if="lowStockItems.length > 0" class="attention-list">
+            <div v-if="activityItems.length > 0" class="activity-list-clean">
               <div
-                v-for="item in lowStockItems.slice(0, 2)"
-                :key="item.id"
-                class="attention-item"
+                v-for="(activity, index) in activityItems.slice(0, 6)"
+                :key="index"
+                class="activity-row-clean"
               >
-                <div class="attention-item-top">
+                <span class="activity-dot" :class="activity.type"></span>
+
+                <div>
+                  <p v-html="activity.message"></p>
+                  <small>{{ activity.time }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div v-else class="attention-empty">
+              No recent activity yet.
+            </div>
+          </Card>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <aside class="dashboard-right">
+          <Card class="dashboard-panel operations-panel">
+            <template #header>
+              <div class="panel-head">
+                <div>
+                  <h3>Operations</h3>
+                  <p>Shortcuts and items that need attention.</p>
+                </div>
+              </div>
+            </template>
+
+            <!-- QUICK ACTIONS -->
+            <div class="ops-section">
+              <div class="ops-section-title">Quick actions</div>
+
+              <div class="quick-grid-clean">
+                <router-link to="/transactions/new" class="quick-action-clean primary">
+                  <span>+</span>
                   <div>
-                    <strong>{{ item.name }}</strong>
-                    <p>{{ item.left }} in stock · Minimum {{ item.min }}</p>
+                    <strong>New transaction</strong>
+                    <p>Create quotation or invoice</p>
+                  </div>
+                </router-link>
+
+                <router-link to="/inventory/new" class="quick-action-clean">
+                  <span>▣</span>
+                  <div>
+                    <strong>Add part</strong>
+                    <p>Create inventory item</p>
+                  </div>
+                </router-link>
+
+                <button
+                  type="button"
+                  class="quick-action-clean"
+                  :disabled="importingRequests"
+                  @click="importOnlineRequests"
+                >
+                  <span>⇧</span>
+                  <div>
+                    <strong>Import requests</strong>
+                    <p>{{ importingRequests ? "Importing..." : "From online form" }}</p>
+                  </div>
+                </button>
+
+                <router-link
+                  v-if="isAdmin"
+                  to="/reports"
+                  class="quick-action-clean"
+                >
+                  <span>▥</span>
+                  <div>
+                    <strong>Reports</strong>
+                    <p>View business summary</p>
+                  </div>
+                </router-link>
+
+                <router-link
+                  v-else
+                  to="/customers"
+                  class="quick-action-clean"
+                >
+                  <span>☻</span>
+                  <div>
+                    <strong>Customers</strong>
+                    <p>View customer list</p>
+                  </div>
+                </router-link>
+              </div>
+            </div>
+
+            <!-- LOW STOCK -->
+            <div class="ops-section">
+              <div class="attention-title-row">
+                <span>Low stock</span>
+
+                <router-link to="/inventory" class="panel-link">
+                  Inventory
+                </router-link>
+              </div>
+
+              <div v-if="lowStockItems.length > 0" class="stock-summary-card">
+                <div class="stock-summary-top">
+                  <div>
+                    <strong>{{ lowStockItems[0].name }}</strong>
+                    <p>
+                      {{ lowStockItems[0].left }} in stock · Minimum {{ lowStockItems[0].min }}
+                    </p>
                   </div>
 
                   <span
                     class="attention-pill"
-                    :class="item.level === 'critical' ? 'danger' : 'warning'"
+                    :class="lowStockItems[0].level === 'critical' ? 'danger' : 'warning'"
                   >
-                    {{ item.level === "critical" ? "Critical" : "Low" }}
+                    {{ lowStockItems[0].level === "critical" ? "Critical" : "Low" }}
                   </span>
+                </div>
+
+                <div
+                  v-if="lowStockItems.length > 1"
+                  class="stock-extra-line"
+                >
+                  +{{ lowStockItems.length - 1 }} more item(s) need restock
                 </div>
 
                 <router-link
@@ -173,172 +273,72 @@
                   Manage stock
                 </router-link>
               </div>
+
+              <div v-else class="attention-empty">
+                Stock levels look okay.
+              </div>
             </div>
 
-            <div v-else class="attention-empty">
-              Stock levels look okay.
-            </div>
-          </div>
+            <!-- ONLINE REQUESTS -->
+            <div class="ops-section">
+              <div class="attention-title-row">
+                <span>Online requests</span>
 
-          <div class="attention-section">
-            <div class="attention-title-row">
-              <span>Online requests</span>
+                <button
+                  type="button"
+                  class="panel-link button-link"
+                  :disabled="importingRequests"
+                  @click="importOnlineRequests"
+                >
+                  {{ importingRequests ? "Importing..." : "Import" }}
+                </button>
+              </div>
 
-              <button
-                type="button"
-                class="panel-link button-link"
-                :disabled="importingRequests"
-                @click="importOnlineRequests"
-              >
-                {{ importingRequests ? "Importing..." : "Import" }}
-              </button>
-            </div>
+              <div v-if="importMessage" class="import-message compact">
+                {{ importMessage }}
+              </div>
 
-            <div v-if="importMessage" class="import-message compact">
-              {{ importMessage }}
-            </div>
+              <div v-if="onlineRequests.length > 0" class="request-list-clean">
+                <div
+                  v-for="request in onlineRequests.slice(0, 3)"
+                  :key="request.id"
+                  class="request-item-clean"
+                >
+                  <div class="request-copy">
+                    <strong>{{ requestCustomerName(request) }}</strong>
 
-            <div v-if="onlineRequests.length > 0" class="request-list-clean">
-              <div
-                v-for="request in onlineRequests.slice(0, 3)"
-                :key="request.id"
-                class="request-item-clean"
-              >
-                <div class="request-copy">
-                  <strong>{{ requestCustomerName(request) }}</strong>
+                    <p>
+                      {{ requestVehiclePlate(request) }}
 
-                  <p>
-                    {{ requestVehiclePlate(request) }}
+                      <span v-if="requestVehicleText(request)">
+                        · {{ requestVehicleText(request) }}
+                      </span>
+                    </p>
+                  </div>
 
-                    <span v-if="requestVehicleText(request)">
-                      · {{ requestVehicleText(request) }}
+                  <div class="request-actions">
+                    <span class="small-pill">
+                      {{ request.status || "Pending" }}
                     </span>
-                  </p>
-                </div>
 
-                <div class="request-actions">
-                  <span class="small-pill">
-                    {{ request.status || "Pending" }}
-                  </span>
-
-                  <button
-                    v-if="request.status !== 'converted'"
-                    type="button"
-                    class="convert-btn"
-                    @click="convertOnlineRequest(request)"
-                  >
-                    Convert
-                  </button>
+                    <button
+                      v-if="request.status !== 'converted'"
+                      type="button"
+                      class="convert-btn"
+                      @click="convertOnlineRequest(request)"
+                    >
+                      Convert
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div v-else class="attention-empty">
-              No online requests waiting.
-            </div>
-          </div>
-        </Card>
-
-        <!-- RECENT ACTIVITY -->
-        <Card class="dashboard-panel activity-panel">
-          <template #header>
-            <div class="panel-head">
-              <div>
-                <h3>Recent activity</h3>
-                <p>Latest workshop updates.</p>
+              <div v-else class="attention-empty">
+                No online requests waiting.
               </div>
             </div>
-          </template>
-
-          <div v-if="activityItems.length > 0" class="activity-list-clean">
-            <div
-              v-for="(activity, index) in activityItems.slice(0, 6)"
-              :key="index"
-              class="activity-row-clean"
-            >
-              <span
-                class="activity-dot"
-                :class="activity.type"
-              ></span>
-
-              <div>
-                <p v-html="activity.message"></p>
-                <small>{{ activity.time }}</small>
-              </div>
-            </div>
-          </div>
-
-          <div v-else class="attention-empty">
-            No recent activity yet.
-          </div>
-        </Card>
-
-        <!-- QUICK ACTIONS -->
-        <Card class="dashboard-panel quick-panel">
-          <template #header>
-            <div class="panel-head">
-              <div>
-                <h3>Quick actions</h3>
-                <p>Common workshop shortcuts.</p>
-              </div>
-            </div>
-          </template>
-
-          <div class="quick-grid-clean">
-            <router-link to="/transactions/new" class="quick-action-clean primary">
-              <span>+</span>
-              <div>
-                <strong>New transaction</strong>
-                <p>Create quotation or invoice</p>
-              </div>
-            </router-link>
-
-            <router-link to="/inventory/new" class="quick-action-clean">
-              <span>▣</span>
-              <div>
-                <strong>Add part</strong>
-                <p>Create inventory item</p>
-              </div>
-            </router-link>
-
-            <button
-              type="button"
-              class="quick-action-clean"
-              :disabled="importingRequests"
-              @click="importOnlineRequests"
-            >
-              <span>⇧</span>
-              <div>
-                <strong>Import requests</strong>
-                <p>{{ importingRequests ? "Importing..." : "From online form" }}</p>
-              </div>
-            </button>
-
-            <router-link
-              v-if="isAdmin"
-              to="/reports"
-              class="quick-action-clean"
-            >
-              <span>▥</span>
-              <div>
-                <strong>Reports</strong>
-                <p>View business summary</p>
-              </div>
-            </router-link>
-
-            <router-link
-              v-else
-              to="/customers"
-              class="quick-action-clean"
-            >
-              <span>☻</span>
-              <div>
-                <strong>Customers</strong>
-                <p>View customer list</p>
-              </div>
-            </router-link>
-          </div>
-        </Card>
+          </Card>
+        </aside>
       </section>
     </div>
   </div>
@@ -512,6 +512,18 @@ export default {
       });
     },
 
+    latestTransactions() {
+      return this.todayTransactions;
+    },
+
+    activityItems() {
+      return this.recentActivity.map((activity) => ({
+        message: activity.message || activity.description || "-",
+        time: activity.time || activity.created_at || "",
+        type: activity.type || "default",
+      }));
+    },
+
     lowStockItems() {
       return this.lowStockItemsRaw.map((item) => {
         const threshold = Number(item.min_stock_threshold || 0);
@@ -596,6 +608,36 @@ export default {
     toggleSidebar() {
       this.collapsed = !this.collapsed;
       localStorage.setItem("sidebar-collapsed", String(this.collapsed));
+    },
+
+    goToTransaction(id) {
+      if (!id) return;
+      this.$router.push(`/transactions/${id}`);
+    },
+
+    requestCustomerName(request) {
+      return (
+        request.customer?.name ||
+        request.customer_name ||
+        request.name ||
+        "Unknown customer"
+      );
+    },
+
+    requestVehiclePlate(request) {
+      return (
+        request.vehicle?.license_plate ||
+        request.license_plate ||
+        request.plate_number ||
+        "-"
+      );
+    },
+
+    requestVehicleText(request) {
+      const make = request.vehicle?.make || request.vehicle_make || request.make || "";
+      const model = request.vehicle?.model || request.vehicle_model || request.model || "";
+
+      return `${make} ${model}`.trim();
     },
 
     async handleLogout() {
@@ -727,7 +769,10 @@ export default {
     var(--bg);
 }
 
-/* HEADER */
+/* =========================================================
+   HEADER
+========================================================= */
+
 .dashboard-header {
   max-width: 1380px;
   display: flex;
@@ -774,8 +819,12 @@ export default {
   flex-shrink: 0;
 }
 
-/* KPI STRIP */
+/* =========================================================
+   KPI STRIP
+========================================================= */
+
 .metric-strip {
+  max-width: 1380px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-bottom: 14px;
@@ -791,7 +840,7 @@ export default {
 }
 
 .metric-cell {
-  min-height: 84px;
+  min-height: 82px;
   padding: 14px 18px;
   border-right: 1px solid #e5eaf1;
 }
@@ -857,14 +906,28 @@ export default {
   color: #475569;
 }
 
-/* MAIN DASHBOARD GRID */
-.dashboard-grid-clean {
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+.dashboard-layout {
+  max-width: 1380px;
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.85fr);
+  grid-template-columns: minmax(0, 1fr) 390px;
   gap: 14px;
   align-items: start;
 }
 
+.dashboard-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.dashboard-right {
+  min-width: 0;
+}
 
 .dashboard-panel {
   min-width: 0;
@@ -921,9 +984,12 @@ export default {
   color: #0f172a;
 }
 
-/* TODAY TABLE */
-.today-panel {
-  min-height: 230px;
+/* =========================================================
+   LATEST TRANSACTIONS
+========================================================= */
+
+.latest-panel {
+  min-height: 255px;
 }
 
 .mini-table-wrap {
@@ -953,7 +1019,7 @@ export default {
   border-top: 1px solid #edf1f6;
   font-size: 12.8px;
   color: #526173;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .mini-table tbody tr {
@@ -983,7 +1049,10 @@ export default {
   text-align: right;
 }
 
-/* EMPTY */
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
 .dashboard-empty-state {
   min-height: 155px;
   border: 1px dashed #dfe5ee;
@@ -1025,17 +1094,37 @@ export default {
   color: #8a96a8;
 }
 
-/* NEEDS ATTENTION */
+/* =========================================================
+   OPERATIONS CARD
+========================================================= */
 
-.attention-section {
+.operations-panel {
+  position: sticky;
+  top: 28px;
+}
+
+.ops-section {
   padding: 12px;
   border: 1px solid #e1e7ef;
   border-radius: 15px;
   background: #fbfcfe;
 }
 
-.attention-section + .attention-section {
+.ops-section + .ops-section {
   margin-top: 11px;
+}
+
+.ops-section-title,
+.attention-title-row span {
+  font-size: 10.3px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.ops-section-title {
+  margin-bottom: 9px;
 }
 
 .attention-title-row {
@@ -1046,45 +1135,114 @@ export default {
   margin-bottom: 9px;
 }
 
-.attention-title-row span {
-  font-size: 10.3px;
-  font-weight: 900;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: #64748b;
+/* QUICK ACTIONS */
+.quick-grid-clean {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
 }
 
-.attention-list {
+.quick-action-clean {
+  min-height: 54px;
+  padding: 10px 11px;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #ffffff;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 11px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
-.attention-item {
+.quick-action-clean:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.quick-action-clean span {
+  width: 30px;
+  height: 30px;
+  border-radius: 12px;
+  background: #f0f4fa;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 850;
+  flex-shrink: 0;
+}
+
+.quick-action-clean strong {
+  display: block;
+  font-size: 12.8px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.quick-action-clean p {
+  margin: 2px 0 0;
+  font-size: 11.8px;
+  color: #8a96a8;
+  line-height: 1.25;
+}
+
+.quick-action-clean.primary {
+  background: #0f172a;
+  border-color: #0f172a;
+}
+
+.quick-action-clean.primary span {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.quick-action-clean.primary strong {
+  color: #ffffff;
+}
+
+.quick-action-clean.primary p {
+  color: #cbd5e1;
+}
+
+/* LOW STOCK */
+.stock-summary-card {
   padding: 11px 12px;
   border: 1px solid #dfe5ee;
   border-radius: 14px;
   background: #ffffff;
 }
 
-.attention-item-top {
+.stock-summary-top {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   align-items: flex-start;
 }
 
-.attention-item strong {
+.stock-summary-card strong {
   font-size: 13.2px;
   font-weight: 850;
   color: #0f172a;
 }
 
-.attention-item p {
+.stock-summary-card p {
   margin: 4px 0 0;
   font-size: 12px;
   font-weight: 650;
   color: #8a96a8;
+}
+
+.stock-extra-line {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid #edf1f6;
+  font-size: 11.8px;
+  font-weight: 700;
+  color: #64748b;
 }
 
 .attention-pill {
@@ -1127,7 +1285,7 @@ export default {
   color: #8a96a8;
 }
 
-/* REQUESTS */
+/* ONLINE REQUESTS */
 .request-list-clean {
   display: flex;
   flex-direction: column;
@@ -1146,12 +1304,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.request-copy {
-  min-width: 0;
 }
 
 .request-item-clean:hover {
@@ -1159,7 +1312,12 @@ export default {
   transform: translateY(-1px);
 }
 
+.request-copy {
+  min-width: 0;
+}
+
 .request-item-clean strong {
+  display: block;
   font-size: 12.8px;
   font-weight: 850;
   color: #0f172a;
@@ -1169,6 +1327,9 @@ export default {
   margin: 3px 0 0;
   font-size: 11.8px;
   color: #8a96a8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .request-actions {
@@ -1188,6 +1349,7 @@ export default {
   font-size: 11px;
   font-weight: 800;
   white-space: nowrap;
+  text-transform: capitalize;
 }
 
 .convert-btn {
@@ -1213,7 +1375,10 @@ export default {
   font-weight: 650;
 }
 
-/* ACTIVITY */
+/* =========================================================
+   RECENT ACTIVITY
+========================================================= */
+
 .activity-panel {
   min-height: 250px;
 }
@@ -1274,113 +1439,25 @@ export default {
   background: #7c3aed;
 }
 
-/* QUICK ACTIONS */
-.quick-grid-clean {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 9px;
-}
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
-.quick-action-clean {
-  min-height: 58px;
-  padding: 11px 12px;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background: #fbfcfe;
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  text-align: left;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.quick-action-clean:hover {
-  background: #ffffff;
-  transform: translateY(-1px);
-}
-
-.quick-action-clean span {
-  width: 31px;
-  height: 31px;
-  border-radius: 12px;
-  background: #f0f4fa;
-  color: #64748b;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 850;
-  flex-shrink: 0;
-}
-
-.quick-action-clean strong {
-  display: block;
-  font-size: 12.8px;
-  font-weight: 850;
-  color: #0f172a;
-}
-
-.quick-action-clean p {
-  margin: 2px 0 0;
-  font-size: 11.8px;
-  color: #8a96a8;
-  line-height: 1.25;
-}
-
-.quick-action-clean.primary {
-  background: #0f172a;
-  border-color: #0f172a;
-}
-
-.quick-action-clean.primary span {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
-
-.quick-action-clean.primary strong {
-  color: #ffffff;
-}
-
-.quick-action-clean.primary p {
-  color: #cbd5e1;
-}
-
-/* force clean placement */
-.today-panel {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.activity-panel {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.attention-panel {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.quick-panel {
-  grid-column: 2;
-  grid-row: 2;
-  min-height: auto;
-}
-
-/* RESPONSIVE */
 @media (max-width: 1200px) {
   .main {
     padding: 30px 32px 40px;
   }
 
-  .dashboard-grid-clean {
+  .dashboard-layout {
     grid-template-columns: 1fr;
   }
 
-  .attention-panel {
-    grid-row: auto;
+  .operations-panel {
+    position: static;
+  }
+
+  .quick-grid-clean {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -1445,30 +1522,6 @@ export default {
 
   .mini-table-wrap {
     overflow-x: auto;
-  }
-}
-
-@media (max-width: 1200px) {
-  .dashboard-grid-clean {
-    grid-template-columns: 1fr;
-  }
-
-  .today-panel,
-  .activity-panel,
-  .attention-panel,
-  .quick-panel {
-    grid-column: auto;
-    grid-row: auto;
-  }
-
-  .quick-grid-clean {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .quick-grid-clean {
-    grid-template-columns: 1fr;
   }
 }
 </style>
