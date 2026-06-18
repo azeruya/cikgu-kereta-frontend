@@ -37,23 +37,60 @@
       <template v-else>
         <div class="part-form-layout">
           <div class="part-form-main">
-            <!-- PART INFORMATION -->
-            <Card class="workflow-card">
+            <!-- PART SETUP -->
+            <Card class="workflow-card part-setup-card">
               <template #header>
-                <div class="form-section-heading">
-                  <span class="card-title">Part Information</span>
-                  <p class="form-section-caption">
-                    Basic details used when adding this part to quotations and invoices.
-                  </p>
+                <div class="section-heading no-index">
+                  <div>
+                    <span class="card-title">Part Setup</span>
+                    <p class="section-caption">
+                      Configure how this item should appear in inventory and quotations.
+                    </p>
+                  </div>
                 </div>
               </template>
 
-              <div class="form-subgroup">
-                <div class="subgroup-title">Identity</div>
+              <!-- TYPE SELECTOR -->
+              <div class="part-type-panel">
+                <div class="part-type-copy">
+                  <div class="part-type-label">Part type</div>
+                  <div class="part-type-title">
+                    {{ form.is_generic ? "Generic part" : "Vehicle-specific part" }}
+                  </div>
+                  <p>
+                    {{
+                      form.is_generic
+                        ? "This part can be used for any vehicle and does not require compatibility rules."
+                        : "This part will only appear for vehicles that match its compatibility rules."
+                    }}
+                  </p>
+                </div>
+
+                <label class="type-switch">
+                  <input v-model="form.is_generic" type="checkbox" />
+                  <span class="type-switch-track">
+                    <span class="type-switch-thumb"></span>
+                  </span>
+                  <span class="type-switch-text">
+                    {{ form.is_generic ? "Generic" : "Specific" }}
+                  </span>
+                </label>
+              </div>
+
+              <!-- BASIC INFO -->
+              <div class="form-block">
+                <div class="block-head">
+                  <div>
+                    <div class="block-title">Basic Information</div>
+                    <p class="block-caption">
+                      Name, SKU, and description used across inventory and transaction items.
+                    </p>
+                  </div>
+                </div>
 
                 <div class="form-grid">
                   <div class="form-field">
-                    <label>Name</label>
+                    <label>Name <span class="required">*</span></label>
                     <input v-model="form.name" type="text" placeholder="e.g. Oil Filter" />
                   </div>
 
@@ -76,15 +113,23 @@
                     <label>Description</label>
                     <textarea
                       v-model="form.description"
-                      rows="4"
+                      rows="3"
                       placeholder="Optional description or internal notes about this part"
                     ></textarea>
                   </div>
                 </div>
               </div>
 
-              <div class="form-subgroup">
-                <div class="subgroup-title">Pricing & Stock</div>
+              <!-- PRICING STOCK -->
+              <div class="form-block">
+                <div class="block-head">
+                  <div>
+                    <div class="block-title">Pricing & Stock</div>
+                    <p class="block-caption">
+                      Set selling price, current stock, and low-stock threshold.
+                    </p>
+                  </div>
+                </div>
 
                 <div class="form-grid">
                   <div class="form-field">
@@ -99,7 +144,7 @@
                   </div>
 
                   <div class="form-field">
-                    <label>Selling Price</label>
+                    <label>Selling Price <span class="required">*</span></label>
                     <input
                       v-model.number="form.selling_price"
                       type="number"
@@ -110,7 +155,7 @@
                   </div>
 
                   <div class="form-field">
-                    <label>Stock</label>
+                    <label>Stock <span class="required">*</span></label>
                     <input
                       v-model.number="form.stock"
                       type="number"
@@ -131,24 +176,6 @@
                 </div>
               </div>
 
-              <div class="form-subgroup last">
-                <label class="part-toggle-card">
-                  <div class="toggle-content">
-                    <input v-model="form.is_generic" type="checkbox" />
-                    <div>
-                      <div class="toggle-title">Generic part</div>
-                      <div class="toggle-subtitle">
-                        Usable across all vehicles. Compatibility rows are not required.
-                      </div>
-                    </div>
-                  </div>
-
-                  <span class="toggle-badge" :class="{ active: form.is_generic }">
-                    {{ form.is_generic ? "Generic" : "Specific" }}
-                  </span>
-                </label>
-              </div>
-
               <div v-if="error" class="page-error">
                 {{ error }}
               </div>
@@ -157,11 +184,13 @@
             <!-- COMPATIBILITY -->
             <Card v-if="!form.is_generic" class="workflow-card">
               <template #header>
-                <div class="form-section-heading">
-                  <span class="card-title">Compatibility</span>
-                  <p class="form-section-caption">
-                    Define which vehicles can use this specific part.
-                  </p>
+                <div class="section-heading no-index">
+                  <div>
+                    <span class="card-title">Compatibility</span>
+                    <p class="section-caption">
+                      Define which vehicles can use this specific part.
+                    </p>
+                  </div>
                 </div>
 
                 <button
@@ -173,7 +202,7 @@
                 </button>
               </template>
 
-              <div v-if="form.compatibilities.length === 0" class="setup-panel">
+              <div v-if="form.compatibilities.length === 0" class="setup-panel compact">
                 <div class="setup-icon">
                   <svg viewBox="0 0 24 24" class="setup-svg">
                     <path d="M4 17h16" />
@@ -190,15 +219,13 @@
                     Add make, model, and year range so this part only appears for matching vehicles.
                   </p>
 
-                  <div class="setup-actions">
-                    <button
-                      class="btn btn-secondary btn-sm"
-                      type="button"
-                      @click="addCompatibility"
-                    >
-                      + Add Compatibility
-                    </button>
-                  </div>
+                  <button
+                    class="btn btn-secondary btn-sm"
+                    type="button"
+                    @click="addCompatibility"
+                  >
+                    + Add Compatibility
+                  </button>
                 </div>
               </div>
 
@@ -210,7 +237,7 @@
                 >
                   <div class="compatibility-top">
                     <div class="compatibility-title-group">
-                      <span class="compatibility-badge">Rule {{ index + 1 }}</span>
+                      <span class="type-badge info">Rule {{ index + 1 }}</span>
                       <div>
                         <div class="item-name">Vehicle compatibility</div>
                         <div class="item-sub">
@@ -230,12 +257,12 @@
 
                   <div class="compatibility-grid">
                     <div class="form-field form-field-sm">
-                      <label>Make</label>
+                      <label>Make <span class="required">*</span></label>
                       <input v-model="compat.make" type="text" placeholder="e.g. Toyota" />
                     </div>
 
                     <div class="form-field form-field-sm">
-                      <label>Model</label>
+                      <label>Model <span class="required">*</span></label>
                       <input v-model="compat.model" type="text" placeholder="e.g. Vios" />
                     </div>
 
@@ -270,32 +297,67 @@
           <aside class="part-form-side">
             <Card class="save-card">
               <template #header>
-                <span class="card-title">Save Part</span>
+                <span class="card-title">Inventory Preview</span>
               </template>
 
-              <div class="save-summary">
-                <div class="save-row">
+              <div v-if="!canSubmit" class="summary-progress">
+                <div class="summary-progress-title">Ready to save</div>
+
+                <div class="summary-check" :class="{ done: form.name }">
+                  <span></span>
+                  <p>Part name added</p>
+                </div>
+
+                <div class="summary-check" :class="{ done: Number(form.selling_price) > 0 }">
+                  <span></span>
+                  <p>Selling price added</p>
+                </div>
+
+                <div class="summary-check" :class="{ done: Number(form.stock) >= 0 }">
+                  <span></span>
+                  <p>Stock quantity added</p>
+                </div>
+
+                <div
+                  v-if="!form.is_generic"
+                  class="summary-check"
+                  :class="{ done: form.compatibilities.length > 0 }"
+                >
+                  <span></span>
+                  <p>Compatibility added</p>
+                </div>
+              </div>
+
+              <div class="side-summary-box">
+                <div class="side-summary-row">
                   <span>Type</span>
                   <strong>{{ form.is_generic ? "Generic" : "Specific" }}</strong>
                 </div>
 
-                <div class="save-row">
+                <div class="side-summary-row">
                   <span>Stock</span>
                   <strong>{{ form.stock || 0 }}</strong>
                 </div>
 
-                <div class="save-row">
+                <div class="side-summary-row">
                   <span>Selling Price</span>
                   <strong>RM {{ Number(form.selling_price || 0).toFixed(2) }}</strong>
                 </div>
 
-                <div v-if="!form.is_generic" class="save-row">
+                <div class="side-summary-row">
+                  <span>Margin</span>
+                  <strong>
+                    RM {{ Number((form.selling_price || 0) - (form.cost_price || 0)).toFixed(2) }}
+                  </strong>
+                </div>
+
+                <div v-if="!form.is_generic" class="side-summary-row">
                   <span>Compatibility</span>
                   <strong>{{ form.compatibilities.length }} rule(s)</strong>
                 </div>
               </div>
 
-              <div class="save-actions">
+              <div class="side-actions">
                 <router-link to="/inventory" class="btn btn-secondary btn-pill link-btn">
                   Cancel
                 </router-link>
@@ -558,87 +620,151 @@ export default {
   align-self: start;
 }
 
-.workflow-card {
+.part-setup-card {
   overflow: hidden;
 }
 
 /* ================================
-   SECTION HEADER
+   TYPE PANEL
 ================================ */
 
-.form-section-heading {
+.part-type-panel {
+  margin-bottom: 18px;
+  padding: 15px 16px;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.92), rgba(255, 255, 255, 0.96));
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.part-type-copy {
   min-width: 0;
 }
 
-.form-section-caption {
-  margin: 0;
-  font-size: 11.8px;
+.part-type-label {
+  margin-bottom: 4px;
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.part-type-title {
+  font-size: 13.8px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.part-type-copy p {
+  max-width: 620px;
+  margin: 4px 0 0;
+  font-size: 12.5px;
   color: #8a96a8;
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
 /* ================================
-   FORM GROUPING
+   TYPE SWITCH
 ================================ */
 
-.form-subgroup {
-  padding-top: 2px;
-  margin-top: 14px;
+.type-switch {
+  height: 38px;
+  padding: 5px 10px 5px 5px;
+  border: 1px solid #dfe5ee;
+  border-radius: 999px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
-.form-subgroup:first-of-type {
+.type-switch input {
+  display: none;
+}
+
+.type-switch-track {
+  width: 48px;
+  height: 28px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #e9eef5;
+  border: 1px solid #d7deea;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.type-switch-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+  transition: transform 0.15s ease;
+}
+
+.type-switch input:checked + .type-switch-track {
+  background: #0f172a;
+  border-color: #0f172a;
+}
+
+.type-switch input:checked + .type-switch-track .type-switch-thumb {
+  transform: translateX(20px);
+}
+
+.type-switch-text {
+  min-width: 52px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #475569;
+}
+
+/* ================================
+   FORM BLOCKS
+================================ */
+
+.form-block {
+  padding-top: 17px;
+  margin-top: 17px;
+  border-top: 1px solid #edf1f6;
+}
+
+.form-block:first-of-type {
+  padding-top: 0;
   margin-top: 0;
+  border-top: none;
 }
 
-.form-subgroup.last {
-  margin-top: 16px;
+.block-head {
+  margin-bottom: 12px;
 }
 
-.subgroup-title {
-  margin-bottom: 11px;
-  font-size: 10.5px;
+.block-title {
+  font-size: 11px;
   font-weight: 850;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #64748b;
 }
 
-/* ================================
-   GENERIC TOGGLE
-================================ */
-
-.part-toggle-card {
-  width: 100%;
-  min-height: 66px;
-  padding: 14px;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  cursor: pointer;
+.block-caption {
+  margin: 3px 0 0;
+  font-size: 11.8px;
+  color: #8a96a8;
+  line-height: 1.35;
 }
 
-.part-toggle-card:hover {
-  border-color: #cbd5e1;
-  background: #f9fbfd;
-}
-
-.part-toggle-card input {
-  width: 16px;
-  height: 16px;
-  accent-color: #0f172a;
-}
-
-.toggle-badge.active {
-  background: #ecfdf3;
-  color: #15803d;
-  border-color: #bbf7d0;
+.required {
+  color: #b42318;
+  font-weight: 850;
 }
 
 /* ================================
@@ -678,19 +804,6 @@ export default {
   min-width: 0;
 }
 
-.compatibility-badge {
-  min-height: 23px;
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: #eef4ff;
-  color: #3366cc;
-  border: 1px solid #dbe8ff;
-  font-size: 10.5px;
-  font-weight: 850;
-  line-height: 1;
-  white-space: nowrap;
-}
-
 .compatibility-grid {
   display: grid;
   grid-template-columns: 1.1fr 1.1fr 0.7fr 0.7fr;
@@ -699,112 +812,11 @@ export default {
 }
 
 /* ================================
-   EMPTY / SETUP PANEL
-================================ */
-
-.setup-panel {
-  min-height: 118px;
-  padding: 16px;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background:
-    linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(255, 255, 255, 0.92));
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-
-.setup-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: #f1f5f9;
-  border: 1px solid #e1e7ef;
-  color: #64748b;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.setup-svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.setup-content {
-  min-width: 0;
-}
-
-.setup-content strong {
-  display: block;
-  font-size: 13.5px;
-  font-weight: 850;
-  color: #0f172a;
-  line-height: 1.25;
-}
-
-.setup-content p {
-  max-width: 560px;
-  margin: 5px 0 0;
-  font-size: 12.5px;
-  line-height: 1.48;
-  color: #8a96a8;
-}
-
-.setup-actions {
-  margin-top: 12px;
-}
-
-/* ================================
-   SIDE SAVE CARD
+   SIDE CARD
 ================================ */
 
 .save-card {
-  min-height: 210px;
-}
-
-.save-summary {
-  padding: 0;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background: #f8fafc;
-  overflow: hidden;
-}
-
-.save-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 13px 14px;
-  font-size: 13px;
-  color: #526173;
-  border-bottom: 1px solid #e5eaf1;
-}
-
-.save-row:last-child {
-  border-bottom: none;
-}
-
-.save-row strong {
-  font-size: 13.5px;
-  font-weight: 850;
-  color: #0f172a;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.save-actions {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: 10px;
+  min-height: auto;
 }
 
 /* ================================
@@ -828,19 +840,17 @@ export default {
 }
 
 @media (max-width: 640px) {
-  .part-toggle-card {
+  .part-type-panel {
     align-items: flex-start;
     flex-direction: column;
   }
 
   .compatibility-top,
-  .compatibility-title-group,
-  .setup-panel {
+  .compatibility-title-group {
     flex-direction: column;
   }
 
-  .compatibility-grid,
-  .save-actions {
+  .compatibility-grid {
     grid-template-columns: 1fr;
   }
 }
