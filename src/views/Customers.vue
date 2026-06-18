@@ -144,7 +144,7 @@
             </div>
           </div>
 
-          <div v-else class="modal-card large">
+          <div v-else class="modal-card detail-modal-card">
             <div class="modal-header detail-modal-header">
               <div>
                 <div class="detail-modal-title-row">
@@ -269,38 +269,24 @@
 
             <div class="modal-footer customer-detail-footer">
               <div class="customer-detail-actions-left">
-                <button
-                  type="button"
-                  class="btn btn-secondary btn-pill"
-                  @click="openWhatsApp(activeCustomer)"
-                >
+                <button @click="openWhatsApp(activeCustomer)" class="btn btn-secondary btn-pill">
                   WhatsApp
                 </button>
 
-                <button
-                  type="button"
-                  class="btn btn-secondary btn-pill"
-                  @click="openFormModal(activeCustomer)"
-                >
+                <button @click="openFormModal(activeCustomer)" class="btn btn-secondary btn-pill">
                   Edit
-                </button>
-
-                <button
-                  type="button"
-                  class="btn btn-danger-light btn-pill"
-                  @click="openDeleteModal(activeCustomer)"
-                >
-                  Delete
                 </button>
               </div>
 
-              <button
-                type="button"
-                class="btn btn-primary btn-pill"
-                @click="viewCustomerTransactions(activeCustomer)"
-              >
-                View Transactions
-              </button>
+              <div class="customer-detail-actions-right">
+                <button class="btn btn-danger-light btn-pill" @click="openDeleteModal(activeCustomer)">
+                  Delete
+                </button>
+
+                <button class="btn btn-primary btn-pill" @click="viewCustomerTransactions(activeCustomer)">
+                  View Transactions
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1041,19 +1027,28 @@ async confirmDeleteCustomer() {
   gap: 12px;
 }
 
-.customer-detail-actions-left {
+.customer-detail-actions-left,
+.customer-detail-actions-right {
   display: flex;
   align-items: center;
-  gap: 9px;
-  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.customer-detail-footer .btn {
-  min-width: 96px;
-}
-
-.customer-detail-footer > .btn-primary {
+.customer-detail-actions-right .btn-primary {
   min-width: 150px;
+}
+
+@media (max-width: 640px) {
+  .customer-detail-footer,
+  .customer-detail-actions-left,
+  .customer-detail-actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .customer-detail-footer .btn {
+    width: 100%;
+  }
 }
 
 .customer-trx-card {

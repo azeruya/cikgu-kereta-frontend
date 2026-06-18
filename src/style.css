@@ -3088,7 +3088,14 @@ th.center {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  margin-bottom: 14px;
+}
+
+.part-kpi-grid {
+  margin-bottom: 12px;
+}
+
+.detail-section-card:first-of-type {
+  margin-top: 0;
 }
 
 .part-kpi-card {
@@ -3598,6 +3605,71 @@ th.center {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+}
+
+.detail-modal-card {
+  width: min(560px, calc(100vw - 32px));
+  overflow: hidden;
+}
+
+.detail-modal-body {
+  padding: 0 24px 18px;
+}
+
+.part-kpi-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.part-kpi-card {
+  min-height: 74px;
+  padding: 13px 14px;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  background: #fbfcfe;
+}
+
+.part-kpi-card span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a96a8;
+}
+
+.part-kpi-card strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.form-dialog-header,
+.action-modal-header {
+  padding: 20px 24px 14px;
+}
+
+.form-dialog-body {
+  padding: 0 24px 20px;
+}
+
+.form-dialog-section {
+  padding: 15px;
+}
+
+.form-dialog-section-title {
+  margin-bottom: 12px;
+}
+
+.form-dialog-footer {
+  padding: 15px 24px 18px;
+}
+
+.detail-section-card {
+  padding: 13px 14px;
 }
 
 /* =========================================================
