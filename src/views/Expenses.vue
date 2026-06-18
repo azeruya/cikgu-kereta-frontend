@@ -217,18 +217,18 @@
               <span class="single-trend-note">Only one month recorded</span>
             </div>
 
-            <div v-else class="trend-list">
+            
+            <div class="summary-list">
               <div
-                v-for="row in monthlyTrend"
-                :key="row.label"
-                class="trend-row"
+                v-for="month in monthlyTrend"
+                :key="month.month"
+                class="summary-row"
               >
-                <div>
-                  <div class="trend-label">{{ row.label }}</div>
-                  <div class="trend-sub">Operating expenses</div>
-                </div>
-
-                <strong>RM {{ formatMoney(row.total) }}</strong>
+                <span>
+                  <strong class="trend-month">{{ month.label }}</strong>
+                  <small>Operating expenses</small>
+                </span>
+                <b>{{ formatMoney(month.total) }}</b>
               </div>
             </div>
           </Card>
@@ -1208,6 +1208,21 @@ export default {
   white-space: nowrap;
 }
 
+.trend-month {
+  display: block;
+  font-size: 12.8px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.summary-row small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #8a96a8;
+}
+
 /* ================================
    CATEGORY LIST
 ================================ */
@@ -1226,8 +1241,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  min-height: 43px;
-  padding: 11px 14px;
+  min-height: 42px;
+  padding: 10px 14px;
   border-bottom: 1px solid #e5eaf1;
 }
 

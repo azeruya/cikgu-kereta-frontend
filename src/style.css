@@ -330,9 +330,9 @@ a {
 }
 
 .btn-danger {
-  background: var(--danger);
+  background: #b42318;
   color: #ffffff;
-  border-color: var(--danger);
+  border-color: #b42318;
   box-shadow: 0 8px 18px rgba(180, 35, 24, 0.14);
 }
 
