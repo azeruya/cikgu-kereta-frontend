@@ -313,11 +313,6 @@
                   <p>Selling price added</p>
                 </div>
 
-                <div class="summary-check" :class="{ done: Number(form.stock) >= 0 }">
-                  <span></span>
-                  <p>Stock quantity added</p>
-                </div>
-
                 <div
                   v-if="!form.is_generic"
                   class="summary-check"
@@ -533,7 +528,7 @@ export default {
           stock: Number(this.form.stock || 0),
           min_stock_threshold: Number(this.form.min_stock_threshold || 0),
           image: this.form.image || null,
-          is_generic: this.form.is_generic,
+          is_generic: Boolean(this.form.is_generic),
           compatibilities: this.form.is_generic
             ? []
             : this.form.compatibilities.map((c) => ({
