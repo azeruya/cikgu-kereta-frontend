@@ -21,12 +21,7 @@
                 }}
                 </span>
             </div>
-
-            <!-- 
-            <div class="page-subtitle">
-                View customer records, vehicles, and recent workshop activity
-            </div>
-            -->
+            
           </div>
 
           <div class="page-actions">
@@ -905,55 +900,64 @@ export default {
     },
 
     openDeleteModal(customer) {
-  this.customerToDelete = customer;
-  this.showDeleteModal = true;
-},
-
-closeDeleteModal() {
-  if (this.deletingCustomer) return;
-
-  this.showDeleteModal = false;
-  this.customerToDelete = null;
-},
-
-async confirmDeleteCustomer() {
-  if (!this.customerToDelete) return;
-
-  this.deletingCustomer = true;
-  this.error = "";
-
-  try {
-    await api.delete(`/customers/${this.customerToDelete.id}`);
-
-    this.showDeleteModal = false;
-    this.customerToDelete = null;
-
-    this.closeDetail();
-
-    this.clearCustomersCache();
-    await this.fetchCustomers(this.page);
-  } catch (error) {
-    console.error("Failed to delete customer:", error);
-    this.error =
-      error.response?.data?.message || "Failed to delete customer.";
-  } finally {
-    this.deletingCustomer = false;
-  }
-},
-
-  viewCustomerTransactions(customer) {
-    this.closeDetail();
-    this.$router.push(`/transactions?customer_id=${customer.id}`);
+      this.customerToDelete = customer;
+      this.showDeleteModal = true;
     },
-  },
 
-  clearCustomersCache() {
-    Object.keys(sessionStorage).forEach((key) => {
-      if (key.startsWith("customers-")) {
-        sessionStorage.removeItem(key);
+    closeDeleteModal() {
+      if (this.deletingCustomer) return;
+
+      this.showDeleteModal = false;
+      this.customerToDelete = null;
+    },
+
+    async confirmDeleteCustomer() {
+      if (!this.customerToDelete) return;
+
+      this.deletingCustomer = true;
+      this.error = "";
+
+      try {
+        await api.delete(`/customers/${this.customerToDelete.id}`);
+
+        this.showDeleteModal = false;
+        this.customerToDelete = null;
+
+        this.closeDetail();
+
+        this.clearCustomersCache();
+
+        // If the last customer on the current page was deleted,
+        // return to the previous page.
+        const targetPage =
+          this.customers.length === 1 && this.page > 1
+            ? this.page - 1
+            : this.page;
+
+        await this.fetchCustomers(targetPage);
+      } catch (error) {
+        console.error("Failed to delete customer:", error);
+
+        this.error =
+          error.response?.data?.message || "Failed to delete customer.";
+      } finally {
+        this.deletingCustomer = false;
       }
-    });
-  },
+    },
+
+    clearCustomersCache() {
+      Object.keys(sessionStorage).forEach((key) => {
+        if (key.startsWith("customers-")) {
+          sessionStorage.removeItem(key);
+        }
+      });
+    },
+
+    viewCustomerTransactions(customer) {
+      this.closeDetail();
+      this.$router.push(`/transactions?customer_id=${customer.id}`);
+    },
+ },
 
   watch: {
     searchQuery() {
@@ -964,7 +968,7 @@ async confirmDeleteCustomer() {
         this.fetchCustomers(1);
       }, 350);
     },
-  }
+  },
 };
 </script>
 
@@ -1075,13 +1079,78 @@ async confirmDeleteCustomer() {
   }
 }
 
+
+/* Customer modal tuning */
+.customer-detail-footer {
+  padding: 14px 24px 18px;
+}
+
+.customer-detail-actions-left,
+.customer-detail-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-detail-actions-right .btn-primary {
+  min-width: 160px;
+}
+
+.customer-trx-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.customer-trx-amount {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+/* Add gap between customer info and vehicle info in Add Customer modal */
+.customer-vehicle-section {
+  margin-top: 14px;
+}
+
+/* Make customer detail KPI cards behave properly */
+.modal-card .part-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.modal-card .part-kpi-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 70px;
+  padding: 13px 14px;
+}
+
+.modal-card .part-kpi-card span {
+  display: block;
+  margin-bottom: 7px;
+  line-height: 1.15;
+}
+
+.modal-card .part-kpi-card strong {
+  display: block;
+  line-height: 1.2;
+}
+
 @media (max-width: 640px) {
-  .customer-detail-footer {
-    flex-direction: column-reverse;
-    align-items: stretch;
+  .modal-card .part-kpi-grid {
+    grid-template-columns: 1fr;
   }
 
-  .customer-detail-actions-left {
+  .customer-detail-footer,
+  .customer-detail-actions-left,
+  .customer-detail-actions-right {
     flex-direction: column;
     align-items: stretch;
   }
