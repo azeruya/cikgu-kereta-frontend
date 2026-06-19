@@ -162,7 +162,7 @@
             </template>
 
             <div class="compatible-parts-body">
-              <div v-if="!form.vehicle_id" class="setup-panel setup-panel-sm">
+              <div v-if="!form.vehicle_id" class="setup-panel">
                 <div class="setup-icon">
                   <svg viewBox="0 0 24 24" class="setup-svg">
                     <path d="M4 17h16" />
@@ -333,7 +333,7 @@
 
                   <button
                     type="button"
-                    class="btn btn-sm btn-ghost"
+                    class="item-remove-btn"
                     @click="removeItem(index)"
                   >
                     Remove
@@ -1460,33 +1460,44 @@ export default {
   font-weight: 650;
 }
 
-.setup-panel-sm {
-  min-height: 96px;
-  padding: 14px 16px;
-}
+.item-remove-btn {
+  flex-shrink: 0;
 
-.setup-panel-sm .setup-icon {
-  width: 34px;
+  min-width: 74px;
   height: 34px;
-  border-radius: 11px;
+  padding: 0 12px;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fff7f7;
+  color: #dc2626;
+
+  font-size: 11.5px;
+  font-weight: 750;
+  line-height: 1;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: none;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s ease;
 }
 
-.setup-panel-sm .setup-svg {
-  width: 16px;
-  height: 16px;
+.item-remove-btn:hover {
+  background: #fff1f0;
+  border-color: #fca5a5;
+  color: #b91c1c;
 }
 
-.setup-panel-sm .setup-content strong {
-  font-size: 13px;
-}
-
-.setup-panel-sm .setup-content p {
-  font-size: 12.2px;
-  line-height: 1.42;
-}
-
-.setup-panel-sm .btn {
-  margin-top: 10px;
+.item-remove-btn:active {
+  transform: scale(0.97);
 }
 
 /* ================================
