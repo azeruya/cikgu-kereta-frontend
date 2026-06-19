@@ -24,9 +24,7 @@
         </div>
 
         <div class="dashboard-header-actions">
-          <button type="button" class="btn btn-secondary btn-pill">
-            ◷ Today
-          </button>
+          
 
           <router-link to="/transactions/new" class="btn btn-primary btn-pill link-btn">
             + New transaction
@@ -1542,6 +1540,71 @@ export default {
 
 .low-stock-link:hover {
   color: #0f172a;
+}
+
+.latest-transactions-table .badge,
+.dashboard-table .badge,
+.transactions-table .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  min-width: 0;
+  max-width: max-content;
+  min-height: 24px;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+
+  flex: 0 0 auto;
+}
+
+.latest-transactions-table .badge-invoice,
+.dashboard-table .badge-invoice {
+  color: #2563eb;
+  background: #eef4ff;
+  border: 1px solid #cfe0ff;
+}
+
+.latest-transactions-table .badge-quotation,
+.dashboard-table .badge-quotation {
+  color: #c66a08;
+  background: #fff7e8;
+  border: 1px solid #ffd99b;
+}
+
+.latest-transactions-table .badge-receipt,
+.dashboard-table .badge-receipt {
+  color: #238451;
+  background: #edf9f1;
+  border: 1px solid #ccebd8;
+}
+
+.latest-transactions-table .badge-invoice,
+.dashboard-table .badge-invoice {
+  color: #2563eb;
+  background: #eef4ff;
+  border: 1px solid #cfe0ff;
+}
+
+.latest-transactions-table .badge-quotation,
+.dashboard-table .badge-quotation {
+  color: #c66a08;
+  background: #fff7e8;
+  border: 1px solid #ffd99b;
+}
+
+.latest-transactions-table .badge-receipt,
+.dashboard-table .badge-receipt {
+  color: #238451;
+  background: #edf9f1;
+  border: 1px solid #ccebd8;
 }
 
 /* =========================================================
