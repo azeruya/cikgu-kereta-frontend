@@ -928,8 +928,16 @@ export default {
 
 .dashboard-panel :deep(.card-header),
 .dashboard-panel :deep(.card-head) {
+  display: flex;
   align-items: flex-start;
+  width: 100%;
   margin-bottom: 10px;
+}
+
+.dashboard-panel :deep(.card-header > *),
+.dashboard-panel :deep(.card-head > *) {
+  width: 100%;
+  min-width: 0;
 }
 
 .dashboard-panel :deep(.card-body),
@@ -1030,11 +1038,52 @@ export default {
   color: #0f172a;
 }
 
-.mini-table td span {
+/* Secondary text below customer name */
+.mini-table td > span:not(.badge) {
   display: block;
   margin-top: 3px;
   font-size: 12px;
   color: #8a96a8;
+}
+
+/* Dashboard transaction status badge */
+.mini-table td .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: auto;
+  min-width: 82px;
+  max-width: max-content;
+  min-height: 23px;
+  margin: 0;
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.mini-table .badge-invoice {
+  color: #2563eb;
+  background: #eef4ff;
+  border: 1px solid #cfe0ff;
+}
+
+.mini-table .badge-quotation {
+  color: #c66a08;
+  background: #fff7e8;
+  border: 1px solid #ffd99b;
+}
+
+.mini-table .badge-receipt {
+  color: #238451;
+  background: #edf9f1;
+  border: 1px solid #ccebd8;
 }
 
 .mini-table .right {
@@ -1406,9 +1455,22 @@ export default {
 /* additional edits */
 .panel-head-inline {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
+  justify-content: space-between;
   gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.panel-head-inline > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-head-inline .subtle-link {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .subtle-link {
@@ -1542,69 +1604,9 @@ export default {
   color: #0f172a;
 }
 
-.latest-transactions-table .badge,
-.dashboard-table .badge,
-.transactions-table .badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  width: fit-content;
-  min-width: 0;
-  max-width: max-content;
-  min-height: 24px;
-
-  padding: 4px 10px;
-
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 750;
-  line-height: 1;
-  white-space: nowrap;
-
-  flex: 0 0 auto;
-}
-
-.latest-transactions-table .badge-invoice,
-.dashboard-table .badge-invoice {
-  color: #2563eb;
-  background: #eef4ff;
-  border: 1px solid #cfe0ff;
-}
-
-.latest-transactions-table .badge-quotation,
-.dashboard-table .badge-quotation {
-  color: #c66a08;
-  background: #fff7e8;
-  border: 1px solid #ffd99b;
-}
-
-.latest-transactions-table .badge-receipt,
-.dashboard-table .badge-receipt {
-  color: #238451;
-  background: #edf9f1;
-  border: 1px solid #ccebd8;
-}
-
-.latest-transactions-table .badge-invoice,
-.dashboard-table .badge-invoice {
-  color: #2563eb;
-  background: #eef4ff;
-  border: 1px solid #cfe0ff;
-}
-
-.latest-transactions-table .badge-quotation,
-.dashboard-table .badge-quotation {
-  color: #c66a08;
-  background: #fff7e8;
-  border: 1px solid #ffd99b;
-}
-
-.latest-transactions-table .badge-receipt,
-.dashboard-table .badge-receipt {
-  color: #238451;
-  background: #edf9f1;
-  border: 1px solid #ccebd8;
+.mini-table th:nth-child(3),
+.mini-table td:nth-child(3) {
+  width: 150px;
 }
 
 /* =========================================================
