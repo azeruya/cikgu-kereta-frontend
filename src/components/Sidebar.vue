@@ -61,32 +61,88 @@
       </router-link>
     </div>
 
-    <div v-if="!collapsed" class="sidebar-foot">
-      <div class="workspace-card">
-        <div class="workspace-label">Current Branch</div>
+    <div class="sidebar-foot">
+    <!-- Expanded footer -->
+    <div v-if="!collapsed" class="workspace-card">
+      <div class="workspace-label">Current Branch</div>
 
-        <div class="workspace-main">
-          <div class="workspace-avatar">
-            {{ initials }}
-          </div>
-
-          <div class="workspace-meta">
-            <div class="workspace-branch">{{ branchName }}</div>
-            <div class="workspace-user">
-              {{ user?.name || "User" }} · {{ prettyRole }}
-            </div>
-          </div>
-
-          <button class="logout-icon-btn" @click="$emit('logout')" title="Logout" type="button">
-            <svg class="logout-icon" viewBox="0 0 16 16" fill="none">
-              <path d="M9.5 3H12.5V13H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7 5.5L3.5 8L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4 8H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
+      <div class="workspace-main">
+        <div class="workspace-avatar">
+          {{ initials }}
         </div>
+
+        <div class="workspace-meta">
+          <div class="workspace-branch">{{ branchName }}</div>
+
+          <div class="workspace-user">
+            {{ user?.name || "User" }} · {{ prettyRole }}
+          </div>
+        </div>
+
+        <button
+          class="logout-icon-btn"
+          type="button"
+          title="Logout"
+          @click="$emit('logout')"
+        >
+          <svg class="logout-icon" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M9.5 3H12.5V13H9.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M7 5.5L3.5 8L7 10.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 8H10.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
       </div>
     </div>
+
+    <!-- Collapsed footer -->
+    <button
+      v-else
+      class="collapsed-logout-btn"
+      type="button"
+      title="Logout"
+      @click="$emit('logout')"
+    >
+      <svg class="logout-icon" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M9.5 3H12.5V13H9.5"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M7 5.5L3.5 8L7 10.5"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M4 8H10.5"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+  </div>
 
   </div>
 </template>
@@ -238,9 +294,12 @@ export default {
 
 .sidebar-nav {
   flex: 1;
+  min-height: 0;
+
   display: flex;
   flex-direction: column;
   gap: 4px;
+
   padding: 0 12px;
   overflow-y: auto;
 }
@@ -432,19 +491,21 @@ export default {
 }
 
 .sidebar.collapsed .sidebar-nav {
+  flex: 1;
+  min-height: 0;
+
   align-items: center;
   padding: 0 8px;
   gap: 7px;
-  overflow: hidden;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
 .sidebar.collapsed .sidebar-nav::-webkit-scrollbar {
-  display: none;
-}
-
-.sidebar.collapsed .sidebar-foot {
   display: none;
 }
 
@@ -459,5 +520,60 @@ export default {
 .sidebar.collapsed .nav-icon {
   width: 16.5px;
   height: 16.5px;
+}
+
+.sidebar-foot {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid #edf1f6;
+  background: #ffffff;
+}
+
+.sidebar.collapsed .sidebar-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 8px 14px;
+  border-top: 1px solid #edf1f6;
+}
+
+.collapsed-logout-btn {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: 1px solid #dfe5ee;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #94a3b8;
+  cursor: pointer;
+
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
+}
+
+.collapsed-logout-btn:hover {
+  color: #b42318;
+  background: #fff1f0;
+  border-color: #efb5ad;
+}
+
+.collapsed-logout-btn:active {
+  transform: scale(0.94);
+}
+
+.collapsed-logout-btn .logout-icon {
+  width: 16px;
+  height: 16px;
 }
 </style>
