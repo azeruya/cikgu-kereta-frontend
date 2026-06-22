@@ -639,17 +639,7 @@ export default {
     },
 
     filteredExpenses() {
-      let list = this.expenses || [];
-
-      if (this.searchQuery) {
-        const q = this.searchQuery.toLowerCase();
-        list = list.filter((e) =>
-          (e.category || "").toLowerCase().includes(q) ||
-          (e.description || "").toLowerCase().includes(q)
-        );
-      }
-
-      return list;
+      return this.expenses || [];
     },
 
     normalizedMonthlyChart() {
@@ -667,7 +657,6 @@ export default {
 
   mounted() {
     this.fetchExpenses();
-    this.fetchExpenseSummary();
   },
 
   methods: {
@@ -689,28 +678,10 @@ export default {
         }
     },
 
-    async openDetail(expense) {
-      this.activeExpense = {
-        id: expense.id,
-        category: expense.category,
-        amount: expense.amount,
-        expense_date: expense.expense_date,
-        description: expense.description,
-        receipt_file: expense.receipt_file
-      };
-
-      this.detailLoading = true;
+    openDetail(expense) {
       this.error = "";
-
-      try {
-        const res = await api.get(`/expenses/${expense.id}`);
-        this.activeExpense = res.data;
-      } catch (error) {
-        console.error("Error loading expense detail:", error);
-        this.error = error.response?.data?.message || "Failed to load expense detail.";
-      } finally {
-        this.detailLoading = false;
-      }
+      this.detailLoading = false;
+      this.activeExpense = { ...expense };
     },
 
     closeDetail() {
@@ -728,7 +699,6 @@ export default {
     applyFilters() {
       this.page = 1;
       this.fetchExpenses(1);
-      this.fetchExpenseSummary();
     },
 
     clearFilters() {
@@ -739,7 +709,6 @@ export default {
       this.page = 1;
 
       this.fetchExpenses(1);
-      this.fetchExpenseSummary();
     },
 
     openFormModal(expense = null) {
@@ -838,7 +807,6 @@ export default {
         this.clearExpenseCache();
 
         await this.fetchExpenses(this.page);
-        await this.fetchExpenseSummary();
       } catch (error) {
         console.error("Failed to save expense:", error);
 
@@ -955,13 +923,22 @@ export default {
 
       if (cached) {
         const parsed = JSON.parse(cached);
+        const paginator = parsed.expenses || {};
 
-        this.expenses = parsed.data || [];
-        this.page = parsed.current_page || 1;
-        this.totalPages = parsed.last_page || 1;
-        this.totalRecords = parsed.total || 0;
+        this.expenses = paginator.data || [];
+        this.page = paginator.current_page || 1;
+        this.totalPages = paginator.last_page || 1;
+        this.totalRecords = paginator.total || 0;
 
-        // show cached data immediately, no full loading state
+        this.summary = parsed.summary || {
+          total_records: 0,
+          total_expenses: 0,
+          this_month: 0,
+        };
+
+        this.monthlyTrend = parsed.monthly_trend || [];
+        this.categoryTotals = parsed.category_totals || [];
+
         this.loading = false;
       } else {
         this.loading = true;
@@ -979,31 +956,12 @@ export default {
           },
         });
 
-        this.expenses = res.data.data || [];
-        this.page = res.data.current_page || 1;
-        this.totalPages = res.data.last_page || 1;
-        this.totalRecords = res.data.total || 0;
+        const paginator = res.data.expenses || {};
 
-        sessionStorage.setItem(cacheKey, JSON.stringify(res.data));
-      } catch (error) {
-        console.error("Error fetching expenses:", error);
-        this.error =
-          error.response?.data?.message || "Failed to load expenses.";
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async fetchExpenseSummary() {
-      try {
-        const res = await api.get("/expenses/summary", {
-          params: {
-            search: this.searchQuery || undefined,
-            category: this.categoryFilter || undefined,
-            from_date: this.fromDate || undefined,
-            to_date: this.toDate || undefined,
-          },
-        });
+        this.expenses = paginator.data || [];
+        this.page = paginator.current_page || 1;
+        this.totalPages = paginator.last_page || 1;
+        this.totalRecords = paginator.total || 0;
 
         this.summary = res.data.summary || {
           total_records: 0,
@@ -1013,8 +971,14 @@ export default {
 
         this.monthlyTrend = res.data.monthly_trend || [];
         this.categoryTotals = res.data.category_totals || [];
+
+        sessionStorage.setItem(cacheKey, JSON.stringify(res.data));
       } catch (error) {
-        console.error("Error fetching expense summary:", error);
+        console.error("Error fetching expenses:", error);
+        this.error =
+          error.response?.data?.message || "Failed to load expenses.";
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -1046,7 +1010,6 @@ export default {
 
         this.clearExpenseCache();
         await this.fetchExpenses(this.page);
-        await this.fetchExpenseSummary();
       } catch (error) {
         console.error("Failed to delete expense:", error);
         this.error =
@@ -1064,7 +1027,6 @@ export default {
         this.searchTimer = setTimeout(() => {
           this.page = 1;
           this.fetchExpenses(1);
-          this.fetchExpenseSummary();
         }, 300);
       }
     }
