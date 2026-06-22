@@ -572,7 +572,7 @@ export default {
       expenses: [],
       page: 1,
       totalPages: 1,
-      perPage: 8,
+      perPage: 10,
       totalRecords: 0,
       searchQuery: "",
       activeExpense: null,
@@ -1071,7 +1071,7 @@ export default {
 
 .description-cell.empty {
   color: #8a96a8;
-  font-style: italic;
+  font-style: normal;
 }
 
 .money-cell {
