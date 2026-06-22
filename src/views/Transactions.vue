@@ -16,17 +16,12 @@
               <span class="page-chip">
               {{
                   activeTab === "all"
-                  ? `${transactions.length} records`
+                  ? `${transactions.length} shown`
                   : `${transactions.length} ${activeTab}`
               }}
               </span>
           </div>
 
-          <!-- 
-          <div class="page-subtitle">
-            Track customer billing and service progress
-          </div>
-          -->
         </div>
 
         <div class="page-actions">

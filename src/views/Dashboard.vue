@@ -237,8 +237,8 @@
                   <div class="ops-section-title">Low stock alerts</div>
 
                   <p>
-                    {{ lowStockItems.length }}
-                    {{ lowStockItems.length === 1 ? "item needs" : "items need" }}
+                    {{ summary.low_stock_count }}
+                    {{ summary.low_stock_count === 1 ? "item needs" : "items need" }}
                     attention
                   </p>
                 </div>
@@ -262,10 +262,10 @@
                 </span>
 
                 <span
-                  v-if="lowStockItems.length > 4"
+                  v-if="summary.low_stock_count > 4"
                   class="low-stock-name-chip muted"
                 >
-                  +{{ lowStockItems.length - 4 }} more
+                  +{{ summary.low_stock_count - 4 }} more
                 </span>
               </div>
 
@@ -372,9 +372,7 @@ export default {
         critical_stock_count: 0,
       },
 
-      todayTransactionsRaw: [],
       latestTransactionsRaw: [],
-      weeklyRevenueRaw: [],
       lowStockItemsRaw: [],
       recentActivity: [],
 
@@ -489,32 +487,6 @@ export default {
       return baseMetrics;
     },
 
-    todayTransactions() {
-      return this.todayTransactionsRaw.map((trx) => {
-        const items = Array.isArray(trx.items) ? trx.items : [];
-        const firstItem = items.length > 0 ? items[0] : null;
-
-        const work =
-          (firstItem && firstItem.service_name) ||
-          (firstItem && firstItem.part && firstItem.part.name) ||
-          (firstItem && firstItem.note) ||
-          "Workshop service";
-
-        return {
-          id: trx.id,
-          customer: trx.customer && trx.customer.name ? trx.customer.name : "-",
-          plate:
-            trx.vehicle && trx.vehicle.license_plate
-              ? trx.vehicle.license_plate
-              : "-",
-          work,
-          status: this.capitalize(trx.status),
-          badgeClass: this.statusClass(trx.status),
-          total: "RM " + this.formatMoney(trx.total_amount),
-        };
-      });
-    },
-
     latestTransactions() {
       return this.latestTransactionsRaw.map((trx) => {
         const items = Array.isArray(trx.items) ? trx.items : [];
@@ -609,14 +581,8 @@ export default {
       data = data || {};
 
       this.summary = data.summary || this.summary;
-      this.todayTransactionsRaw = Array.isArray(data.today_transactions)
-        ? data.today_transactions
-        : [];
       this.latestTransactionsRaw = Array.isArray(data.latest_transactions)
         ? data.latest_transactions
-        : [];
-      this.weeklyRevenueRaw = Array.isArray(data.weekly_revenue)
-        ? data.weekly_revenue
         : [];
       this.lowStockItemsRaw = Array.isArray(data.low_stock_items)
         ? data.low_stock_items
