@@ -1067,7 +1067,7 @@ export default {
 
 .item-name {
   font-size: 13px;
-  font-weight: 780;
+  font-weight: 550;
   color: #0f172a;
   line-height: 1.25;
 }
@@ -1092,20 +1092,20 @@ export default {
 
 .stock-main {
   font-size: 12.7px;
-  font-weight: 720;
+  font-weight: 500;
   white-space: nowrap;
 }
 
 .stock-main.stock-normal,
 .stock-normal {
   color: #334155;
-  font-weight: 720;
+  font-weight: 500;
 }
 
 .stock-main.stock-danger,
 .stock-danger {
   color: #dc2626;
-  font-weight: 820;
+  font-weight: 500;
 }
 
 .stock-min {
