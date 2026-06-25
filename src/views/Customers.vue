@@ -91,10 +91,18 @@
                 <td>{{ cust.phone || "-" }}</td>
                 <td>{{ cust.email || "-" }}</td>
                 <td>
-                  {{ cust.vehicles?.length || 0 }}
-                  <span v-if="cust.vehicles?.[0]">
-                    · {{ cust.vehicles[0].license_plate }}
-                  </span>
+                  <template v-if="cust.vehicles?.length">
+                    <span>{{ cust.vehicles[0].license_plate }}</span>
+
+                    <span
+                      v-if="cust.vehicles.length > 1"
+                      class="vehicle-more"
+                    >
+                      +{{ cust.vehicles.length - 1 }} more
+                    </span>
+                  </template>
+
+                  <span v-else>-</span>
                 </td>
                 <td>
                   <span :class="['badge', customerStatusClass(cust)]">
@@ -1141,6 +1149,13 @@ export default {
 .modal-card .part-kpi-card strong {
   display: block;
   line-height: 1.2;
+}
+
+.vehicle-more {
+  margin-left: 5px;
+  color: #8a96a8;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 @media (max-width: 640px) {

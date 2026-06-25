@@ -1092,20 +1092,20 @@ export default {
 
 .stock-main {
   font-size: 12.7px;
-  font-weight: 500;
+  font-weight: 550;
   white-space: nowrap;
 }
 
 .stock-main.stock-normal,
 .stock-normal {
   color: #334155;
-  font-weight: 500;
+  font-weight: 550;
 }
 
 .stock-main.stock-danger,
 .stock-danger {
   color: #dc2626;
-  font-weight: 500;
+  font-weight: 550;
 }
 
 .stock-min {
