@@ -324,6 +324,28 @@
               </p>
             </div>
 
+            <div v-if="activePart.image" class="detail-section-card">
+  <div class="detail-section-title">Image</div>
+
+  <div class="part-image-block">
+    <img
+      :src="activePart.image"
+      :alt="activePart.name"
+      class="part-detail-image"
+      @error="handleImageError"
+    />
+
+    <a
+      :href="activePart.image"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="part-image-link"
+    >
+      Open image in new tab
+    </a>
+  </div>
+</div>
+
             <div class="detail-section-card">
               <div class="detail-section-title">Compatibility</div>
 
@@ -386,16 +408,29 @@
           </div>
 
           <div class="modal-footer modal-footer-actions">
-            <router-link
-              :to="`/inventory/${activePart.id}/edit`"
-              class="btn btn-secondary btn-pill"
+            <button
+              type="button"
+              class="btn btn-danger-outline btn-pill"
+              @click="openDeleteModal(activePart)"
             >
-              Edit
-            </router-link>
-
-            <button class="btn btn-primary btn-pill" @click="openRestockModal">
-              Restock
+              Delete
             </button>
+
+            <div class="modal-footer-right">
+              <router-link
+                :to="`/inventory/${activePart.id}/edit`"
+                class="btn btn-secondary btn-pill"
+              >
+                Edit
+              </router-link>
+
+              <button
+                class="btn btn-primary btn-pill"
+                @click="openRestockModal"
+              >
+                Restock
+              </button>
+            </div>
           </div>
         </div>
         </div>
@@ -478,6 +513,75 @@
           </div>
         </Teleport>
 
+      <!--DELETE MODAL-->
+      <Teleport to="body">
+        <div
+          v-if="showDeleteModal"
+          class="modal"
+          @click.self="closeDeleteModal"
+        >
+          <div class="modal-card action-modal-card">
+            <div class="action-modal-header">
+              <div>
+                <div class="action-modal-title">Delete part</div>
+                <p class="action-modal-subtitle">
+                  This action cannot be undone.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-sm btn-ghost"
+                :disabled="deleteLoading"
+                @click="closeDeleteModal"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div class="action-modal-body">
+              <p>
+                Delete
+                <strong>
+                  {{ partToDelete?.name }}
+                  <span v-if="partToDelete?.variant">
+                    — {{ partToDelete.variant }}
+                  </span>
+                </strong>?
+              </p>
+
+              <div
+                v-if="deleteError"
+                class="page-error"
+                style="margin-top: 12px;"
+              >
+                {{ deleteError }}
+              </div>
+            </div>
+
+            <div class="action-modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary btn-pill"
+                :disabled="deleteLoading"
+                @click="closeDeleteModal"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-danger btn-pill"
+                :disabled="deleteLoading"
+                @click="confirmDeletePart"
+              >
+                {{ deleteLoading ? "Deleting..." : "Delete Part" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Teleport>
+
       <div v-if="error" class="page-error">
         {{ error }}
       </div>
@@ -519,6 +623,10 @@ export default {
       totalRecords: 0,
       activePart: null,
       exporting: false,
+      showDeleteModal: false,
+      deleteLoading: false,
+      deleteError: "",
+      partToDelete: null,
       showRestockModal: false,
       restockLoading: false,
       restockError: "",
@@ -723,6 +831,10 @@ export default {
       }
     },
 
+    handleImageError(event) {
+      event.target.style.display = "none";
+    },
+
     async openDetail(part) {
       this.activePart = {
         id: part.id,
@@ -754,16 +866,63 @@ export default {
     },
 
     prevPage() {
-  if (this.page > 1) {
-    this.fetchParts(this.page - 1);
-  }
-},
+      if (this.page > 1) {
+        this.fetchParts(this.page - 1);
+      }
+    },
 
-nextPage() {
-  if (this.page < this.totalPages) {
-    this.fetchParts(this.page + 1);
-  }
-},
+    nextPage() {
+      if (this.page < this.totalPages) {
+        this.fetchParts(this.page + 1);
+      }
+    },
+
+    openDeleteModal(part) {
+      this.partToDelete = part;
+      this.deleteError = "";
+      this.showDeleteModal = true;
+    },
+
+    closeDeleteModal() {
+      if (this.deleteLoading) return;
+
+      this.showDeleteModal = false;
+      this.partToDelete = null;
+      this.deleteError = "";
+    },
+
+    async confirmDeletePart() {
+      if (!this.partToDelete) return;
+
+      this.deleteLoading = true;
+      this.deleteError = "";
+      this.error = "";
+
+      try {
+        await api.delete(`/parts/${this.partToDelete.id}`);
+
+        this.clearInventoryCache();
+
+        this.showDeleteModal = false;
+        this.partToDelete = null;
+        this.activePart = null;
+
+        const nextPage =
+          this.parts.length === 1 && this.page > 1
+            ? this.page - 1
+            : this.page;
+
+        await this.fetchParts(nextPage);
+      } catch (error) {
+        console.error("Failed to delete part:", error);
+
+        this.deleteError =
+          error.response?.data?.message ||
+          "Failed to delete part.";
+      } finally {
+        this.deleteLoading = false;
+      }
+    },
 
     formatMoney(value) {
       return Number(value || 0).toFixed(2);
@@ -1017,84 +1176,6 @@ nextPage() {
   }
 }
 
-.part-kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.part-kpi-card {
-  min-height: 76px;
-  padding: 13px 14px;
-  border: 1px solid #dfe5ee;
-  border-radius: 14px;
-  background: #fbfcfe;
-}
-
-.part-kpi-card span {
-  display: block;
-  margin-bottom: 7px;
-  font-size: 10.5px;
-  font-weight: 850;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: #8a96a8;
-}
-
-.part-kpi-card strong {
-  display: block;
-  font-size: 14px;
-  font-weight: 850;
-  color: #0f172a;
-  line-height: 1.25;
-}
-
-.compact-detail-card {
-  padding: 0;
-  overflow: hidden;
-}
-
-.compact-detail-card .detail-section-title {
-  margin: 0;
-  padding: 12px 14px 8px;
-}
-
-.compact-detail-list {
-  border-top: 1px solid #e5eaf1;
-}
-
-.compact-detail-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 11px 14px;
-  border-bottom: 1px solid #e5eaf1;
-}
-
-.compact-detail-row:last-child {
-  border-bottom: none;
-}
-
-.compact-detail-row span {
-  font-size: 12.5px;
-  font-weight: 650;
-  color: #64748b;
-}
-
-.compact-detail-row strong {
-  font-size: 12.8px;
-  font-weight: 760;
-  color: #0f172a;
-  text-align: right;
-}
-
-@media (max-width: 640px) {
-  .part-kpi-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* low stock alert */
 .stock-alert-card.compact {
   min-height: 58px;
@@ -1183,5 +1264,32 @@ nextPage() {
   font-size: 12px;
   color: #8a96a8;
   line-height: 1.35;
+}
+
+.part-image-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.part-detail-image {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border: 1px solid #dfe5ee;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.part-image-link {
+  width: fit-content;
+  font-size: 13px;
+  font-weight: 600;
+  color: #344b68;
+  text-decoration: none;
+}
+
+.part-image-link:hover {
+  text-decoration: underline;
 }
 </style>
