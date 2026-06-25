@@ -247,7 +247,7 @@
                     </div>
 
                     <button
-                      class="btn btn-sm btn-ghost"
+                      class="item-remove-btn"
                       type="button"
                       @click="removeCompatibility(index)"
                     >
@@ -617,6 +617,46 @@ export default {
 
 .part-setup-card {
   overflow: hidden;
+}
+
+.item-remove-btn {
+  flex-shrink: 0;
+
+  min-width: 74px;
+  height: 34px;
+  padding: 0 12px;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fff7f7;
+  color: #dc2626;
+
+  font-size: 11.5px;
+  font-weight: 750;
+  line-height: 1;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: none;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s ease;
+}
+
+.item-remove-btn:hover {
+  background: #fff1f0;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.item-remove-btn:active {
+  transform: scale(0.97);
 }
 
 /* ================================
