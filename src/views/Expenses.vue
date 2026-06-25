@@ -33,7 +33,10 @@
         </div>
       </div>
 
-      <div class="expense-grid">
+      <div
+        class="expense-grid"
+        :class="{ 'expense-grid-staff': currentUser?.role !== 'admin' }"
+      >
         <Card>
           <template #header>
             <div>
@@ -171,7 +174,10 @@
           </template>
         </Card>
 
-        <div class="stack-col">
+        <div
+          v-if="currentUser?.role === 'admin'"
+          class="stack-col"
+        >
           <Card>
             <template #header>
               <span class="card-title">Overview</span>
@@ -1038,6 +1044,10 @@ export default {
   grid-template-columns: minmax(0, 1.8fr) 340px;
   gap: 18px;
   align-items: start;
+}
+
+.expense-grid-staff {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .stack-col {
