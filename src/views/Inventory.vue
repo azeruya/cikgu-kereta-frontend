@@ -72,8 +72,8 @@
                 <p class="section-caption">
                   Click a row to view details, edit, or restock.
                 </p>
-                -->
               </div>
+                -->
             </div>
 
             <span class="section-count">
