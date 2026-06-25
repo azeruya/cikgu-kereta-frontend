@@ -1152,9 +1152,10 @@ export default {
 }
 
 .vehicle-more {
-  margin-left: 5px;
+  margin-left: 7px;
   color: #8a96a8;
-  font-size: 12px;
+  font-size: 11.8px;
+  font-weight: 500;
   white-space: nowrap;
 }
 
