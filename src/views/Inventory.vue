@@ -66,14 +66,14 @@
         <Card>
           <template #header>
             <div class="section-heading no-index">
-              <!--
+              
               <div>
                 <span class="card-title">Items</span>
                 <p class="section-caption">
                   Click a row to view details, edit, or restock.
                 </p>
               </div>
-                -->
+                
             </div>
 
             <span class="section-count">
@@ -194,27 +194,29 @@
               <p>All parts are currently above their minimum stock threshold.</p>
             </div>
 
-            <div
-              v-for="part in lowStockPreview"
-              v-else
-              :key="part.id"
-              class="stock-alert-card compact"
-              @click="openDetail(part)"
-            >
-              <div class="stock-alert-info">
-                <div class="stock-alert-name">{{ part.name }}</div>
-                <div class="stock-alert-meta">
-                  {{ part.stock }} in stock · Minimum {{ part.min_stock_threshold }}
-                </div>
-              </div>
-
-              <button
-                type="button"
-                class="stock-alert-quick-btn"
-                @click.stop="openRestockFromList(part)"
+            <div v-else class="stock-alert-list">
+              <div
+                v-for="part in lowStockPreview"
+                :key="part.id"
+                class="stock-alert-card compact"
+                @click="openDetail(part)"
               >
-                Restock
-              </button>
+                <div class="stock-alert-info">
+                  <div class="stock-alert-name">{{ part.name }}</div>
+
+                  <div class="stock-alert-meta">
+                    {{ part.stock }} in stock · Minimum {{ part.min_stock_threshold }}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  class="stock-alert-quick-btn"
+                  @click.stop="openRestockFromList(part)"
+                >
+                  Restock
+                </button>
+              </div>
             </div>
           </Card>
         </div>
@@ -1235,6 +1237,12 @@ export default {
   border-color: #0f172a;
   color: #ffffff;
   transform: translateY(-1px);
+}
+
+.stock-alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .mini-empty-state {

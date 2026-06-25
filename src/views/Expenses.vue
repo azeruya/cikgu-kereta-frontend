@@ -39,10 +39,12 @@
       >
         <Card>
           <template #header>
+            
             <div>
               <span class="card-title">Expenses</span>
               <div class="card-subtitle">Click a row to view details, edit, or manage receipts.</div>
             </div>
+            
 
             <span class="card-link">
               {{ filteredExpenses.length }} record{{ filteredExpenses.length === 1 ? '' : 's' }}
