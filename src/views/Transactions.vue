@@ -16,7 +16,7 @@
               <span class="page-chip">
               {{
                   activeTab === "all"
-                  ? `${transactions.length} shown`
+                  ? `${transactions.length} transactions`
                   : `${transactions.length} ${activeTab}`
               }}
               </span>
@@ -475,7 +475,7 @@ export default {
       try {
         const params = {
           page,
-          per_page: 8,
+          per_page: 10,
         };
 
         if (this.activeTab !== "all") {

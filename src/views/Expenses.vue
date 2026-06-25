@@ -13,7 +13,7 @@
         <div class="page-intro">
           <div class="page-title-row">
             <div class="page-title">Expenses</div>
-            <span class="page-chip">{{ expenses.length }} shown</span>
+            <span class="page-chip">{{ expenses.length }} records</span>
           </div>
 
         </div>
