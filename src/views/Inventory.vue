@@ -66,11 +66,13 @@
         <Card>
           <template #header>
             <div class="section-heading no-index">
+              <!--
               <div>
                 <span class="card-title">Items</span>
                 <p class="section-caption">
                   Click a row to view details, edit, or restock.
                 </p>
+                -->
               </div>
             </div>
 
