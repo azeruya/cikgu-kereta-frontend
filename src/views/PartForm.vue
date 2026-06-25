@@ -234,6 +234,7 @@
                   v-for="(compat, index) in form.compatibilities"
                   :key="index"
                   class="compatibility-card"
+                  :class="{ 'compatibility-card-error': !hasCompatibilityValue(compat) }"
                 >
                   <div class="compatibility-top">
                     <div class="compatibility-title-group">
@@ -262,7 +263,7 @@
                     </div>
 
                     <div class="form-field form-field-sm">
-                      <label>Model <span class="required">*</span></label>
+                      <label>Model </label>
                       <input v-model="compat.model" type="text" placeholder="e.g. Vios" />
                     </div>
 
@@ -288,6 +289,12 @@
                       />
                     </div>
                   </div>
+                  <p
+                    v-if="!hasCompatibilityValue(compat)"
+                    class="compatibility-error"
+                  >
+                    Enter at least one compatibility value.
+                  </p>
                 </div>
               </div>
             </Card>
@@ -316,7 +323,13 @@
                 <div
                   v-if="!form.is_generic"
                   class="summary-check"
-                  :class="{ done: form.compatibilities.length > 0 }"
+                  :class="{
+                    done:
+                      form.compatibilities.length > 0 &&
+                      form.compatibilities.every((compat) =>
+                        hasCompatibilityValue(compat)
+                      )
+                  }"
                 >
                   <span></span>
                   <p>Compatibility added</p>
@@ -452,7 +465,13 @@ export default {
       if (Number(this.form.min_stock_threshold) < 0) return false;
 
       if (!this.form.is_generic) {
-        return this.form.compatibilities.length > 0;
+        if (this.form.compatibilities.length === 0) {
+          return false;
+        }
+
+        return this.form.compatibilities.every((compat) =>
+          this.hasCompatibilityValue(compat)
+        );
       }
 
       return true;
@@ -513,9 +532,33 @@ export default {
       this.form.compatibilities.splice(index, 1);
     },
 
+    hasCompatibilityValue(compat) {
+      const make = String(compat.make || "").trim();
+      const model = String(compat.model || "").trim();
+
+      const hasYearFrom =
+        compat.year_from !== null &&
+        compat.year_from !== undefined &&
+        compat.year_from !== "";
+
+      const hasYearTo =
+        compat.year_to !== null &&
+        compat.year_to !== undefined &&
+        compat.year_to !== "";
+
+      return Boolean(make || model || hasYearFrom || hasYearTo);
+    },
+
     async submitForm() {
-      this.saving = true;
       this.error = "";
+
+      if (!this.canSubmit) {
+        this.error =
+          "Each compatibility rule must contain at least one value.";
+        return;
+      }
+
+      this.saving = true;
 
       try {
         const payload = {
@@ -873,6 +916,18 @@ export default {
 
 .setup-panel-sm .btn {
   margin-top: 10px;
+}
+
+.compatibility-card-error {
+  border-color: #fca5a5;
+  background: #fffafa;
+}
+
+.compatibility-error {
+  margin: 10px 0 0;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 /* ================================
