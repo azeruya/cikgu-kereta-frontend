@@ -215,9 +215,8 @@
                   <label>Payment Method</label>
                   <select v-model="paymentForm.payment_method">
                     <option value="cash">Cash</option>
-                    <option value="bank_transfer">Bank Transfer</option>
                     <option value="card">Card</option>
-                    <option value="ewallet">E-wallet</option>
+                    <option value="online">Online Payment</option>
                   </select>
                 </div>
 
