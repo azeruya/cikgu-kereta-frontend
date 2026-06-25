@@ -407,16 +407,8 @@
             </div>
           </div>
 
-          <div class="modal-footer modal-footer-actions">
-            <button
-              type="button"
-              class="btn btn-danger-outline btn-pill"
-              @click="openDeleteModal(activePart)"
-            >
-              Delete
-            </button>
-
-            <div class="modal-footer-right">
+          <div class="modal-footer detail-action-footer">
+            <div class="detail-action-left">
               <router-link
                 :to="`/inventory/${activePart.id}/edit`"
                 class="btn btn-secondary btn-pill"
@@ -425,12 +417,21 @@
               </router-link>
 
               <button
+                type="button"
                 class="btn btn-primary btn-pill"
                 @click="openRestockModal"
               >
                 Restock
               </button>
             </div>
+
+            <button
+              type="button"
+              class="btn btn-danger-light btn-pill"
+              @click="openDeleteModal(activePart)"
+            >
+              Delete
+            </button>
           </div>
         </div>
         </div>
@@ -513,53 +514,42 @@
           </div>
         </Teleport>
 
-      <!--DELETE MODAL-->
+      <!-- Delete Confirmation Modal -->
       <Teleport to="body">
         <div
           v-if="showDeleteModal"
           class="modal"
           @click.self="closeDeleteModal"
         >
-          <div class="modal-card action-modal-card">
-            <div class="action-modal-header">
-              <div>
-                <div class="action-modal-title">Delete part</div>
-                <p class="action-modal-subtitle">
-                  This action cannot be undone.
-                </p>
+          <div class="modal-card danger-confirm-card">
+            <div class="danger-confirm-body">
+              <div class="danger-confirm-icon">!</div>
+
+              <div class="danger-confirm-title">
+                Delete part?
               </div>
 
-              <button
-                type="button"
-                class="btn btn-sm btn-ghost"
-                :disabled="deleteLoading"
-                @click="closeDeleteModal"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div class="action-modal-body">
-              <p>
-                Delete
+              <div class="danger-confirm-message">
+                Are you sure you want to delete
                 <strong>
-                  {{ partToDelete?.name }}
+                  {{ partToDelete?.name || "this part" }}
                   <span v-if="partToDelete?.variant">
                     — {{ partToDelete.variant }}
                   </span>
                 </strong>?
-              </p>
+                This action cannot be undone.
+              </div>
 
               <div
                 v-if="deleteError"
                 class="page-error"
-                style="margin-top: 12px;"
+                style="margin-top: 14px;"
               >
                 {{ deleteError }}
               </div>
             </div>
 
-            <div class="action-modal-footer">
+            <div class="danger-confirm-footer">
               <button
                 type="button"
                 class="btn btn-secondary btn-pill"
@@ -575,7 +565,7 @@
                 :disabled="deleteLoading"
                 @click="confirmDeletePart"
               >
-                {{ deleteLoading ? "Deleting..." : "Delete Part" }}
+                {{ deleteLoading ? "Deleting..." : "Delete" }}
               </button>
             </div>
           </div>
