@@ -90,7 +90,7 @@
 
                 <div class="form-grid">
                   <div class="form-field">
-                    <label>Name <span class="required">*</span></label>
+                    <label>Name </label>
                     <input v-model="form.name" type="text" placeholder="e.g. Oil Filter" />
                   </div>
 
@@ -144,7 +144,7 @@
                   </div>
 
                   <div class="form-field">
-                    <label>Selling Price <span class="required">*</span></label>
+                    <label>Selling Price </label>
                     <input
                       v-model.number="form.selling_price"
                       type="number"
@@ -155,7 +155,7 @@
                   </div>
 
                   <div class="form-field">
-                    <label>Stock <span class="required">*</span></label>
+                    <label>Stock </label>
                     <input
                       v-model.number="form.stock"
                       type="number"
@@ -258,7 +258,7 @@
 
                   <div class="compatibility-grid">
                     <div class="form-field form-field-sm">
-                      <label>Make <span class="required">*</span></label>
+                      <label>Make </label>
                       <input v-model="compat.make" type="text" placeholder="e.g. Toyota" />
                     </div>
 
@@ -916,11 +916,6 @@ export default {
 
 .setup-panel-sm .btn {
   margin-top: 10px;
-}
-
-.compatibility-card-error {
-  border-color: #fca5a5;
-  background: #fffafa;
 }
 
 .compatibility-error {
